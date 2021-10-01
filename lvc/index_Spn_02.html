@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <!-- Leaflet 0.5: https://github.com/CloudMade/Leaflet-->
-    <link rel="stylesheet" href="lvc/lib/leaflet.css" />
-    <!--[if lte IE 8]> <link rel="stylesheet" href="lvc/lvc/lib/leaflet.ie.css" />  <![endif]-->
-    <script src="lvc/lib/leaflet.js"></script>
+    <link rel="stylesheet" href="lib/leaflet.css" />
+    <!--[if lte IE 8]> <link rel="stylesheet" href="../../lib/leaflet.ie.css" />  <![endif]-->
+    <script src="lib/leaflet.js"></script>
 
     <!-- MarkerCluster https://github.com/danzel/Leaflet.markercluster -->
-    <link rel="stylesheet" href="lvc/lib/MarkerCluster.css" />
-    <link rel="stylesheet" href="lvc/lib/MarkerCluster.Default.css" />
-    <!--[if lte IE 8]> <link rel="stylesheet" href="lvc/lvc/lib/MarkerCluster.Default.ie.css" /> <![endif]-->
-    <script src="lvc/lib/leaflet.markercluster-src.js"></script>
+    <link rel="stylesheet" href="lib/MarkerCluster.css" />
+    <link rel="stylesheet" href="lib/MarkerCluster.Default.css" />
+    <!--[if lte IE 8]> <link rel="stylesheet" href="../../lib/MarkerCluster.Default.ie.css" /> <![endif]-->
+    <script src="lib/leaflet.markercluster-src.js"></script>
 
     <!-- GeoCSV: https://github.com/joker-x/Leaflet.geoCSV -->
-    <script src="lvc/leaflet.geocsv-src.js"></script>
+    <script src="leaflet.geocsv-src.js"></script>
 
     <!-- jQuery 1.8.3: http://jquery.com/ -->
-    <script src="lvc/lib/jquery.js"></script>
+    <script src="lib/jquery.js"></script>
 
     <style>
         html,
@@ -54,7 +54,7 @@
 
 <body>
     <div id="mapa"></div>
-    <div id="cargando">Cargandolvc.</div>
+    <div id="cargando">Cargando...</div>
     <script>
         //;$(function() {
 
@@ -103,7 +103,7 @@
 
 
         var smallIcon = new L.Icon({
-            iconUrl: "lvc/logo_lvc.png",
+            iconUrl: "logo_lvc.png",
             /*iconRetinaUrl: 'imagenes/marcador_lvc_01.png',*/
             iconSize: [65, 45],
             iconAnchor: [41, 41],
@@ -121,8 +121,6 @@
                     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                     shadowSize: [41, 41]
                 });
-
-
                 var smallIcon3 = new L.Icon({
                     iconUrl: "imagenes/marcador_lvc_03.png",
                     /*iconRetinaUrl: 'imagenes/marcador_lvc_01.png',
@@ -132,7 +130,6 @@
                     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                     shadowSize: [41, 41]
                 });
-
         */
 
         var bankias = L.geoCsv(null, {
@@ -164,19 +161,9 @@
                     }*/
 
                 }
-                
-              
-                
                 layer.bindPopup(popup, {
                     maxHeight: 200
                 });
-                /*
-                marker.on('mouseover', function (e) {
-                    this.openPopup();
-                });
-                marker.on('mouseout', function (e) {
-                    this.closePopup();
-                });*/
 
             },
 
