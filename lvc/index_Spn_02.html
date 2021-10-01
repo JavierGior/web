@@ -165,17 +165,18 @@
 
                 }
                 
-                layer.bindPopup(popup);
-                layer.on('mouseover', function (e) {
-                    this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                    this.closePopup();
+              
+                
+                layer.bindPopup(popup, {
+                    maxHeight: 200
                 });
                 
-                /*layer.bindPopup(popup, {
-                    maxHeight: 200
-                });*/
+                marker.on('mouseover', function (e) {
+                    this.openPopup();
+                });
+                marker.on('mouseout', function (e) {
+                    this.closePopup();
+                });
 
             },
 
