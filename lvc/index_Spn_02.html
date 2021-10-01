@@ -164,6 +164,13 @@
                 layer.bindPopup(popup, {
                     maxHeight: 200
                 });
+                layer.on('mouseover', function (e) {
+                  this.openPopup();
+                });
+                layer.on('mouseout', function (e) {
+                    this.closePopup();
+                });
+
 
             },
 
