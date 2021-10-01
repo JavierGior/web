@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Leaflet 0.5: https://github.com/CloudMade/Leaflet-->
+    <link rel="stylesheet" href="lib/leaflet.css" />
+    <!--[if lte IE 8]> <link rel="stylesheet" href="../../lib/leaflet.ie.css" />  <![endif]-->
+    <script src="lib/leaflet.js"></script>
+
+    <!-- MarkerCluster https://github.com/danzel/Leaflet.markercluster -->
+    <link rel="stylesheet" href="lib/MarkerCluster.css" />
+    <link rel="stylesheet" href="lib/MarkerCluster.Default.css" />
+    <!--[if lte IE 8]> <link rel="stylesheet" href="../../lib/MarkerCluster.Default.ie.css" /> <![endif]-->
+    <script src="lib/leaflet.markercluster-src.js"></script>
+
+    <!-- GeoCSV: https://github.com/joker-x/Leaflet.geoCSV -->
+    <script src="leaflet.geocsv-src.js"></script>
+
+    <!-- jQuery 1.8.3: http://jquery.com/ -->
+    <script src="lib/jquery.js"></script>
+
+    <style>
+        html,
+        body,
+        #mapa {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            font-color: #38383;
+        }
+
+
+        #cargando {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #666;
+            color: #fff;
+            font-size: 2em;
+            padding: 20% 40%;
+            z-index: 10;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="mapa"></div>
+    <div id="cargando">Cargando...</div>
+    <script>
+        //;$(function() {
+
+        var mapa = L.map('mapa', {
+            attributionControl: false
+        }).setView([40.46, -3.75], 5);
+
+        // MAPAS CON ESTILOS
+/*
+        var Esri_NatGeoWorldMap = L.tileLayer('https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}', {
+          attribution: '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+          bounds: [
+            [-75, -180],
+            [81, 180]
+          ],
+          minZoom: 2,
+          maxZoom: 19,
+          apikey: 'choisirgeoportail',
+          format: 'image/jpeg',
+          style: 'normal'
+        }).addTo(mapa);
+
+
+        var Stamen_TonerLabels = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}{r}.{ext}', {
+          attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          subdomains: 'abcd',
+          minZoom: 0,
+          maxZoom: 20,
+          ext: 'png'
+        }).addTo(mapa);
+*/
+
+        var Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+            maxZoom: 16
+        }).addTo(mapa);
+        /*
+        L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(mapa);*/
+
+
+        /*
+        L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(mapa);*/
+
+
+        var smallIcon = new L.Icon({
+            iconUrl: "logo_lvc.png",
+            /*iconRetinaUrl: 'imagenes/marcador_lvc_01.png',*/
+            iconSize: [65, 45],
+            iconAnchor: [41, 41],
+            popupAnchor: [41, 41],
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            shadowSize: [75, 45]
+        });
+        /*
+                var smallIcon2 = new L.Icon({
+                    iconUrl: "imagenes/marcador_lvc_02.png",
+                    /*iconRetinaUrl: 'imagenes/marcador_lvc_01.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    shadowSize: [41, 41]
+                });
+
+
+                var smallIcon3 = new L.Icon({
+                    iconUrl: "imagenes/marcador_lvc_03.png",
+                    /*iconRetinaUrl: 'imagenes/marcador_lvc_01.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    shadowSize: [41, 41]
+                });
+
+        */
+
+        var bankias = L.geoCsv(null, {
+            onEachFeature: function(feature, layer) {
+                var popup = '';
+                for (var clave in feature.properties) {
+                    var title = bankias.getPropertyTitle(clave);
+                    if (title == 'Page') {
+                        popup += '<b>' + title + '</b><br /> <a href="' + feature.properties[clave] + '" target="_blank" >Page</a> <br /><br />';
+                    } else {
+                        if (title == 'Page 2') {
+                            if (feature.properties[clave] != '') {
+                                popup += '<b>' + title + '</b><br /> <a href="' + feature.properties[clave] + '" target="_blank" >Page 2</a> <br /><br />';
+                            }
+                        } else {
+                            popup += '<b>' + title + '</b><br />' + feature.properties[clave] + '<br /><br />';
+                        }
+                    }
+                    layer.setIcon(smallIcon);
+                    /*
+                    if (title == 'Tipo Formación') {
+                        if (feature.properties[clave] == 'Escuela') {
+                            layer.setIcon(smallIcon);
+                        } else if (feature.properties[clave] == 'Formación') {
+                            layer.setIcon(smallIcon2);
+                        } else {
+                            layer.setIcon(smallIcon3);
+                        }
+                    }*/
+
+                }
+                layer.bindPopup(popup, {
+                    maxHeight: 200
+                });
+
+            },
+
+
+            pointToLayer: function(feature, latlng) {
+                return L.marker(latlng, {});
+            },
+            firstLineTitles: true
+        });
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'text',
+            url: 'Formaciones_LVC_Frn_01.csv',
+            error: function() {
+                alert('No se pudieron cargar los datos');
+            },
+            success: function(csv) {
+                var cluster = new L.MarkerClusterGroup();
+                bankias.addData(csv);
+                cluster.addLayer(bankias);
+                mapa.addLayer(cluster);
+                mapa.fitBounds(cluster.getBounds());
+            },
+            complete: function() {
+                $('#cargando').delay(500).fadeOut('slow');
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
