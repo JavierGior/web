@@ -42,6 +42,12 @@
     box-sizing: border-box;
 }
 
+#chartdiv {
+  width: 100%;
+  height: 500px;
+  max-width: 100%;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     font-size: 15px;    
@@ -515,7 +521,7 @@ img.my-info-signature {
 .section {
     background-color: #ffff;
     position: relative;
-    padding-top: 150px;
+    padding-top: 50px;
 }
 
 .section-wrapper {
