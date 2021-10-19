@@ -1,0 +1,56 @@
+[{
+    "x": "A",
+    "value": 100,
+    "name": "Data Science",
+    "fill": "#004385 0.75",
+    "label": {
+        "fontColor": "#fff"
+    }
+}, {
+    "x": "B",
+    "value": 100,
+    "name": "Desarrollo",
+    "fill": "#0f77af 0.75",
+    "label": {
+        "fontColor": "#fff"
+    }
+}, {
+    "x": "C",
+    "value": 100,
+    "name": "Diseño",
+    "fill": "#053557 0.75",
+    "label": {
+        "fontColor": "#fff"
+    }
+}, {
+    "x": "D",
+    "value": 100,
+    "name": "Marketing",
+    "fill": "#5d6a83 0.75",
+    "label": {
+        "fontColor": "#fff"
+    }
+}, {
+    "x": "A&B",
+    "value": 35,
+    "name": "Data Analitycs"
+}, {
+    "x": "B&C",
+    "value": 35,
+    "name": "Web"
+}, {
+    "x": "C&D",
+    "value": 35,
+    "name": "Google Ads/ FB Business"
+}, {
+    "x": "A&D",
+    "value": 35,
+    "name": "Business Intelligence"
+}, {
+    "x": "A&B&C&D",
+    "value": 35,
+    "name": "Skills",
+    "label": {
+        "fontSize": 14
+    }
+}]
