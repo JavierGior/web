@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exportaciones a Venezuela 2007 - 2014</title>
+  </head>
+
+  <style>
+      /* set the CSS */
+      #tooltip {
+        position: absolute;
+        width: 75px;
+        padding: 10px;
+        background-color: white;
+        border-radius: 5px;
+        border: 1px solid #000;
+        pointer-events: none;
+        display: none;
+        font-family: sans-serif;
+        font-size: 16px font-weight:bold;
+
+      }
+
+    #botonera{
+    margin-left: 150px;
+
+    }
+      /* .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 2px;
+      }
+
+      .grid line {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+      }
+
+      .grid path {
+        stroke-width: 0;
+      } */
+  </style>
+
+  <body>
+    <!-- Load d3.js -->
+    <script
+      type="text/javascript"
+      src="http://code.jquery.com/jquery-latest.min.js"
+    ></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+    />
+
+    <!-- Create a div where the graph will take place -->
+    <div id="my_dataviz">
+      <div id="tooltip"></div>
+    </div>
+
+    <script>
+      // set the dimensions and margins of the graph
+      var margin = {
+          top: 30,
+          right: 30,
+          bottom: 70,
+          left: 60,
+        },
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+      // append the svg object to the body of the page
+      var svg = d3
+        .select("#my_dataviz")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Initialize the X axis
+      var x = d3.scaleBand().range([0, width]).padding(0.2);
+      var xAxis = svg
+        .append("g")
+        .attr("transform", "translate(0," + height + ")");
+
+      // Initialize the Y axis
+      var y = d3.scaleLinear().range([height, 0]);
+      var yAxis = svg.append("g").attr("class", "myYaxis");
+
+      //gridlines de fondo
+
+      // function make_x_gridlines() {
+      //   return d3.axisBottom(x)
+      //     .ticks(8)
+      // }
+      //
+      // function make_y_gridlines() {
+      //   return d3.axisLeft(y)
+      //     .ticks(5)
+      // }
+      //
+      // // add the X gridlines
+      //   svg.append("g")
+      //       .attr("class", "grid")
+      //       .attr("transform", "translate(0," + height + ")")
+      //       .call(make_x_gridlines()
+      //           .tickSize(-height)
+      //           .tickFormat("")
+      //       )
+      //
+      //   // add the Y gridlines
+      //   svg.append("g")
+      //       .attr("class", "grid")
+      //       .call(make_y_gridlines()
+      //           .tickSize(-width)
+      //           .tickFormat("")
+      //       )
+
+      svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 0 - margin.top / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("Exportaciones a Venezuela 2007 - 2014");
+
+      // A function that create / update the plot for a given variable:
+      function update(selectedVar, color) {
+        // Parse the Data
+        d3.csv(
+          "Exportaciones pollo a Venezuela 2007 - 2017.csv",
+          function (data) {
+            // X axis
+            x.domain(
+              data.map(function (d) {
+                return d.Año;
+              })
+            );
+            xAxis.transition().duration(1000).call(d3.axisBottom(x));
+
+            // Add Y axis
+            y.domain([
+              0,
+              d3.max(data, function (d) {
+                return +d[selectedVar];
+              }),
+            ]);
+            yAxis.transition().duration(1000).call(d3.axisLeft(y));
+
+            // This function is called by the buttons on top of the plot
+            // function changeColor(color) {
+            //   d3.selectAll("rect")
+            //     .transition()
+            //     .duration(1000)
+            //     .style("fill", color)
+            // }
+            // var color;
+            // if(selectedVar='Tn'){
+            //   color='red'}
+            //   else{
+            //     color='#69b3a2'
+            // }
+            // variable u: map data to existing bars
+            var u = svg.selectAll("rect").data(data);
+
+            // update bars
+            u.enter()
+              .append("rect")
+              .merge(u)
+              .on("mouseover", function (d) {
+                d3.select(this).transition(50).attr("opacity", 0.3);
+                var x = parseFloat(d3.select(this).attr("x"));
+                x / 2;
+                var y = parseFloat(d3.select(this).attr("y")) / 2 + height / 2;
+                d3.select("#tooltip")
+                  .style("left", x + "px")
+                  .style("top", y + "px")
+                  .style("display", "block")
+                  .text(d[selectedVar] + " " + selectedVar);
+              })
+              .on("mouseout", function () {
+                d3.select(this).transition(50).attr("opacity", 1);
+                d3.select("#tooltip").style("display", "none");
+              })
+              .transition()
+              .duration(1000)
+              .attr("x", function (d) {
+                return x(d.Año);
+              })
+              .attr("y", function (d) {
+                return y(d[selectedVar]);
+              })
+              .attr("width", x.bandwidth())
+              .attr("height", function (d) {
+                return height - y(d[selectedVar]);
+              })
+              .attr("fill", color);
+          }
+        );
+      }
+
+      // Initialize plot
+      update("Tn", "#a81726");
+    </script>
+    <div id="botonera">
+      <button onclick="update('Tn', '#a81726')" class="btn btn-primary">
+        Toneladas
+      </button>
+      <button
+        onclick="update('Miles de USD', '#279137')"
+        class="btn btn-primary"
+      >
+        Miles de U$S
+      </button>
+    </div>
+  </body>
+</html>
