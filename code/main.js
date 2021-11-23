@@ -93,7 +93,7 @@ lightRight.position.y = 2;
 lightRight.position.z = 3;
 
 // load the cube map
-var path = "/assets/cubemap/";
+var path = "/code/assets/cubemap/";
 var format = ".jpg";
 var urls = [
   path + "px" + format,
