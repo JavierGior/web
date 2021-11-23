@@ -110,9 +110,9 @@ if (background) {
 }
 
 var loader = new THREE.TextureLoader();
-planebMaterial.map = loader.load("/code/assets/textures/concrete.jpg");
-planebMaterial.bumpMap = loader.load("/code/assets/textures/concrete.jpg");
-planebMaterial.roughnessMap = loader.load("/code/assets/textures/concrete.jpg");
+planebMaterial.map = loader.load("/code/assets/textures/concrete.JPG");
+planebMaterial.bumpMap = loader.load("/code/assets/textures/concrete.JPG");
+planebMaterial.roughnessMap = loader.load("/code/assets/textures/concrete.JPG");
 planebMaterial.bumpScale = 0.01;
 planebMaterial.metalness = 0.1;
 planebMaterial.roughness = 0.7;
