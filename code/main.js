@@ -1,5 +1,5 @@
 var scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2("black", 0.001);
+scene.fog = new THREE.FogExp2("#1a1a1a", 0.001);
 var gui = new dat.GUI();
 var clock = new THREE.Clock();
 
