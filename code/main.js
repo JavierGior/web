@@ -26,7 +26,7 @@ var particleGeo = new THREE.Geometry();
 var particleMat = new THREE.PointsMaterial({
   color: "rgb(255,255,255)",
   size: 1,
-  map: new THREE.TextureLoader().load("/assets/textures/particle.jpg"),
+  map: new THREE.TextureLoader().load("/code/assets/textures/particle.jpg"),
   transparent: true,
   blending: THREE.AdditiveBlending,
   depthWrite: false,
@@ -110,15 +110,15 @@ if (background) {
 }
 
 var loader = new THREE.TextureLoader();
-planebMaterial.map = loader.load("/assets/textures/concrete.jpg");
-planebMaterial.bumpMap = loader.load("/assets/textures/concrete.jpg");
-planebMaterial.roughnessMap = loader.load("/assets/textures/concrete.jpg");
+planebMaterial.map = loader.load("/code/assets/textures/concrete.jpg");
+planebMaterial.bumpMap = loader.load("/code/assets/textures/concrete.jpg");
+planebMaterial.roughnessMap = loader.load("/code/assets/textures/concrete.jpg");
 planebMaterial.bumpScale = 0.01;
 planebMaterial.metalness = 0.1;
 planebMaterial.roughness = 0.7;
 planebMaterial.envMap = reflectionCube;
 sphereMaterial.roughness = 0.5;
-sphereMaterial.map = loader.load("/assets/textures/Eyes.png");
+sphereMaterial.map = loader.load("/code/assets/textures/Eyes.png");
 
 sphereMaterial.envMap = reflectionCube;
 
