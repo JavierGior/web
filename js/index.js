@@ -57,6 +57,10 @@ chart.data = [
             name: "HTML",
             value: 90,
           },
+          {
+            name: "JS",
+            value: 90,
+          },
         ],
       },
       {
@@ -95,7 +99,7 @@ chart.data = [
         name: "Data\nScience",
         value: 250,
         //"color": "#0c6fa5",
-        linkWith: ["Phoebe"],
+        linkWith: [],
         children: [
           {
             name: "Data\nAnalytics",
@@ -123,6 +127,7 @@ chart.data = [
   },
 ];
 networkSeries.dataFields.linkWith = "linkWith";
+//networkSeries.dataFields.id = "name";   //lo borré porque si linkea a todos queda muy confuso
 //networkSeries.dataFields.collapsed = "collapsed";
 networkSeries.dataFields.value = "value";
 networkSeries.dataFields.name = "name";
