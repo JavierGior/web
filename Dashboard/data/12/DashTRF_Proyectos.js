@@ -30,7 +30,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43829443",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -94,7 +94,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071926",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -159,7 +159,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45226579",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -223,7 +223,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43908003",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -287,7 +287,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071926",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -351,7 +351,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45081171",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -415,7 +415,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45171370",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -479,7 +479,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43829443",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -543,7 +543,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43752861",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -607,7 +607,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45198764",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -671,7 +671,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43989250",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -735,7 +735,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12047776",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -799,7 +799,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071425",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -863,7 +863,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45179401",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "LoB 2 Programme",
 
@@ -927,7 +927,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45179401",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "LoB 2 Programme",
 
@@ -991,7 +991,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45179401",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1055,7 +1055,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071425",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1119,7 +1119,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071425",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "LoB 2 Programme",
 
@@ -1183,7 +1183,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071425",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1247,7 +1247,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43989250",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1311,7 +1311,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43908003",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1375,7 +1375,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45171370",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1439,7 +1439,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45080633",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1503,7 +1503,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45226579",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1567,7 +1567,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43989250",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1631,7 +1631,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43683882",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1695,7 +1695,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43683882",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1759,7 +1759,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43989250",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1823,7 +1823,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12047776",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1887,7 +1887,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45080633",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -1951,7 +1951,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43829443",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2015,7 +2015,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071926",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2079,7 +2079,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "45081171",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2143,7 +2143,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12071926",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2207,7 +2207,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43829443",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2271,7 +2271,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43829443",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2335,7 +2335,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "43829443",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2399,7 +2399,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12047776",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2463,7 +2463,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12047776",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2527,7 +2527,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12047776",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
@@ -2591,7 +2591,7 @@ const DashTRF_Proyectos = [
 
     Project_Manager_ID: "12047776",
 
-    Project_manager: "PM name",
+    Project_Manager: "PM Name",
 
     Programme_Name: "",
 
