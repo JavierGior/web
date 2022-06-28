@@ -105,12 +105,7 @@ chart.data = [
             name: "Data\nAnalytics",
             value: 180,
             linkWith: ["Marketing"],
-            children: [
-              {
-                name: "Sql",
-                value: 80,
-              }
-            ],
+           
           },
           {
             name: "Data\nVisualization",
@@ -125,17 +120,6 @@ chart.data = [
                 name: "D3.js",
                 value: 80,
               },
-              {
-                name: "PowerBi",
-                value: 100,
-                children: [
-                {
-                  name: "DAX",
-                  value: 60,
-                }
-               ], 
-              },
-              
             ],
           },
         ],
