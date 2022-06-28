@@ -105,7 +105,12 @@ chart.data = [
             name: "Data\nAnalytics",
             value: 180,
             linkWith: ["Marketing"],
-           
+            children: [
+              {
+                name: "Sql",
+                value: 80,
+              },
+           ],
           },
           {
             name: "Data\nVisualization",
