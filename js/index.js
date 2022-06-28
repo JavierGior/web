@@ -107,7 +107,7 @@ chart.data = [
             linkWith: ["Marketing"],
             children: [
               {
-                name: "Sql",
+                name: "SQL",
                 value: 80,
               },
            ],
