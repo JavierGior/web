@@ -125,6 +125,10 @@ chart.data = [
                 name: "D3.js",
                 value: 80,
               },
+               {
+                name: "PowerBI",
+                value: 100,
+              },
             ],
           },
         ],
