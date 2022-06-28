@@ -34,7 +34,7 @@ chart.data = [
         //"color": "#0c6fa5",
         children: [
           {
-            name: "PhotoShop",
+            name: "Photoshop",
             value: 170,
           },
           {
@@ -126,8 +126,9 @@ chart.data = [
                 value: 80,
               },
               {
-                name: "PowerBI",
-                value: 100,
+                name: "Power BI",
+                value: 120,
+                linkWith: ["Data\nAnalytics"],
               },
             ],
           },
