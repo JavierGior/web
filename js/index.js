@@ -110,6 +110,7 @@ chart.data = [
                 name: "Sql",
                 value: 80,
               }
+            ],
           },
           {
             name: "Data\nVisualization",
@@ -132,6 +133,7 @@ chart.data = [
                   name: "DAX",
                   value: 60,
                 }
+               ], 
               },
               },
             ],
