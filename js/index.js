@@ -108,7 +108,7 @@ chart.data = [
           },
           {
             name: "Data\nVisualization",
-            value: 200,
+            value: 210,
             linkWith: ["Marketing", "Diseño"],
             children: [
               {
@@ -118,6 +118,16 @@ chart.data = [
               {
                 name: "D3.js",
                 value: 80,
+              },
+              {
+                name: "PowerBi",
+                value: 100,
+                children: [
+                {
+                  name: "DAX",
+                  value: 60,
+                }
+              },
               },
             ],
           },
