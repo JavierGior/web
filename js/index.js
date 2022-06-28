@@ -127,7 +127,7 @@ chart.data = [
               },
               {
                 name: "Power BI",
-                value: 120,
+                value: 130,
                 linkWith: ["Data\nAnalytics"],
               },
             ],
