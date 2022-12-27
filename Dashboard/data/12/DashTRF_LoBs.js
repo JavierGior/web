@@ -1,81 +1,115 @@
 const DashTRF_LoBs = [
-  {
-    YearDT: "2022",
 
-    MonthDT: "1",
+    {
 
-    LoB: "Finance",
+        "YearDT": "2022",
 
-    ProyectosEnBacklog: "0",
-  },
+        "MonthDT": "1",
 
-  {
-    YearDT: "2022",
+        "LoB": "Finance",
 
-    MonthDT: "1",
+        "ProyectosEnBacklog": "0"
 
-    LoB: "Insurance",
+    }
 
-    ProyectosEnBacklog: "0",
-  },
+    ,
 
-  {
-    YearDT: "2022",
+    {
 
-    MonthDT: "1",
+        "YearDT": "2022",
 
-    LoB: "OPS",
+        "MonthDT": "1",
 
-    ProyectosEnBacklog: "0",
-  },
+        "LoB": "Insurance",
 
-  {
-    YearDT: "2022",
+        "ProyectosEnBacklog": "0"
 
-    MonthDT: "1",
+    }
 
-    LoB: "Risk",
+    ,
 
-    ProyectosEnBacklog: "0",
-  },
+    {
 
-  {
-    YearDT: "2022",
+        "YearDT": "2022",
 
-    MonthDT: "1",
+        "MonthDT": "1",
 
-    LoB: "Wholesale",
+        "LoB": "OPS",
 
-    ProyectosEnBacklog: "0",
-  },
+        "ProyectosEnBacklog": "0"
 
-  {
-    YearDT: "2022",
+    }
 
-    MonthDT: "1",
+    ,
 
-    LoB: "WPB",
+    {
 
-    ProyectosEnBacklog: "0",
-  },
+        "YearDT": "2022",
 
-  {
-    YearDT: "2022",
+        "MonthDT": "1",
 
-    MonthDT: "1",
+        "LoB": "Risk",
 
-    LoB: "WPB - RBB",
+        "ProyectosEnBacklog": "0"
 
-    ProyectosEnBacklog: "0",
-  },
+    }
 
-  {
-    YearDT: "2022",
+    ,
 
-    MonthDT: "1",
+    {
 
-    LoB: "xLoB",
+        "YearDT": "2022",
 
-    ProyectosEnBacklog: "0",
-  },
-];
+        "MonthDT": "1",
+
+        "LoB": "Wholesale",
+
+        "ProyectosEnBacklog": "0"
+
+    }
+
+    ,
+
+    {
+
+        "YearDT": "2022",
+
+        "MonthDT": "1",
+
+        "LoB": "WPB",
+
+        "ProyectosEnBacklog": "0"
+
+    }
+
+    ,
+
+    {
+
+        "YearDT": "2022",
+
+        "MonthDT": "1",
+
+        "LoB": "WPB - RBB",
+
+        "ProyectosEnBacklog": "0"
+
+    }
+
+    ,
+
+    {
+
+        "YearDT": "2022",
+
+        "MonthDT": "1",
+
+        "LoB": "xLoB",
+
+        "ProyectosEnBacklog": "0"
+
+    }
+
+
+
+]
