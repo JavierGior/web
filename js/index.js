@@ -110,7 +110,21 @@ chart.data = [
                 name: "SQL",
                 value: 80,
               },
-           ],
+              {
+                name: "Python",
+                value: 80,
+              },
+            ],
+            children: [
+              {
+                name: "Pandas",
+                value: 60,
+              },
+              {
+                name: "Numpy",
+                value: 60,
+              },
+            ],
           },
           {
             name: "Data\nVisualization",
