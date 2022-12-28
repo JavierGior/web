@@ -118,11 +118,11 @@ chart.data = [
             children: [
               {
                 name: "Pandas",
-                value: 60,
+                value: 80,
               },
               {
                 name: "Numpy",
-                value: 60,
+                value: 80,
               },
             ],
           },
