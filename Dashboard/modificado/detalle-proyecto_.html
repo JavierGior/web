@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+  <title>Detalle Proyecto</title>
+
+  <!-- Style.css -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/3.0.9/dc.min.css" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" />
+
+  <link rel="stylesheet" href="../css/dc-tableview-bs.css" />
+
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+  <!-- Dashboard -->
+
+  <div class="container-fluid container">
+    <div class="row">
+      <div class="col-lg-2">
+        <img src="../data/img.png" style="width: 100px" />
+      </div>
+
+      <div class="col-lg-10">
+        <h2>
+          Detalle Proyecto
+
+          <label id="projectName"></label>
+        </h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- column 1 for row 1-->
+
+      <div class="col-lg-8 col-md-8">
+        <!-- row in column 1 -->
+
+        <div class="row">
+          <!-- Pie Chart -->
+
+          <div class="col">
+            <div class="chart-wrapper">
+              <div class="chart-stage">
+                <div id="primer-chart" class="svg-container">
+                  <div class="chart-title">
+                    <span>
+                      <strong>Sponsor</strong>
+                    </span>
+
+                    <span>
+                      <a href="javascript:rowChart.filterAll(); dc.redrawAll();" style="display: none"
+                        class="reset btn btn-danger btn-square">reset</a>
+                    </span>
+                  </div>
+
+                  <div id="datalleProyecto"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- column 2 for row 1-->
+
+      <div class="col-lg-4 col-md-4">
+        <!-- row in column 2 -->
+
+        <div class="row">
+          <!-- Pie Chart -->
+
+          <div class="col">
+            <div class="chart-wrapper">
+              <div class="chart-stage">
+                <div id="segundo-chart" class="svg-container">
+                  <div class="chart-title">
+                    <span>
+                      <strong>Overall Status</strong>
+                    </span>
+
+                    <span>
+                      <a href="javascript:pieChart.filterAll(); dc.redrawAll();" style="display: none"
+                        class="reset btn btn-danger btn-square">reset</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  Esto lo dejo comentado por si necesitan usar esta estructura de grilla
+
+        <!-- column 3 for row 1
+
+        <div class="col-lg-4 col-md-4">
+
+          <!-- row in column 3 
+
+          <div class="row">
+
+            <!-- Line Chart
+
+            <div class="col">
+
+              <div class="chart-wrapper">
+
+                <div class="chart-stage">
+
+                  <div id="tercer-chart" class="svg-container">
+
+                    <div class="chart-title">
+
+                      <span>
+
+                        <strong>Vacío</strong>
+
+                      </span>
+
+                      <span>
+
+                        <a
+
+                          href="javascript:pieChart2.filterAll(); dc.redrawAll();"
+
+                          style="display: none"
+
+                          class="reset btn btn-danger btn-square"
+
+                          >reset</a
+
+                        >
+
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>-->
+    </div>
+
+    <div class="row">
+      <!-- column 1 for row 2-->
+
+      <div class="col-lg-4 col-md-4">
+        <!-- row in column 1 -->
+
+        <div class="row">
+          <!-- Evolucion cantidad personas por proyecto Chart -->
+
+          <div class="col">
+            <div class="chart-wrapper">
+              <div class="chart-stage">
+                <div id="cuarto-chart" class="svg-container">
+                  <div class="chart-title">
+                    <span>
+                      <strong>Recursos</strong>
+                    </span>
+
+                    <span>
+                      <a href="javascript:pieChart3.filterAll(); dc.redrawAll();" style="display: none"
+                        class="reset btn btn-danger btn-square">reset</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- column 2 for row 2-->
+
+      <div class="col-lg-4 col-md-4">
+        <!-- row in column 2 -->
+
+        <div class="row">
+          <!-- Pie Chart -->
+
+          <div class="col">
+            <div class="chart-wrapper">
+              <div class="chart-stage">
+                <div id="quinto-chart" class="svg-container">
+                  <div class="chart-title">
+                    <span>
+                      <strong>Roles</strong>
+                    </span>
+
+                    <span>
+                      <a href="javascript:pieChart4.filterAll(); dc.redrawAll();" style="display: none"
+                        class="reset btn btn-danger btn-square">reset</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- column 3 for row 2-->
+
+      <div class="col-lg-4 col-md-4">
+        <!-- row in column 3 -->
+
+        <div class="row">
+          <!-- Line Chart -->
+
+          <div class="col">
+            <div class="chart-wrapper">
+              <div class="chart-stage">
+                <div id="sexto-chart" class="svg-container">
+                  <div class="chart-title">
+                    <span>
+                      <strong>Allocation Total</strong>
+
+                      <label id="allocationTotal"></label>
+                    </span>
+
+                    <span>
+                      <a href="javascript:pieChart2.filterAll(); dc.redrawAll();" style="display: none"
+                        class="reset btn btn-danger btn-square">reset</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col" id="ResetAllBtn">
+        <a class="btn btn-danger btn-square" href="javascript:dc.filterAll(); dc.redrawAll();"
+          style="align-items: right">Reset All</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Data Table -->
+
+      <table id="tabla" class="display"></table>
+    </div>
+  </div>
+</body>
+
+<!-- Tablas importadas en js -->
+
+<script src="../data/12/DashTRF_Proyectos.js"></script>
+
+<script src="../data/12/DashTRF_Alocaciones.js"></script>
+
+<script src="../data/12/DashTRF_Recursos.js"></script>
+
+<!-- Dashboard Dependecies -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/dc.min.js"></script>
+
+<script src="../js/dc-tableview.min.js"></script>
+
+<!-- Configuraciones generales -->
+
+<script src="config.js"></script>
+
+<!-- js para detalle del proyecto -->
+
+<script src="detalle-Proyecto.js"></script>
+
+</html>
