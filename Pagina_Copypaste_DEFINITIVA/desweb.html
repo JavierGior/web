@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<!--
+	Solid State by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+    <title>Javier Giordano - Artista Visual</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+
+    <script src="assets/js/jquery-1.9.1.js"></script>
+    <script src="assets/js/three.r74.min.js"></script>
+
+    <script>
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-91282120-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+</head>
+
+<body>
+    <!--
+    <canvas id="myCanvas" width="1000" height="6000"></canvas>
+    <script>
+      function writeMessage(canvas, message) {
+        var context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.font = '18pt Calibri';
+        context.fillStyle = 'black';
+        context.fillText(message, 10, 25);
+      }
+      function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        writeMessage(canvas, message);
+      }, false);
+
+
+  </script>-->
+    <!--
+    <script>
+function readMouseMove(e){
+	var result_x = document.getElementById('x_result');
+	var result_y = document.getElementById('y_result');
+	result_x.innerHTML = e.clientX;
+	result_y.innerHTML = e.clientY;
+}
+document.onmousemove = readMouseMove;
+</script>
+
+<h1>Document that reads mouse movement</h1>
+<h2 id="x_result">0</h2>
+<h2 id="y_result">0</h2>
+-->
+
+    <style>
+        iframe {
+            z-index: -9999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+
+    <iframe src="index_interaccion.html"></iframe>
+
+
+
+    <!-- Page Wrapper -->
+    <div id="page-wrapper">
+
+
+        <!-- Header -->
+        <header id="header" class="alt">
+            <h1><a href="index.html">HOME</a></h1>
+            <nav>
+                <a href="#menu">Menu</a>
+            </nav>
+        </header>
+
+        <!-- Menu -->
+        <nav id="menu">
+            <div class="inner">
+                <h2>Menu</h2>
+                <ul class="links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="galeriaimagenes.html">Imágenes</a></li>
+                    <li><a href="galeriaimagenes_para_video.html">Videos</a></li>
+                    <!--<li><a href="#">Log In</a></li>
+								<li><a href="#">Sign Up</a></li>-->
+                </ul>
+                <a href="#" class="close">Cerrar</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Banner -->
+    <section id="banner">
+        <div class="inner">
+            <div id="contenedor3D">
+                <!--<div class="logo"><span class="icon fa-files-o"></span><span class="icon fa fa-clipboard"></span></div>-->
+                <h2>Diseño y Desarrollo Web</h2>
+                <!--	<p>Artista Visual - Diseño Interactivo</p> <!--<a href="http://html5up.net">HTML5 UP</a></p>-->
+            </div>
+        </div>
+    </section>
+
+    <!-- Wrapper -->
+    <section id="wrapper">
+
+
+        <!-- Agregue uno antes -->
+       <section id="two" class="wrapper alt spotlight style2">
+            <div class="inner">
+                <a href="http://javiergiordano.com.ar/Sitio_LVC_V2/index.html" target="_blank" class="image"><img src="images/Logo_lvc_web.jpg" alt="" /></a>
+                <div class="content">
+                    <h2 class="major">La Vía Campesina</h2>
+                    <p>Diseño y desarrollo de relevamiento cartográfico interactivo y plataforma educativa</br> (Work in progress)</p>
+                    <a href="http://javiergiordano.com.ar/Sitio_LVC_V2/index.html" target="_blank" class="special">Ver Mapa</a>
+                    <a href="http://javiergiordano.com.ar/moodle_lvc/index.php" target="_blank" class="special">Ver Sitio Educativo</a>
+                </div>
+            </div>
+        </section>                
+        <!-- One -->
+        <section id="one" class="wrapper spotlight style1">
+            <div class="inner">
+                <a href="interactivos.html" class="image"><img src="images/lmc.jpg" alt="" /></a>
+                <div class="content">
+                    <h2 class="major">La Mar En Coche</h2>
+                    <p>Diseño y desarrollo Web</p>
+                    <a href="http://www.lamarencoche.com" target="_blank" class="special">Ver Web</a>
+                </div>
+            </div>
+        </section>
+        </div>
+        <!-- Two -->
+        <section id="two" class="wrapper alt spotlight style2">
+            <div class="inner">
+                <a href="vj.html" class="image"><img src="images/Logo_Picker_MP.jpg" alt="" /></a>
+                <div class="content">
+                    <h2 class="major">Picker</h2>
+                    <p>Diseño y desarrollo de la tienda virtual, eshop integrado y sincronizado con mercadolibre con plataforma tienda nube. </br>Desarrollo de estructura de redes sociales y realizacion de campañas de ecommerce.</p>
+                    <a href="https://www.picker.com.ar" target="_blank" class="special">Ver Web</a>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        </div>
+
+        <!-- Scripts -->
+        <script src="assets/js/skel.min.js"></script>
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/jquery.scrollex.min.js"></script>
+        <script src="assets/js/util.js"></script>
+        <!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+        <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
