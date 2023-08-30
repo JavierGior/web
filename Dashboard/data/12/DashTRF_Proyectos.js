@@ -23,7 +23,7 @@ const DashTRF_Proyectos = [
     "Carry_Over_Y-N": "N",
 
     Order_Book_Transformation: "",
-        
+
     Order_Book_IT: "",
 
     Stage: "Closure",
@@ -1933,7 +1933,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-35",
 
-    Sponsor: "persona-31",
+    Sponsor: "persona-1",
 
     Order_Book: "WPB",
 
@@ -1997,7 +1997,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-36",
 
-    Sponsor: "persona-32",
+    Sponsor: "persona-2",
 
     Order_Book: "WPB - RBB",
 
@@ -2061,7 +2061,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-37",
 
-    Sponsor: "persona-33",
+    Sponsor: "persona-3",
 
     Order_Book: "WPB - RBB",
 
@@ -2125,7 +2125,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-38",
 
-    Sponsor: "persona-34",
+    Sponsor: "persona-4",
 
     Order_Book: "OPS",
 
@@ -2189,7 +2189,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-39",
 
-    Sponsor: "persona-35",
+    Sponsor: "persona-5",
 
     Order_Book: "xLoB",
 
@@ -2253,7 +2253,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-40",
 
-    Sponsor: "persona-36",
+    Sponsor: "persona-6",
 
     Order_Book: "Risk",
 
@@ -2317,7 +2317,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-41",
 
-    Sponsor: "persona-37",
+    Sponsor: "persona-7",
 
     Order_Book: "WPB",
 
@@ -2381,7 +2381,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-42",
 
-    Sponsor: "persona-38",
+    Sponsor: "persona-8",
 
     Order_Book: "xLoB",
 
@@ -2445,7 +2445,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-43",
 
-    Sponsor: "persona-39",
+    Sponsor: "persona-9",
 
     Order_Book: "xLoB",
 
@@ -2509,7 +2509,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-44",
 
-    Sponsor: "persona-40",
+    Sponsor: "persona-10",
 
     Order_Book: "xLoB",
 
@@ -2573,7 +2573,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-47",
 
-    Sponsor: "persona-1",
+    Sponsor: "persona-11",
 
     Order_Book: "Risk",
 
