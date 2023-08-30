@@ -1,5 +1,3 @@
-
-
 const DashTRF_Proyectos = [
   {
     YearDT: "2022",
@@ -14,7 +12,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-01",
 
-    Sponsor: "Rocío G",
+    Sponsor: "persona-1",
 
     Order_Book: "xLoB",
 
@@ -78,7 +76,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-03",
 
-    Sponsor: "Maximiliano R",
+    Sponsor: "persona-2",
 
     Order_Book: "Wholesale",
 
@@ -127,7 +125,7 @@ const DashTRF_Proyectos = [
     Tematica: "Regulatorio menores",
 
     Comments:
-      "28/1/22. EL BP asociado aún no fue aprobado. Nueva conversación con Cleiton Dossantos / Federico Perez de Vedia / José Real para volver a accionar a traves de José Real con Rory Davie.",
+      "28/1/22. EL BP asociado a�n no fue aprobado. Nueva conversaci�n con Cleiton Dossantos / Federico Perez de Vedia / Jos� Real para volver a accionar a traves de Jos� Real con Rory Davie.",
   },
 
   {
@@ -143,7 +141,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-04",
 
-    Sponsor: "Carlos  S",
+    Sponsor: "persona-3",
 
     Order_Book: "WPB",
 
@@ -207,7 +205,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-05",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-4",
 
     Order_Book: "WPB",
 
@@ -271,7 +269,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-06",
 
-    Sponsor: "Omar M",
+    Sponsor: "persona-5",
 
     Order_Book: "Wholesale",
 
@@ -335,7 +333,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-07",
 
-    Sponsor: "Omar M",
+    Sponsor: "persona-6",
 
     Order_Book: "Wholesale",
 
@@ -399,7 +397,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-08",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-7",
 
     Order_Book: "WPB",
 
@@ -463,7 +461,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-09",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-8",
 
     Order_Book: "xLoB",
 
@@ -527,7 +525,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-10",
 
-    Sponsor: "Gonzalo T  P",
+    Sponsor: "persona-9",
 
     Order_Book: "Wholesale",
 
@@ -591,7 +589,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-11",
 
-    Sponsor: "Andrea H",
+    Sponsor: "persona-10",
 
     Order_Book: "WPB",
 
@@ -655,7 +653,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-12",
 
-    Sponsor: "Carlos  C",
+    Sponsor: "persona-11",
 
     Order_Book: "WPB",
 
@@ -719,7 +717,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-13",
 
-    Sponsor: "Silvia G",
+    Sponsor: "persona-12",
 
     Order_Book: "Finance",
 
@@ -783,7 +781,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-14",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-13",
 
     Order_Book: "Insurance",
 
@@ -847,7 +845,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-15",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-14",
 
     Order_Book: "Insurance",
 
@@ -911,7 +909,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-16",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-15",
 
     Order_Book: "Insurance",
 
@@ -975,7 +973,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-17",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-16",
 
     Order_Book: "Insurance",
 
@@ -1039,7 +1037,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-18",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-17",
 
     Order_Book: "Insurance",
 
@@ -1103,7 +1101,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-19",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-18",
 
     Order_Book: "Insurance",
 
@@ -1167,7 +1165,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-20",
 
-    Sponsor: "Hernan W",
+    Sponsor: "persona-19",
 
     Order_Book: "Insurance",
 
@@ -1231,7 +1229,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-21",
 
-    Sponsor: "Ramiro M",
+    Sponsor: "persona-20",
 
     Order_Book: "OPS",
 
@@ -1295,7 +1293,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-22",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-21",
 
     Order_Book: "WPB",
 
@@ -1359,7 +1357,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-26",
 
-    Sponsor: "Ramiro M",
+    Sponsor: "persona-22",
 
     Order_Book: "OPS",
 
@@ -1423,7 +1421,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-27",
 
-    Sponsor: "Yuri M",
+    Sponsor: "persona-23",
 
     Order_Book: "WPB",
 
@@ -1487,7 +1485,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-28",
 
-    Sponsor: "Gustavo D S",
+    Sponsor: "persona-24",
 
     Order_Book: "WPB",
 
@@ -1551,7 +1549,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-29",
 
-    Sponsor: "Yuri M",
+    Sponsor: "persona-25",
 
     Order_Book: "WPB",
 
@@ -1615,7 +1613,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-30",
 
-    Sponsor: "Carlos  C",
+    Sponsor: "persona-26",
 
     Order_Book: "WPB",
 
@@ -1679,7 +1677,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-31",
 
-    Sponsor: "Carlos  C",
+    Sponsor: "persona-27",
 
     Order_Book: "WPB",
 
@@ -1743,7 +1741,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-32",
 
-    Sponsor: "Yesica M",
+    Sponsor: "persona-28",
 
     Order_Book: "OPS",
 
@@ -1807,7 +1805,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-33",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-29",
 
     Order_Book: "WPB",
 
@@ -1871,7 +1869,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-34",
 
-    Sponsor: "Gustavo D S",
+    Sponsor: "persona-30",
 
     Order_Book: "WPB",
 
@@ -1935,7 +1933,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-35",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-31",
 
     Order_Book: "WPB",
 
@@ -1999,7 +1997,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-36",
 
-    Sponsor: "Rocío G",
+    Sponsor: "persona-32",
 
     Order_Book: "WPB - RBB",
 
@@ -2063,7 +2061,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-37",
 
-    Sponsor: "Rocío G",
+    Sponsor: "persona-33",
 
     Order_Book: "WPB - RBB",
 
@@ -2127,7 +2125,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-38",
 
-    Sponsor: "Yesica M",
+    Sponsor: "persona-34",
 
     Order_Book: "OPS",
 
@@ -2191,7 +2189,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-39",
 
-    Sponsor: "",
+    Sponsor: "persona-35",
 
     Order_Book: "xLoB",
 
@@ -2255,7 +2253,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-40",
 
-    Sponsor: "Monica A B",
+    Sponsor: "persona-36",
 
     Order_Book: "Risk",
 
@@ -2319,7 +2317,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-41",
 
-    Sponsor: "Diego R",
+    Sponsor: "persona-37",
 
     Order_Book: "WPB",
 
@@ -2383,7 +2381,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-42",
 
-    Sponsor: "",
+    Sponsor: "persona-38",
 
     Order_Book: "xLoB",
 
@@ -2447,7 +2445,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-43",
 
-    Sponsor: "Natacha M",
+    Sponsor: "persona-39",
 
     Order_Book: "xLoB",
 
@@ -2511,7 +2509,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-44",
 
-    Sponsor: "Natacha M",
+    Sponsor: "persona-40",
 
     Order_Book: "xLoB",
 
@@ -2575,7 +2573,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-47",
 
-    Sponsor: "Laura B",
+    Sponsor: "persona-1",
 
     Order_Book: "Risk",
 
@@ -2626,4 +2624,3 @@ const DashTRF_Proyectos = [
     Comments: "",
   },
 ];
-
