@@ -1293,7 +1293,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-22",
 
-    Sponsor: "persona-21",
+    Sponsor: "persona-1",
 
     Order_Book: "WPB",
 
@@ -1357,7 +1357,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-26",
 
-    Sponsor: "persona-22",
+    Sponsor: "persona-2",
 
     Order_Book: "OPS",
 
@@ -1421,7 +1421,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-27",
 
-    Sponsor: "persona-23",
+    Sponsor: "persona-3",
 
     Order_Book: "WPB",
 
@@ -1485,7 +1485,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-28",
 
-    Sponsor: "persona-24",
+    Sponsor: "persona-4",
 
     Order_Book: "WPB",
 
@@ -1549,7 +1549,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-29",
 
-    Sponsor: "persona-25",
+    Sponsor: "persona-5",
 
     Order_Book: "WPB",
 
@@ -1613,7 +1613,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-30",
 
-    Sponsor: "persona-26",
+    Sponsor: "persona-6",
 
     Order_Book: "WPB",
 
@@ -1677,7 +1677,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-31",
 
-    Sponsor: "persona-27",
+    Sponsor: "persona-7",
 
     Order_Book: "WPB",
 
@@ -1741,7 +1741,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-32",
 
-    Sponsor: "persona-28",
+    Sponsor: "persona-8",
 
     Order_Book: "OPS",
 
@@ -1805,7 +1805,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-33",
 
-    Sponsor: "persona-29",
+    Sponsor: "persona-9",
 
     Order_Book: "WPB",
 
@@ -1869,7 +1869,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-34",
 
-    Sponsor: "persona-30",
+    Sponsor: "persona-10",
 
     Order_Book: "WPB",
 
@@ -1933,7 +1933,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-35",
 
-    Sponsor: "persona-1",
+    Sponsor: "persona-11",
 
     Order_Book: "WPB",
 
@@ -1997,7 +1997,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-36",
 
-    Sponsor: "persona-2",
+    Sponsor: "persona-12",
 
     Order_Book: "WPB - RBB",
 
@@ -2061,7 +2061,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-37",
 
-    Sponsor: "persona-3",
+    Sponsor: "persona-13",
 
     Order_Book: "WPB - RBB",
 
@@ -2125,7 +2125,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-38",
 
-    Sponsor: "persona-4",
+    Sponsor: "persona-14",
 
     Order_Book: "OPS",
 
@@ -2189,7 +2189,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-39",
 
-    Sponsor: "persona-5",
+    Sponsor: "persona-15",
 
     Order_Book: "xLoB",
 
@@ -2253,7 +2253,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-40",
 
-    Sponsor: "persona-6",
+    Sponsor: "persona-16",
 
     Order_Book: "Risk",
 
@@ -2317,7 +2317,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-41",
 
-    Sponsor: "persona-7",
+    Sponsor: "persona-17",
 
     Order_Book: "WPB",
 
@@ -2381,7 +2381,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-42",
 
-    Sponsor: "persona-8",
+    Sponsor: "persona-18",
 
     Order_Book: "xLoB",
 
@@ -2445,7 +2445,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-43",
 
-    Sponsor: "persona-9",
+    Sponsor: "persona-19",
 
     Order_Book: "xLoB",
 
@@ -2509,7 +2509,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-44",
 
-    Sponsor: "persona-10",
+    Sponsor: "persona-20",
 
     Order_Book: "xLoB",
 
@@ -2573,7 +2573,7 @@ const DashTRF_Proyectos = [
 
     BP_ID_Name: "Proyecto-47",
 
-    Sponsor: "persona-11",
+    Sponsor: "persona-1",
 
     Order_Book: "Risk",
 
