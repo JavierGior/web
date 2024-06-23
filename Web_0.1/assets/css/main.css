@@ -1,11 +1,7 @@
 @import url(fontawesome-all.min.css);
 @import url("https://fonts.googleapis.com/css?family=Merriweather:300,700,300italic,700italic|Source+Sans+Pro:900");
 
-/*
-	Massively by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+
 
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
@@ -99,7 +95,7 @@ input, select, textarea {
 	}
 
 	body {
-		background-color: #1e252d;
+		background-color: #2d1e1e;
 	}
 
 		body.is-preload *, body.is-preload *:before, body.is-preload *:after {
@@ -2633,11 +2629,11 @@ input, select, textarea {
 			}
 
 		.image.main {
-			/*display: block;*/
+			
 			margin: 2rem 0;
-			width: 100%;
+			width: 50%;
 			align-self: center;
-			/*max-width: 50%;*/
+			
 		}
 
 			.image.main:first-child {
@@ -3260,7 +3256,7 @@ input, select, textarea {
 			-webkit-transition-delay: 0.75s;
 			-ms-transition-delay: 0.75s;
 			transition-delay: 0.75s;
-			background: #1e252d;
+			background: #000000;
 			content: '';
 			display: block;
 			height: 100%;
