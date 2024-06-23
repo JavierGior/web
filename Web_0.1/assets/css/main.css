@@ -2628,13 +2628,12 @@ input, select, textarea {
 				width: 100%;
 			}
 
-		.image.main {
-			
-			margin: 2rem 0;
-			width: 50%;
-			align-self: center;
-			
-		}
+				.image.main {
+					display: block;
+					margin: 2rem auto;
+					width: 50%;
+		
+				}
 
 			.image.main:first-child {
 				margin-top: 0;
