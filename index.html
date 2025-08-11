@@ -223,6 +223,22 @@
                     </div>
                     </div>
                     <!-- Gradio Bot-->
+                    <script>
+                      // Configuración desde HTML usando data attributes
+                      document.addEventListener('DOMContentLoaded', function () {
+                        const botElement = document.querySelector('cv-bot');  // Tu web component
+                        const defaultLang = botElement.getAttribute('data-lang') || 'es';
+
+                        // Pasas este parámetro a tu bot (ajusta según tu implementación)
+                        window.botConfig = {
+                          defaultLang: defaultLang
+                        };
+                      });
+                    </script>
+                    
+                    <!-- Ejemplo de uso en tu HTML -->
+                    <cv-bot data-lang="es"></cv-bot>
+
                     <div id="portfolio" class="section">
                       <div class="section-wrapper block">
                         <div class="content-1300">
