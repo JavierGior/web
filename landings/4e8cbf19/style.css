@@ -1,0 +1,30 @@
+:root {
+  --color-primary: #032d4a;
+  --color-accent: #3178ab;
+  --font-size-h1: clamp(2rem, 5vw, 3rem);
+  --font-size-h2: clamp(1.5rem, 4vw, 2rem);
+  --transition-duration: 0.3s;
+}
+
+body {
+  background-color: #000000;
+  color: var(--color-accent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.reloj {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: var(--font-size-h2);
+  text-align: center;
+  transition: color var(--transition-duration), transform var(--transition-duration);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reloj {
+    transition: none;
+  }
+}
