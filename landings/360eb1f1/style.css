@@ -1,0 +1,25 @@
+:root {
+  --background-color: #000000;
+  --text-color: #ffffff;
+}
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--background-color);
+  font-family: 'Arial', sans-serif;
+}
+.container {
+  text-align: center;
+}
+.clock-container {
+  margin-bottom: 20px;
+}
+.text-inspirador {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-color);
+}

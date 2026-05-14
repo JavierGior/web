@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reloj Digital Inspirador</title>
+<style>
+:root {
+  --background-color: #000000;
+  --text-color: #ffffff;
+}
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--background-color);
+  font-family: 'Arial', sans-serif;
+}
+.container {
+  text-align: center;
+}
+.clock-container {
+  margin-bottom: 20px;
+}
+.text-inspirador {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="clock-container" id="clock"></div>
+  <div class="text-inspirador">Viva el momento!</div>
+</div>
+<script>
+function updateClock() {
+  const now = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+  document.getElementById('clock').textContent = now;
+}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+</body>
+</html>
