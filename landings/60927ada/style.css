@@ -1,0 +1,23 @@
+:root {
+	--color-primary: #3178ab;
+	--font-size-h2: 1.5rem;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	background-color: #f4f4f9;
+}
+
+#clock {
+	font-size: var(--font-size-h2);
+	color: var(--color-primary);
+}
+
+.message {
+	font-size: 1rem;
+	color: #6c757d;
+}
