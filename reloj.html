@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reloj Funcional</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+<style>
+:root {
+  --color-primary: #00E5FF;
+  --color-secondary: #000000;
+  --font-size-h1: clamp(2rem, 8vw, 3rem);
+  --font-size-h2: clamp(1.5rem, 6vw, 2rem);
+}
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: var(--color-secondary);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  background-color: var(--color-primary);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.time {
+  font-size: var(--font-size-h1);
+  letter-spacing: -3px;
+  margin-bottom: 0.5rem;
+}
+
+date {
+  font-size: var(--font-size-h2);
+}
+
+.scanlines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(90deg, transparent 48%, rgba(255, 255, 255, 0.1) 49%, transparent 50%);
+  background-size: 4px 32px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="clock"></div>
+<date id="date"></date>
+<div class="scanlines"></div>
+<script>
+function updateClock() {
+  const now = new Date();
+  const timeElement = document.getElementById('clock');
+  const dateElement = document.getElementById('date');
+  timeElement.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  dateElement.textContent = now.toLocaleDateString();
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+</div>
+</body>
+</html>
