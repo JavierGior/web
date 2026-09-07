@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Javier Giordano — Data Scientist & Consultor en Innovación</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="description" content="Data Scientist y Consultor en Innovación con más de 15 años en la intersección de datos, IA y negocio. Data Architecture, sistemas multi-agente, Power BI y Microsoft Fabric." />
+  <meta name="keywords" content="Data Scientist, Consultor en Innovación, Data Architecture, IA, LLMs, Sistemas Multi-Agente, Power BI, Microsoft Fabric, Transformación Digital, Automatización, Python, Machine Learning" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F7F4EA;
+      --cream-deep: #EDE8D6;
+      --cream-sunk: #E4DEC8;
+      --ink: #0E0E0D;
+      --ink-soft: #2A2A28;
+      --ink-muted: #77746A;
+      --rule: #D6CFBB;
+      --rule-fade: #E8E2CE;
+      --accent: #E85822;
+      --accent-soft: #FBE9DF;
+      --grid-line: rgba(0,0,0,0.035);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    html, body {
+      font-family: 'Manrope', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      font-size: 15px;
+      line-height: 1.55;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-attachment: fixed;
+      font-feature-settings: "ss01", "kern", "liga";
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ============ NAV ============ */
+    nav.top {
+      position: sticky;
+      top: 0;
+      background: rgba(247, 244, 234, 0.85);
+      backdrop-filter: saturate(180%) blur(8px);
+      -webkit-backdrop-filter: saturate(180%) blur(8px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+    nav.top .inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand .brand-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .brand .brand-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-muted);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    nav.top ul {
+      list-style: none;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    nav.top ul a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-soft);
+      padding: 6px 10px;
+      border-radius: 3px;
+      transition: all 0.15s;
+    }
+    nav.top ul a:hover { color: var(--accent); background: var(--accent-soft); }
+    nav.top ul a .prefix { color: var(--ink-muted); }
+    nav.top ul a:hover .prefix { color: var(--accent); }
+    .nav-right {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .lang-toggle {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 5px 10px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      color: var(--ink);
+      transition: all 0.15s;
+    }
+    .lang-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .cv-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 3px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .cv-btn:hover { background: var(--accent); }
+
+    /* ============ HERO ============ */
+    section {
+      padding: 90px 0;
+    }
+    section:first-of-type { padding-top: 60px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-breadcrumb {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-bottom: 24px;
+    }
+    .hero-breadcrumb .accent-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .hero-breadcrumb .path { color: var(--ink); }
+    .hero-name {
+      font-family: 'Manrope', sans-serif;
+      font-style: normal;
+      font-size: 100px;
+      font-weight: 800;
+      letter-spacing: -4px;
+      line-height: 0.92;
+      color: var(--ink);
+      margin-bottom: 22px;
+    }
+    .hero-subtitle {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-bottom: 32px;
+    }
+    .hero-subtitle .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--accent);
+      color: var(--cream);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-radius: 2px;
+    }
+    .hero-subtitle .badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--cream);
+      border-radius: 50%;
+      animation: pulse 2.4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hero-perfil {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      max-width: 620px;
+      margin-bottom: 28px;
+    }
+    .hero-perfil p + p { margin-top: 12px; }
+    .hero-perfil .highlight {
+      background: linear-gradient(180deg, transparent 60%, var(--accent-soft) 60%);
+      padding: 0 3px;
+    }
+    .contact-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .contact-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 5px 10px;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      color: var(--ink);
+      background: var(--cream);
+      transition: all 0.15s;
+    }
+    .contact-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .contact-pill .k { color: var(--ink-muted); margin-right: 5px; }
+
+    .hero-avatar {
+      width: 300px;
+      height: 340px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: var(--cream-deep);
+      position: relative;
+    }
+    .hero-avatar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+    .hero-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: contrast(1.03) saturate(0.97);
+    }
+
+    /* ============ SECTION HEADER ============ */
+    .sec-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+      gap: 20px;
+    }
+    .sec-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -1.5px;
+      font-variation-settings: "opsz" 48;
+      line-height: 1;
+    }
+    .sec-title .prefix { color: var(--accent); font-weight: 500; }
+    .sec-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ============ SERVICIOS ============ */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .service-card {
+      padding: 32px 28px;
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .service-card::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .service-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--ink);
+    }
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 18px;
+      color: var(--ink);
+    }
+    .service-icon img { width: 100%; height: 100%; display: block; }
+    .service-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .service-desc {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+
+    /* ============ PORTFOLIO ============ */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .portfolio-card {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: all 0.2s;
+      display: block;
+      position: relative;
+    }
+    .portfolio-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .portfolio-thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--cream-sunk);
+      overflow: hidden;
+    }
+    .portfolio-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s;
+    }
+    .portfolio-card:hover .portfolio-thumb img { transform: scale(1.04); }
+    .portfolio-body {
+      padding: 18px 20px;
+    }
+    .portfolio-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+    .portfolio-cat {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      color: var(--ink-muted);
+    }
+
+    /* ============ EXPERIENCIA ============ */
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .exp-card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 32px;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--rule-fade);
+    }
+    .exp-card:last-child { border-bottom: none; }
+    .exp-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+    .exp-meta .date-start { font-weight: 500; }
+    .exp-meta .date-end { color: var(--ink-muted); display: block; }
+    .exp-meta .tag {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 7px;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: 9px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+    .exp-meta .tag.remote { background: var(--accent); }
+    .exp-meta .tag.freelance { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+
+    .exp-title {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .exp-role {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .exp-at { color: var(--ink-muted); font-size: 14px; font-weight: 400; }
+    .exp-company { color: var(--accent); font-weight: 600; font-size: 14px; }
+    .exp-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+    }
+    .exp-bullets li {
+      font-size: 13.5px;
+      line-height: 1.6;
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 5px;
+      color: var(--ink-soft);
+    }
+    .exp-bullets li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ============ FORMACIÓN ============ */
+    .edu-table {
+      border: 1px solid var(--rule);
+      background: var(--cream);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .edu-row {
+      display: grid;
+      grid-template-columns: 80px 1.5fr 1fr;
+      gap: 20px;
+      padding: 14px 20px;
+      align-items: center;
+      font-size: 13.5px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .edu-row:last-child { border-bottom: none; }
+    .edu-row .yr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .edu-row .title { font-weight: 600; color: var(--ink); }
+    .edu-row .meta {
+      color: var(--ink-muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+    }
+
+    /* ============ HABILIDADES CHART ============ */
+    .skills-wrap {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 18px;
+      position: relative;
+    }
+    #chartdiv {
+      width: 100%;
+      height: 640px;
+      min-height: 560px;
+    }
+    .skills-legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--rule);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      color: var(--ink-muted);
+    }
+    .skills-legend span::before {
+      content: "→ ";
+      color: var(--accent);
+    }
+
+    /* ============ FOOTER / CONSOLE ============ */
+    footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 60px 0 40px;
+      margin-top: 60px;
+    }
+    footer .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .footer-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+    .footer-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: #A8A499;
+      line-height: 1.8;
+    }
+    .footer-meta a { color: var(--cream); border-bottom: 1px dotted #A8A499; }
+    .footer-meta a:hover { color: var(--accent); border-color: var(--accent); }
+
+    .footer-quote {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .fq-mark {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 84px;
+      line-height: 0.7;
+      color: var(--accent);
+    }
+    .fq-text {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 26px;
+      line-height: 1.35;
+      color: var(--cream);
+      padding-top: 8px;
+    }
+
+    .footer-bottom {
+      max-width: 1180px;
+      margin: 40px auto 0;
+      padding: 20px 32px 0;
+      border-top: 1px solid #2A2A28;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #7A7770;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-avatar { width: 220px; height: 260px; }
+      .hero-name { font-size: 56px; letter-spacing: -2px; }
+      .services-grid, .portfolio-grid { grid-template-columns: 1fr; }
+      .exp-card { grid-template-columns: 1fr; gap: 8px; }
+      .edu-row { grid-template-columns: 60px 1fr; }
+      .edu-row .meta { grid-column: 2; font-size: 10.5px; }
+      nav.top ul { display: none; }
+      footer .container { grid-template-columns: 1fr; }
+      .sec-title { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <nav class="top">
+    <div class="inner">
+      <a href="#top" class="brand">
+        <span class="brand-dot"></span>
+        Javier Giordano
+        <span class="brand-meta">v2026.09</span>
+      </a>
+      <ul>
+        <li><a href="#perfil"><span class="prefix">// </span>perfil</a></li>
+        <li><a href="#servicios"><span class="prefix">// </span>servicios</a></li>
+        <li><a href="#portfolio"><span class="prefix">// </span>portfolio</a></li>
+        <li><a href="#experiencia"><span class="prefix">// </span>experiencia</a></li>
+        <li><a href="#habilidades"><span class="prefix">// </span>habilidades</a></li>
+        <li><a href="visualizaciones.html"><span class="prefix">// </span>visualizaciones</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="index_eng.html" class="lang-toggle">EN</a>
+        <a href="cv_tech.html" class="cv-btn" target="_blank">CV ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO / PERFIL ============ -->
+  <section id="perfil">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-breadcrumb">
+            <span class="accent-dot"></span><span class="path">~/javier_giordano/home</span>
+          </div>
+          <h1 class="hero-name">Javier<br>Giordano</h1>
+          <div class="hero-subtitle">
+            Data Scientist &amp; Consultor en Innovación
+            <span class="badge">disponible</span>
+          </div>
+          <div class="hero-perfil">
+            <p>Llevo más de 15 años moviéndome entre tecnología, datos y negocio — y esa <span class="highlight">mezcla rara</span> terminó siendo mi mayor activo.</p>
+            <p>Mi carrera pasó por diseño, data science, la gerencia general de una pyme, la coordinación de equipos de análisis en el sector público y proyectos para clientes como HSBC. Lo que más me gusta hacer es ser el punto de contacto entre la tecnología y las personas que tienen que usarla o decidir con ella.</p>
+          </div>
+          <div class="contact-row">
+            <a class="contact-pill" href="tel:+541124723275"><span class="k">tel</span>+54 11 2472 3275</a>
+            <a class="contact-pill" href="mailto:javiergiordano@gmail.com"><span class="k">mail</span>javiergiordano@gmail.com</a>
+            <a class="contact-pill" href="https://www.linkedin.com/in/javier-giordano/" target="_blank"><span class="k">in</span>/javier-giordano</a>
+            <span class="contact-pill"><span class="k">lang</span>ES · EN B1/B2</span>
+          </div>
+        </div>
+        <div class="hero-avatar">
+          <img src="images/profile.jpg" alt="Javier Giordano">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICIOS ============ -->
+  <section id="servicios">
+    <div class="container">
+      <div class="sec-head">
+        <h2 class="sec-title"><span class="prefix">// </span>servicios</h2>
+        <div class="sec-meta">4 verticales</div>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon"><img src="images/icon-data.svg" alt=""></div>
+          <div class="service-title">Data &amp; BI</div>
+          <div class="service-desc">Power BI · Microsoft Fabric · SQL · Tableau · ETL / DAX · Arquitectura de datos.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><img src="images/icon-ai.svg" alt=""></div>
+          <div class="service-title">IA Aplicada</div>
+          <div class="service-desc">LLMs · Agentes IA · Prompt Engineering · Machine / Deep Learning · OpenCV.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><img src="images/icon-transformation.svg" alt=""></div>
+          <div class="service-title">Transformación Digital</div>
+          <div class="service-desc">Relevamiento de necesidades · Roadmap tecnológico · Adopción de IA · Liderazgo de equipos.</div>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><img src="images/icon-automation.svg" alt=""></div>
+          <div class="service-title">Automatización</div>
+          <div class="service-desc">n8n · Python · FastAPI · Docker · Integraciones · AWS · Fabric.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PORTFOLIO ============ -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="sec-head">
+        <h2 class="sec-title"><span class="prefix">// </span>portfolio</h2>
+        <div class="sec-meta">trabajo seleccionado</div>
+      </div>
+      <div class="portfolio-grid">
+        <a class="portfolio-card" href="lvc.html">
+          <div class="portfolio-thumb"><img src="images/portfolio1.jpg" alt=""></div>
+          <div class="portfolio-body">
+            <div class="portfolio-title">La Vía Campesina</div>
+            <div class="portfolio-cat">data viz · javascript</div>
+          </div>
+        </a>
+        <a class="portfolio-card" href="ds.html">
+          <div class="portfolio-thumb"><img src="images/ds.jpg" alt=""></div>
+          <div class="portfolio-body">
+            <div class="portfolio-title">HSBC — Transformation Team</div>
+            <div class="portfolio-cat">BI Dashboard · D3.js · DC.js · Crossfilter.js</div>
+          </div>
+        </a>
+        <a class="portfolio-card" href="https://vimeo.com/167960012" target="_blank">
+          <div class="portfolio-thumb"><img src="images/img_int.png" alt=""></div>
+          <div class="portfolio-body">
+            <div class="portfolio-title">Computer Vision</div>
+            <div class="portfolio-cat">Kinect · P5.js · Pre ML/IA</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCIA ============ -->
+  <section id="experiencia">
+    <div class="container">
+      <div class="sec-head">
+        <h2 class="sec-title"><span class="prefix">// </span>experiencia</h2>
+        <div class="sec-meta">5 roles · 2019 — presente</div>
+      </div>
+      <div class="exp-list">
+
+        <div class="exp-card">
+          <div class="exp-meta">
+            <div class="date-start">2024.07</div>
+            <div class="date-end">— now</div>
+            <span class="tag">híbrido</span>
+          </div>
+          <div class="exp-content">
+            <div class="exp-title">
+              <span class="exp-role">Data Analyst BI Sr</span>
+              <span class="exp-at">@ <span class="exp-company">AdecoAgro</span></span>
+            </div>
+            <ul class="exp-bullets">
+              <li>Relevamiento de necesidades con áreas de negocio y traducción a soluciones de datos concretas (Power BI, ETL, arquitectura).</li>
+              <li>Optimización de la arquitectura de datos corporativa: migración de métricas DAX a Power Query (M) y delegación a Microsoft Fabric para resolver cuellos de botella en reportes de alto volumen.</li>
+              <li>Diseño e integración de sistemas multi-agente y automatizaciones con IA para productos de valor agregado interno.</li>
+              <li>Integración de modelos de IA para análisis de datos no estructurados, priorizando ejecución local para control y privacidad.</li>
+              <li>Capacitaciones de adopción de IA a equipos no técnicos.</li>
+              <li>Auditoría de consultoras externas y participación en decisiones de arquitectura del modelo de datos corporativo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-meta">
+            <div class="date-start">2024.03</div>
+            <div class="date-end">— 2024.07</div>
+            <span class="tag remote">remote</span>
+          </div>
+          <div class="exp-content">
+            <div class="exp-title">
+              <span class="exp-role">Data Scientist</span>
+              <span class="exp-at">@ <span class="exp-company">Soko Solutions</span></span>
+            </div>
+            <ul class="exp-bullets">
+              <li>Desarrollo de herramientas en Python para procesamiento de lenguaje natural (NLP).</li>
+              <li>Generación de reportes automatizados implementando LLMs.</li>
+              <li>Prompt engineering aplicado a flujos de análisis de texto.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-meta">
+            <div class="date-start">2022.05</div>
+            <div class="date-end">— 2024.03</div>
+            <span class="tag">sector público</span>
+          </div>
+          <div class="exp-content">
+            <div class="exp-title">
+              <span class="exp-role">Coordinador — Análisis de Datos SSPPBE</span>
+              <span class="exp-at">@ <span class="exp-company">GCBA</span></span>
+            </div>
+            <ul class="exp-bullets">
+              <li>Coordinación de un equipo de 6 personas para el desarrollo de dashboards y reportes en Power BI con alcance transversal a todas las áreas del Gobierno de la Ciudad de Buenos Aires.</li>
+              <li>Relevamiento con áreas cliente para traducir necesidades de negocio en soluciones de datos concretas.</li>
+              <li>Definición de modelos de datos y estrategias de ETL adaptadas al nivel de madurez de cada área.</li>
+              <li>Desarrollo de KPIs e insights para la toma de decisiones basada en evidencia.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-meta">
+            <div class="date-start">2021.11</div>
+            <div class="date-end">— 2022.01</div>
+            <span class="tag freelance">freelance</span>
+          </div>
+          <div class="exp-content">
+            <div class="exp-title">
+              <span class="exp-role">Business Intelligence Analyst</span>
+              <span class="exp-at">@ <span class="exp-company">HSBC · Transformation Team</span></span>
+            </div>
+            <ul class="exp-bullets">
+              <li>Diseño y desarrollo de dashboard BI interactivo para gestión interna del equipo de Transformation.</li>
+              <li>App web/mobile con JavaScript (D3.js · DC.js · Crossfilter.js).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-card">
+          <div class="exp-meta">
+            <div class="date-start">2019.08</div>
+            <div class="date-end">— 2022.05</div>
+            <span class="tag">management</span>
+          </div>
+          <div class="exp-content">
+            <div class="exp-title">
+              <span class="exp-role">Gerente General</span>
+              <span class="exp-at">@ <span class="exp-company">DameLuna</span></span>
+            </div>
+            <ul class="exp-bullets">
+              <li>Gestión comercial y manejo de activos de una pyme exitosa hasta su venta.</li>
+              <li>Transformación digital integral, identidad corporativa, ecosistema digital, plan de marketing y desarrollo de e-commerce.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FORMACIÓN ============ -->
+  <section id="formacion">
+    <div class="container">
+      <div class="sec-head">
+        <h2 class="sec-title"><span class="prefix">// </span>formación</h2>
+        <div class="sec-meta">6 certificaciones</div>
+      </div>
+      <div class="edu-table">
+        <div class="edu-row">
+          <div class="yr">2022</div>
+          <div class="title">Architecting on AWS</div>
+          <div class="meta">ITCOLLEGE</div>
+        </div>
+        <div class="edu-row">
+          <div class="yr">2020</div>
+          <div class="title">Ciberseguridad</div>
+          <div class="meta">Fundación Telefónica · 200 hs</div>
+        </div>
+        <div class="edu-row">
+          <div class="yr">2019</div>
+          <div class="title">Data Science — Bootcamp 7 meses</div>
+          <div class="meta">ACÁMICA</div>
+        </div>
+        <div class="edu-row">
+          <div class="yr">2019</div>
+          <div class="title">Python — Computer Vision, OpenCV, Deep Learning</div>
+          <div class="meta">Bootcamp intensivo</div>
+        </div>
+        <div class="edu-row">
+          <div class="yr">2018</div>
+          <div class="title">Machine Learning &amp; Business Intelligence</div>
+          <div class="meta">Fundación Telefónica · 172 hs</div>
+        </div>
+        <div class="edu-row">
+          <div class="yr">2012</div>
+          <div class="title">Diseño Multimedial</div>
+          <div class="meta">Escuela Da Vinci</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HABILIDADES ============ -->
+  <section id="habilidades">
+    <div class="container">
+      <div class="sec-head">
+        <h2 class="sec-title"><span class="prefix">// </span>habilidades</h2>
+        <div class="sec-meta">interactivo · clic para expandir</div>
+      </div>
+      <div class="skills-wrap">
+        <div id="chartdiv"></div>
+        <div class="skills-legend">
+          <span>arrastrá los nodos</span>
+          <span>hover para conexiones</span>
+          <span>click para colapsar / expandir</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="container">
+      <div class="footer-left">
+        <div class="footer-name">Javier Giordano</div>
+        <div class="footer-meta">
+          <div>Data Scientist &amp; Consultor en Innovación</div>
+          <div>Buenos Aires, Argentina</div>
+          <div style="margin-top: 8px;">
+            <a href="mailto:javiergiordano@gmail.com">javiergiordano@gmail.com</a> ·
+            <a href="https://www.linkedin.com/in/javier-giordano/" target="_blank">linkedin</a> ·
+            <a href="cv_tech.html" target="_blank">CV</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-quote">
+        <div class="fq-mark">"</div>
+        <div class="fq-text">Ser el punto de contacto entre la tecnología y las personas que tienen que usarla o decidir con ella.</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>javiergiordano.com.ar</span>
+      <span>build 2026.09.02 · v2026.09</span>
+    </div>
+  </footer>
+
+  <!-- amCharts + skills chart -->
+  <script src="js/jquery.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/animated.js"></script>
+  <script src="js/forceDirected.js"></script>
+  <script src="js/index_tech.js"></script>
+
+</body>
+</html>

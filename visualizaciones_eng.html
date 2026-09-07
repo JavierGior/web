@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualizations — Javier Giordano</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F7F4EA;
+      --cream-deep: #EDE8D6;
+      --cream-sunk: #E4DEC8;
+      --ink: #0E0E0D;
+      --ink-soft: #2A2A28;
+      --ink-muted: #77746A;
+      --rule: #D6CFBB;
+      --rule-fade: #E8E2CE;
+      --accent: #E85822;
+      --accent-soft: #FBE9DF;
+      --grid-line: rgba(0,0,0,0.035);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Manrope', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      font-size: 15px;
+      line-height: 1.55;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-attachment: fixed;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1180px; margin: 0 auto; padding: 60px 32px; }
+
+    .page-title {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 72px;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .page-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-bottom: 60px;
+    }
+
+    .experiment {
+      margin-bottom: 90px;
+    }
+    .exp-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+    .exp-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+    }
+    .exp-title .num {
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px;
+      margin-right: 12px;
+      font-weight: 400;
+    }
+    .exp-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-muted);
+      padding: 3px 8px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+    }
+    .exp-desc {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      margin-bottom: 24px;
+      max-width: 720px;
+    }
+
+    /* ================ EXP 1: TERMINAL ================ */
+    .terminal {
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      border: 1px solid var(--ink);
+    }
+    .term-bar {
+      background: #1a1a19;
+      padding: 8px 14px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      border-bottom: 1px solid #2a2a28;
+    }
+    .term-dot { width: 10px; height: 10px; border-radius: 50%; background: #33322f; }
+    .term-dot.r { background: #ff5f56; }
+    .term-dot.y { background: #ffbd2e; }
+    .term-dot.g { background: #27c93f; }
+    .term-title {
+      margin-left: 14px;
+      color: #7a7770;
+      font-size: 11px;
+    }
+    .term-body {
+      padding: 18px 20px;
+      height: 380px;
+      overflow-y: auto;
+      line-height: 1.65;
+    }
+    .term-body::-webkit-scrollbar { width: 8px; }
+    .term-body::-webkit-scrollbar-thumb { background: #2a2a28; border-radius: 4px; }
+    .term-line { white-space: pre-wrap; }
+    .term-input-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      border-top: 1px solid #2a2a28;
+      background: #131312;
+    }
+    .term-prompt { color: var(--accent); margin-right: 10px; }
+    .term-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--cream);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      outline: none;
+    }
+    .term-suggest {
+      margin-top: 12px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .term-chip {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .term-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .term-chip .k { color: var(--ink-muted); margin-right: 4px; }
+    .term-prompt-color { color: var(--accent); }
+    .term-key { color: #f7c88a; }
+    .term-val { color: #b5d99c; }
+    .term-comment { color: #7a7770; font-style: italic; }
+    .term-hi { color: var(--accent); font-weight: 500; }
+
+    /* ================ EXP 2: CONSTELLATION ================ */
+    .constellation {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .const-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .const-toolbar .hints span { margin-right: 14px; }
+    .const-toolbar .hints span::before { content: "→ "; color: var(--accent); }
+    .const-toolbar button {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      padding: 4px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .const-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+    #constSvg {
+      width: 100%;
+      height: 600px;
+      display: block;
+      user-select: none;
+    }
+    #constSvg .link {
+      stroke: var(--rule);
+      stroke-width: 1;
+      opacity: 0.55;
+      transition: stroke 0.25s, opacity 0.25s, stroke-width 0.25s;
+    }
+    #constSvg .link.active {
+      stroke: var(--accent);
+      stroke-width: 1.4;
+      opacity: 0.95;
+    }
+    #constSvg .link.dim { opacity: 0.1; }
+
+    #constSvg .pulse {
+      fill: var(--accent);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #constSvg .star {
+      cursor: grab;
+    }
+    #constSvg .star:active { cursor: grabbing; }
+    #constSvg .star circle.core {
+      fill: var(--ink);
+      transition: fill 0.2s, r 0.2s;
+    }
+    #constSvg .star circle.halo {
+      fill: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    #constSvg .star:hover circle.core,
+    #constSvg .star.active circle.core { fill: var(--accent); }
+    #constSvg .star:hover circle.halo,
+    #constSvg .star.active circle.halo { opacity: 0.2; }
+    #constSvg .star text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      fill: var(--ink-soft);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    #constSvg .star.hub circle.core { fill: var(--accent); }
+    #constSvg .star.hub circle.halo { fill: var(--accent); opacity: 0.15; }
+    #constSvg .star.hub:hover circle.halo,
+    #constSvg .star.hub.active circle.halo { opacity: 0.32; }
+    #constSvg .star.hub text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--ink);
+      opacity: 1;
+    }
+    #constSvg .star.dim { opacity: 0.15; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+    #constSvg .star:not(.hub) circle.core {
+      animation: twinkle var(--tw, 4s) ease-in-out infinite;
+      animation-delay: var(--twd, 0s);
+    }
+
+    .const-tooltip {
+      position: absolute;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 6px 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      border-radius: 3px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+      z-index: 10;
+    }
+    .const-tooltip.visible { opacity: 1; }
+
+    /* ================ EXP 3: BENTO ================ */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .bento-cell {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 22px 20px;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .bento-cell::after {
+      content: "";
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+    .bento-cell.expanded {
+      grid-column: span 4;
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+    }
+    .bento-cell.expanded::after { background: var(--cream); }
+    .bento-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-muted);
+    }
+    .bento-cell.expanded .bento-num { color: #8a8778; }
+    .bento-cat {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      line-height: 1.1;
+      margin: 20px 0 12px;
+    }
+    .bento-teaser {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .bento-cell.expanded .bento-teaser { display: none; }
+    .bento-detail {
+      display: none;
+      margin-top: 16px;
+    }
+    .bento-cell.expanded .bento-detail { display: block; }
+    .bento-detail ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px 20px;
+      margin-top: 8px;
+    }
+    .bento-detail li {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 16px;
+      padding-left: 16px;
+      position: relative;
+    }
+    .bento-detail li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ================ EXP 4: TAG CLOUD ================ */
+    .cloud-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .cloud-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      padding: 6px 12px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background: var(--cream);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cloud-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .cloud-btn.active {
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+    }
+    .tag-cloud {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 40px 32px;
+      min-height: 320px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      border-radius: 20px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 500;
+      cursor: default;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tag.faded { opacity: 0.2; transform: scale(0.92); }
+    .tag.highlighted {
+      background: var(--accent);
+      color: var(--cream);
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+    .tag[data-weight="1"] { font-size: 13px; }
+    .tag[data-weight="2"] { font-size: 15px; }
+    .tag[data-weight="3"] { font-size: 18px; }
+    .tag[data-weight="4"] { font-size: 22px; padding: 8px 18px; }
+
+    /* ================ EXP 5: FORCE-DIRECTED ================ */
+    .fd-wrap {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 18px;
+    }
+    #chartdiv {
+      width: 100%;
+      height: 560px;
+    }
+
+    .footer-note {
+      margin-top: 100px;
+      padding-top: 30px;
+      border-top: 1px solid var(--rule);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-note a { color: var(--accent); border-bottom: 1px dotted var(--accent); }
+
+    nav.top {
+      position: sticky;
+      top: 0;
+      background: rgba(247, 244, 234, 0.92);
+      backdrop-filter: saturate(180%) blur(8px);
+      -webkit-backdrop-filter: saturate(180%) blur(8px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+    }
+    nav.top .inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    .nav-right { display: flex; gap: 6px; align-items: center; }
+    .lang-toggle {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 5px 10px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      color: var(--ink);
+      transition: all 0.15s;
+    }
+    .lang-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .back-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 3px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .back-btn:hover { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <a href="index_eng.html" class="brand">
+      <span class="brand-dot"></span>
+      Javier Giordano
+    </a>
+    <div class="nav-right">
+      <a href="visualizaciones.html" class="lang-toggle">ES</a>
+      <a href="index_eng.html" class="back-btn">← home</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">Visualizations</h1>
+  <div class="page-sub"><span style="color:var(--accent)">→</span> 5 interactive experiments · data and skills explorations</div>
+
+  <!-- ============ EXP 1: TERMINAL ============ -->
+  <div class="experiment">
+    <div class="exp-head">
+      <div class="exp-title"><span class="num">01</span>Interactive terminal</div>
+      <div class="exp-tag">most on-brand</div>
+    </div>
+    <div class="exp-desc">Typing-based. Preset commands below. Type <code style="color:var(--accent)">help</code>, <code style="color:var(--accent)">ls</code>, <code style="color:var(--accent)">cat ai</code>, etc. Feels like browsing a technical person's console.</div>
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+        <span class="term-title">javier@giordano ~ / skills.sh</span>
+      </div>
+      <div class="term-body" id="termBody"></div>
+      <div class="term-input-row">
+        <span class="term-prompt">$</span>
+        <input type="text" class="term-input" id="termInput" placeholder="type a command… (try 'help')" autocomplete="off">
+      </div>
+    </div>
+    <div class="term-suggest">
+      <span class="term-chip" data-cmd="help"><span class="k">$</span>help</span>
+      <span class="term-chip" data-cmd="ls"><span class="k">$</span>ls</span>
+      <span class="term-chip" data-cmd="cat data-bi"><span class="k">$</span>cat data-bi</span>
+      <span class="term-chip" data-cmd="cat ai"><span class="k">$</span>cat ai</span>
+      <span class="term-chip" data-cmd="cat dev"><span class="k">$</span>cat dev</span>
+      <span class="term-chip" data-cmd="cat consulting"><span class="k">$</span>cat consulting</span>
+      <span class="term-chip" data-cmd="whoami"><span class="k">$</span>whoami</span>
+      <span class="term-chip" data-cmd="clear"><span class="k">$</span>clear</span>
+    </div>
+  </div>
+
+  <!-- ============ EXP 2: CONSTELLATION ============ -->
+  <div class="experiment">
+    <div class="exp-head">
+      <div class="exp-title"><span class="num">02</span>Constellation</div>
+      <div class="exp-tag">most visual</div>
+    </div>
+    <div class="exp-desc">Each skill is a star with a life of its own — they float and twinkle. Drag any one and it springs back with inertia. Click a hub (category) to isolate its cluster. Orange pulses travel along the connections.</div>
+    <div class="constellation">
+      <div class="const-toolbar">
+        <div class="hints">
+          <span>drag the stars</span>
+          <span>click hub to focus</span>
+          <span>click empty to reset</span>
+        </div>
+        <button id="constReset">reset</button>
+      </div>
+      <svg id="constSvg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="const-tooltip" id="constTooltip"></div>
+    </div>
+  </div>
+
+  <!-- ============ EXP 3: BENTO ============ -->
+  <div class="experiment">
+    <div class="exp-head">
+      <div class="exp-title"><span class="num">03</span>Animated bento grid</div>
+      <div class="exp-tag">most modern</div>
+    </div>
+    <div class="exp-desc">4 cards — click any to expand and reveal the skills inside. Apple keynote / iOS Home Screen feel.</div>
+    <div class="bento-grid" id="bentoGrid"></div>
+  </div>
+
+  <!-- ============ EXP 4: TAG CLOUD ============ -->
+  <div class="experiment">
+    <div class="exp-head">
+      <div class="exp-title"><span class="num">04</span>Filterable tag cloud</div>
+      <div class="exp-tag">most playful</div>
+    </div>
+    <div class="exp-desc">All skills as tags with varied sizes. The buttons filter by category — irrelevant tags fade out, relevant ones get highlighted.</div>
+    <div class="cloud-filters" id="cloudFilters"></div>
+    <div class="tag-cloud" id="tagCloud"></div>
+  </div>
+
+  <!-- ============ EXP 5: FORCE-DIRECTED (tech palette) ============ -->
+  <div class="experiment">
+    <div class="exp-head">
+      <div class="exp-title"><span class="num">05</span>Force-directed (tech palette)</div>
+      <div class="exp-tag">current toy · new palette</div>
+    </div>
+    <div class="exp-desc">The same graph you already like, but with the tech site's palette. Monochromatic in the cream/ink/orange range.</div>
+    <div class="fd-wrap">
+      <div id="chartdiv"></div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span>visualizations · javier giordano</span>
+    <a href="index_eng.html">← back to site</a>
+  </div>
+</div>
+
+<!-- amCharts for experiment 5 -->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/plugins/forceDirected.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+<script>
+// ============ DATA (shared) ============
+const SKILLS = {
+  "data-bi": {
+    name: "Data & BI",
+    items: ["Power BI", "Microsoft Fabric", "SQL", "Tableau", "D3.js", "ETL / DAX"]
+  },
+  "ai": {
+    name: "AI & Automation",
+    items: ["LLMs", "AI Agents", "n8n", "Prompt Engineering", "ML / Deep Learning", "OpenCV"]
+  },
+  "dev": {
+    name: "Dev & Infra",
+    items: ["Python", "JavaScript", "Docker", "FastAPI", "AWS", "Git"]
+  },
+  "consulting": {
+    name: "Consulting & Mgmt",
+    items: ["Digital Transformation", "Innovation Management", "Team Leadership", "Organizational Consulting"]
+  }
+};
+
+// ============ EXPERIMENT 1: TERMINAL ============
+(() => {
+  const body = document.getElementById('termBody');
+  const input = document.getElementById('termInput');
+  const chips = document.querySelectorAll('.term-chip');
+
+  const print = (html) => {
+    const div = document.createElement('div');
+    div.className = 'term-line';
+    div.innerHTML = html;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  };
+
+  const banner = () => {
+    print(`<span class="term-comment">Welcome to javier@giordano — Skills terminal v2026.09</span>`);
+    print(`<span class="term-comment">Type '<span class="term-hi">help</span>' to see available commands.</span>`);
+    print('');
+  };
+
+  const commands = {
+    help: () => {
+      print(`Available commands:`);
+      print(`  <span class="term-hi">ls</span>                  list all categories`);
+      print(`  <span class="term-hi">cat</span> &lt;category&gt;      details on a category (data-bi | ai | dev | consulting)`);
+      print(`  <span class="term-hi">whoami</span>              short bio`);
+      print(`  <span class="term-hi">clear</span>               clear terminal`);
+      print('');
+    },
+    ls: () => {
+      print(`drwxr-xr-x  data-bi/            Data &amp; BI`);
+      print(`drwxr-xr-x  ai/                 AI &amp; Automation`);
+      print(`drwxr-xr-x  dev/                Dev &amp; Infra`);
+      print(`drwxr-xr-x  consulting/         Consulting &amp; Mgmt`);
+      print('');
+    },
+    cat: (arg) => {
+      const cat = SKILLS[arg];
+      if (!cat) {
+        print(`<span style="color:#ff5f56">cat: '${arg||''}': no such category. Try: data-bi, ai, dev, consulting</span>`);
+        return print('');
+      }
+      print(`<span class="term-key">== ${cat.name} ==</span>`);
+      cat.items.forEach(s => print(`  <span class="term-val">→</span> ${s}`));
+      print('');
+    },
+    whoami: () => {
+      print(`javier_giordano`);
+      print(`<span class="term-comment">// Data Scientist &amp; Innovation Consultant · Buenos Aires</span>`);
+      print(`<span class="term-comment">// 15+ years bridging tech × business</span>`);
+      print('');
+    },
+    clear: () => { body.innerHTML = ''; banner(); }
+  };
+
+  const run = (raw) => {
+    const cmd = raw.trim();
+    if (!cmd) return;
+    print(`<span class="term-prompt-color">$</span> ${cmd}`);
+    const [c, ...rest] = cmd.split(/\s+/);
+    const fn = commands[c];
+    if (!fn) {
+      print(`<span style="color:#ff5f56">${c}: command not found. Type 'help'.</span>`);
+      return print('');
+    }
+    fn(rest.join(' '));
+  };
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      run(input.value);
+      input.value = '';
+    }
+  });
+  chips.forEach(c => c.addEventListener('click', () => {
+    input.value = c.dataset.cmd;
+    input.focus();
+    run(c.dataset.cmd);
+    input.value = '';
+  }));
+
+  banner();
+  input.focus();
+})();
+
+// ============ EXPERIMENT 2: CONSTELLATION (living / draggable) ============
+(() => {
+  const svg = document.getElementById('constSvg');
+  const tooltip = document.getElementById('constTooltip');
+  const resetBtn = document.getElementById('constReset');
+  const W = 1000, H = 600;
+  const NS = 'http://www.w3.org/2000/svg';
+
+  const hubs = [
+    { id: 'data-bi', name: 'Data & BI', x: 260, y: 200 },
+    { id: 'ai', name: 'AI & Auto', x: 740, y: 200 },
+    { id: 'dev', name: 'Dev & Infra', x: 260, y: 430 },
+    { id: 'consulting', name: 'Consulting', x: 740, y: 430 }
+  ];
+
+  const stars = [];
+  const links = [];
+
+  hubs.forEach(h => {
+    stars.push({
+      id: h.id, name: h.name, type: 'hub', parent: null,
+      x: h.x, y: h.y, ox: h.x, oy: h.y, vx: 0, vy: 0,
+      radius: 8
+    });
+    const items = SKILLS[h.id].items;
+    items.forEach((item, i) => {
+      const angle = (i / items.length) * 2 * Math.PI + (Math.random() * 0.6 - 0.3);
+      const radius = 105 + Math.random() * 35;
+      const x = h.x + Math.cos(angle) * radius;
+      const y = h.y + Math.sin(angle) * radius;
+      const id = h.id + '-' + i;
+      stars.push({
+        id, name: item, type: 'leaf', parent: h.id,
+        x, y, ox: x, oy: y, vx: 0, vy: 0,
+        radius: 4,
+        wanderPhase: Math.random() * Math.PI * 2,
+        wanderSpeed: 0.006 + Math.random() * 0.006
+      });
+      links.push({ from: h.id, to: id });
+    });
+  });
+
+  const linkElements = {};
+  links.forEach(l => {
+    const line = document.createElementNS(NS, 'line');
+    line.classList.add('link');
+    line.dataset.from = l.from;
+    line.dataset.to = l.to;
+    svg.appendChild(line);
+    linkElements[l.from + '::' + l.to] = { el: line, ...l };
+  });
+
+  const pulseElements = {};
+  links.forEach(l => {
+    const pulse = document.createElementNS(NS, 'circle');
+    pulse.classList.add('pulse');
+    pulse.setAttribute('r', 2.5);
+    svg.appendChild(pulse);
+    pulseElements[l.from + '::' + l.to] = {
+      el: pulse,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.008 + Math.random() * 0.008,
+      link: l
+    };
+  });
+
+  const starElements = {};
+  stars.forEach(s => {
+    const g = document.createElementNS(NS, 'g');
+    g.classList.add('star');
+    if (s.type === 'hub') g.classList.add('hub');
+    g.dataset.id = s.id;
+    const tw = 3 + Math.random() * 3;
+    const twd = Math.random() * -tw;
+    g.style.setProperty('--tw', tw + 's');
+    g.style.setProperty('--twd', twd + 's');
+
+    const halo = document.createElementNS(NS, 'circle');
+    halo.classList.add('halo');
+    halo.setAttribute('r', s.radius * 3.5);
+    g.appendChild(halo);
+
+    const core = document.createElementNS(NS, 'circle');
+    core.classList.add('core');
+    core.setAttribute('r', s.radius);
+    g.appendChild(core);
+
+    const text = document.createElementNS(NS, 'text');
+    text.setAttribute('text-anchor', 'middle');
+    text.textContent = s.name;
+    g.appendChild(text);
+
+    svg.appendChild(g);
+    starElements[s.id] = { g, halo, core, text };
+  });
+
+  const setPos = (s) => {
+    const { halo, core, text } = starElements[s.id];
+    halo.setAttribute('cx', s.x); halo.setAttribute('cy', s.y);
+    core.setAttribute('cx', s.x); core.setAttribute('cy', s.y);
+    text.setAttribute('x', s.x);
+    text.setAttribute('y', s.y + (s.type === 'hub' ? 26 : 18));
+  };
+
+  const updateLinks = () => {
+    Object.values(linkElements).forEach(({ el, from, to }) => {
+      const a = stars.find(s => s.id === from);
+      const b = stars.find(s => s.id === to);
+      el.setAttribute('x1', a.x); el.setAttribute('y1', a.y);
+      el.setAttribute('x2', b.x); el.setAttribute('y2', b.y);
+    });
+  };
+
+  let dragging = null;
+  let dragOffset = { x: 0, y: 0 };
+  let focusedHub = null;
+
+  const svgPoint = (evt) => {
+    const rect = svg.getBoundingClientRect();
+    const x = (evt.clientX - rect.left) / rect.width * W;
+    const y = (evt.clientY - rect.top) / rect.height * H;
+    return { x, y };
+  };
+
+  const tick = () => {
+    stars.forEach(s => {
+      if (dragging === s) return;
+      if (s.type === 'leaf') {
+        s.wanderPhase += s.wanderSpeed;
+        const wx = Math.cos(s.wanderPhase) * 0.12;
+        const wy = Math.sin(s.wanderPhase * 1.3) * 0.12;
+        s.vx += wx;
+        s.vy += wy;
+      }
+      s.vx += (s.ox - s.x) * 0.008;
+      s.vy += (s.oy - s.y) * 0.008;
+      s.vx *= 0.90;
+      s.vy *= 0.90;
+      s.x += s.vx;
+      s.y += s.vy;
+      setPos(s);
+    });
+
+    updateLinks();
+
+    Object.values(pulseElements).forEach(p => {
+      p.phase += p.speed;
+      const t = (Math.sin(p.phase) + 1) / 2;
+      const a = stars.find(s => s.id === p.link.from);
+      const b = stars.find(s => s.id === p.link.to);
+      const x = a.x + (b.x - a.x) * t;
+      const y = a.y + (b.y - a.y) * t;
+      p.el.setAttribute('cx', x);
+      p.el.setAttribute('cy', y);
+      const linkEl = linkElements[p.link.from + '::' + p.link.to].el;
+      const visible = focusedHub === null || linkEl.classList.contains('active');
+      p.el.style.opacity = visible ? (0.55 + t * 0.4) : 0;
+    });
+
+    requestAnimationFrame(tick);
+  };
+
+  Object.entries(starElements).forEach(([id, refs]) => {
+    const s = stars.find(x => x.id === id);
+    const { g } = refs;
+
+    g.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      dragging = s;
+      const p = svgPoint(e);
+      dragOffset = { x: s.x - p.x, y: s.y - p.y };
+    });
+
+    g.addEventListener('mouseenter', (e) => {
+      Object.values(linkElements).forEach(({ el, from, to }) => {
+        if (from === id || to === id) el.classList.add('active');
+      });
+      tooltip.textContent = s.type === 'hub'
+        ? `${s.name} · ${SKILLS[s.id].items.length} skills`
+        : s.name;
+      tooltip.classList.add('visible');
+    });
+    g.addEventListener('mouseleave', () => {
+      if (!focusedHub) {
+        Object.values(linkElements).forEach(({ el }) => el.classList.remove('active'));
+      } else {
+        applyFocus(focusedHub);
+      }
+      tooltip.classList.remove('visible');
+    });
+    g.addEventListener('mousemove', (e) => {
+      const wrap = svg.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - wrap.left + 14) + 'px';
+      tooltip.style.top = (e.clientY - wrap.top - 8) + 'px';
+    });
+
+    g.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (s.type === 'hub') {
+        focusedHub = (focusedHub === s.id) ? null : s.id;
+        applyFocus(focusedHub);
+      }
+    });
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const p = svgPoint(e);
+    dragging.x = p.x + dragOffset.x;
+    dragging.y = p.y + dragOffset.y;
+    dragging.vx = 0; dragging.vy = 0;
+    setPos(dragging);
+    updateLinks();
+  });
+  window.addEventListener('mouseup', () => { dragging = null; });
+
+  svg.addEventListener('click', () => {
+    focusedHub = null;
+    applyFocus(null);
+  });
+
+  const applyFocus = (hubId) => {
+    stars.forEach(s => starElements[s.id].g.classList.remove('dim', 'active'));
+    Object.values(linkElements).forEach(({ el }) => el.classList.remove('active', 'dim'));
+
+    if (!hubId) return;
+
+    stars.forEach(s => {
+      const isThis = s.id === hubId || s.parent === hubId;
+      if (!isThis) starElements[s.id].g.classList.add('dim');
+      else if (s.id === hubId) starElements[s.id].g.classList.add('active');
+    });
+    Object.values(linkElements).forEach(({ el, from, to }) => {
+      if (from === hubId || to === hubId) el.classList.add('active');
+      else el.classList.add('dim');
+    });
+  };
+
+  resetBtn.addEventListener('click', () => {
+    stars.forEach(s => { s.x = s.ox; s.y = s.oy; s.vx = 0; s.vy = 0; setPos(s); });
+    focusedHub = null;
+    applyFocus(null);
+    updateLinks();
+  });
+
+  stars.forEach(setPos);
+  updateLinks();
+  tick();
+})();
+
+// ============ EXPERIMENT 3: BENTO ============
+(() => {
+  const grid = document.getElementById('bentoGrid');
+  const cats = Object.entries(SKILLS);
+  cats.forEach(([id, cat], i) => {
+    const cell = document.createElement('div');
+    cell.className = 'bento-cell';
+    cell.dataset.id = id;
+    cell.innerHTML = `
+      <div class="bento-num">0${i+1} / 04</div>
+      <div>
+        <div class="bento-cat">${cat.name}</div>
+        <div class="bento-teaser">${cat.items.length} skills · click to expand</div>
+      </div>
+      <div class="bento-detail">
+        <ul>
+          ${cat.items.map(s => `<li>${s}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+    cell.addEventListener('click', () => {
+      document.querySelectorAll('.bento-cell.expanded').forEach(c => {
+        if (c !== cell) c.classList.remove('expanded');
+      });
+      cell.classList.toggle('expanded');
+    });
+    grid.appendChild(cell);
+  });
+})();
+
+// ============ EXPERIMENT 4: TAG CLOUD ============
+(() => {
+  const filters = document.getElementById('cloudFilters');
+  const cloud = document.getElementById('tagCloud');
+
+  const weightMap = {
+    "Power BI": 4, "Microsoft Fabric": 3, "SQL": 3, "Tableau": 2, "D3.js": 2, "ETL / DAX": 3,
+    "LLMs": 4, "AI Agents": 4, "n8n": 3, "Prompt Engineering": 3, "ML / Deep Learning": 3, "OpenCV": 2,
+    "Python": 4, "JavaScript": 3, "Docker": 3, "FastAPI": 2, "AWS": 3, "Git": 2,
+    "Digital Transformation": 4, "Innovation Management": 3, "Team Leadership": 3, "Organizational Consulting": 3
+  };
+
+  const cats = [['all', 'all']].concat(Object.entries(SKILLS).map(([id, c]) => [id, c.name]));
+  cats.forEach(([id, name]) => {
+    const btn = document.createElement('button');
+    btn.className = 'cloud-btn' + (id === 'all' ? ' active' : '');
+    btn.textContent = id === 'all' ? 'all' : name;
+    btn.dataset.id = id;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cloud-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(id);
+    });
+    filters.appendChild(btn);
+  });
+
+  const allTags = [];
+  Object.entries(SKILLS).forEach(([id, cat]) => {
+    cat.items.forEach(s => allTags.push({ name: s, cat: id }));
+  });
+  for (let i = allTags.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allTags[i], allTags[j]] = [allTags[j], allTags[i]];
+  }
+
+  allTags.forEach(t => {
+    const el = document.createElement('span');
+    el.className = 'tag';
+    el.textContent = t.name;
+    el.dataset.cat = t.cat;
+    el.dataset.weight = weightMap[t.name] || 2;
+    cloud.appendChild(el);
+  });
+
+  const applyFilter = (filter) => {
+    document.querySelectorAll('.tag').forEach(t => {
+      t.classList.remove('faded', 'highlighted');
+      if (filter === 'all') return;
+      if (t.dataset.cat === filter) t.classList.add('highlighted');
+      else t.classList.add('faded');
+    });
+  };
+})();
+
+// ============ EXPERIMENT 5: FORCE-DIRECTED WITH TECH PALETTE ============
+setTimeout(() => {
+  if (typeof am4core === 'undefined') return;
+  am4core.useTheme(am4themes_animated);
+  const chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
+  const series = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+  chart.data = [{
+    name: "Skills",
+    value: 400,
+    color: "#0E0E0D",
+    collapsed: false,
+    children: Object.entries(SKILLS).map(([id, cat]) => ({
+      name: cat.name,
+      value: 260,
+      color: "#E85822",
+      children: cat.items.map(s => ({ name: s, value: 100, color: "#77746A" }))
+    }))
+  }];
+
+  series.dataFields.value = "value";
+  series.dataFields.name = "name";
+  series.dataFields.children = "children";
+  series.dataFields.color = "color";
+  series.nodes.template.tooltipText = "{name}";
+  series.nodes.template.fillOpacity = 1;
+  series.nodes.template.label.text = "{name}";
+  series.nodes.template.label.hideOversized = false;
+  series.nodes.template.label.truncate = false;
+  series.nodes.template.label.wrap = true;
+  series.fontSize = 11;
+  series.minRadius = 20;
+  series.maxRadius = 50;
+  series.links.template.strokeWidth = 1;
+  series.links.template.stroke = am4core.color("#D6CFBB");
+}, 100);
+</script>
+
+</body>
+</html>

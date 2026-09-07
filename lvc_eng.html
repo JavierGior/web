@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>La Vía Campesina — Javier Giordano</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #F7F4EA; --cream-deep: #EDE8D6; --cream-sunk: #E4DEC8;
+      --ink: #0E0E0D; --ink-soft: #2A2A28; --ink-muted: #77746A;
+      --rule: #D6CFBB; --rule-fade: #E8E2CE;
+      --accent: #E85822; --accent-soft: #FBE9DF;
+      --grid-line: rgba(0,0,0,0.035);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Manrope', sans-serif; color: var(--ink); background: var(--cream);
+      font-size: 15px; line-height: 1.55;
+      background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 32px 32px; background-attachment: fixed;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+    nav.top {
+      position: sticky; top: 0; background: rgba(247,244,234,0.85);
+      backdrop-filter: saturate(180%) blur(8px); border-bottom: 1px solid var(--rule); z-index: 100;
+    }
+    nav.top .inner {
+      max-width: 1180px; margin: 0 auto; padding: 14px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.4px; display: flex; align-items: center; gap: 8px; }
+    .brand-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-muted); padding: 6px 10px; border-radius: 3px; transition: all 0.15s; }
+    .back-link:hover { color: var(--accent); background: var(--accent-soft); }
+    .lang-toggle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 5px 10px; border: 1px solid var(--rule); border-radius: 3px; color: var(--ink); transition: all 0.15s; }
+    .lang-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .nav-right { display: flex; gap: 6px; align-items: center; }
+    .project-header { padding: 64px 0 48px; border-bottom: 1px solid var(--rule); margin-bottom: 56px; }
+    .project-breadcrumb { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-muted); margin-bottom: 20px; }
+    .project-breadcrumb .accent-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 8px; vertical-align: middle; }
+    .project-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 64px; font-weight: 700; letter-spacing: -2px; line-height: 1; margin-bottom: 20px; }
+    .project-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .project-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 4px 10px; border: 1px solid var(--rule); border-radius: 2px; color: var(--ink-muted); }
+    .project-tag.accent { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .project-body { display: grid; grid-template-columns: 1fr 340px; gap: 64px; padding-bottom: 80px; }
+    .project-image { border-radius: 4px; overflow: hidden; border: 1px solid var(--rule); background: var(--cream-sunk); margin-bottom: 32px; }
+    .project-image img { width: 100%; display: block; }
+    .project-desc p { font-size: 16px; line-height: 1.7; color: var(--ink-soft); margin-bottom: 16px; }
+    .project-links { margin-top: 32px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .proj-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 8px 16px; border-radius: 3px; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+    .proj-btn.primary { background: var(--ink); color: var(--cream); }
+    .proj-btn.primary:hover { background: var(--accent); }
+    .proj-btn.secondary { border: 1px solid var(--rule); color: var(--ink-soft); }
+    .proj-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .project-sidebar { padding-top: 4px; }
+    .sidebar-block { margin-bottom: 36px; }
+    .sidebar-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-muted); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--rule-fade); }
+    .sidebar-value { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+    .sidebar-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+    .stack-pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 3px 8px; background: var(--cream-deep); border-radius: 2px; color: var(--ink-soft); }
+    footer { border-top: 1px solid var(--rule); padding: 24px 0; }
+    .footer-bottom { max-width: 1180px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-muted); }
+    @media (max-width: 900px) { .project-body { grid-template-columns: 1fr; } .project-title { font-size: 40px; } }
+  </style>
+</head>
+<body>
+
+  <nav class="top">
+    <div class="inner">
+      <a href="index_eng.html" class="brand">
+        <span class="brand-dot"></span>Javier Giordano
+      </a>
+      <div class="nav-right">
+        <a href="index_eng.html" class="back-link">← portfolio</a>
+        <a href="lvc.html" class="lang-toggle">ES</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="project-header">
+      <div class="project-breadcrumb">
+        <span class="accent-dot"></span>~/javier_giordano/portfolio/lvc
+      </div>
+      <h1 class="project-title">La Vía<br>Campesina</h1>
+      <div class="project-tags">
+        <span class="project-tag accent">data viz</span>
+        <span class="project-tag">javascript</span>
+        <span class="project-tag">leaflet.js</span>
+        <span class="project-tag">geo · csv</span>
+      </div>
+    </div>
+
+    <div class="project-body">
+      <div>
+        <div class="project-image">
+          <img src="images/portfolio1.jpg" alt="La Vía Campesina — interactive map">
+        </div>
+        <div class="project-desc">
+          <p>Interactive map with geolocated references, updatable by the user. The goal was to build a registry of all participating organizations that could be maintained without technical knowledge.</p>
+          <p>Updates are made by editing a spreadsheet with the necessary fields to facilitate communication and interaction between organizations. The map reads the CSV automatically and reflects changes in real time.</p>
+          <p>Available in three languages: Spanish, English and French.</p>
+        </div>
+        <div class="project-links">
+          <a href="https://www.javiergiordano.com.ar/lvc/index_Spn.html" target="_blank" class="proj-btn primary">View project (ES) ↗</a>
+          <a href="https://www.javiergiordano.com.ar/lvc/index_Eng.html" target="_blank" class="proj-btn secondary">See project (EN) ↗</a>
+          <a href="https://www.javiergiordano.com.ar/lvc/index_Frn.html" target="_blank" class="proj-btn secondary">Voir le projet (FR) ↗</a>
+        </div>
+      </div>
+
+      <div class="project-sidebar">
+        <div class="sidebar-block">
+          <div class="sidebar-label">Type</div>
+          <div class="sidebar-value">Interactive Map / Data Viz</div>
+        </div>
+        <div class="sidebar-block">
+          <div class="sidebar-label">Year</div>
+          <div class="sidebar-value">2020</div>
+        </div>
+        <div class="sidebar-block">
+          <div class="sidebar-label">Description</div>
+          <div class="sidebar-value">Geolocated map system updatable from a spreadsheet, with no technical intervention required for ongoing maintenance.</div>
+        </div>
+        <div class="sidebar-block">
+          <div class="sidebar-label">Stack</div>
+          <div class="sidebar-stack">
+            <span class="stack-pill">Leaflet.js</span>
+            <span class="stack-pill">JavaScript</span>
+            <span class="stack-pill">CSV</span>
+            <span class="stack-pill">HTML / CSS</span>
+          </div>
+        </div>
+        <div class="sidebar-block">
+          <div class="sidebar-label">Languages</div>
+          <div class="sidebar-value">ES · EN · FR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom">
+      <span><a href="index_eng.html">← back to home</a></span>
+      <span>javiergiordano.com.ar</span>
+    </div>
+  </footer>
+
+</body>
+</html>
