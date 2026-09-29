@@ -245,18 +245,10 @@
 
   <div id="lp">
     <h2>Grafo de Harry Potter</h2>
-    <div>
-      <label>Libros</label>
-      <select id="sel">
-        <option value="hp">★ Canónico — los 7 libros</option>
-        <option value="hp-book1">Libro 1 — Piedra Filosofal</option>
-        <option value="hp-book2">Libro 2 — Cámara Secreta</option>
-        <option value="hp-book3">Libro 3 — Prisionero de Azkabán</option>
-        <option value="hp-book4">Libro 4 — Cáliz de Fuego</option>
-        <option value="hp-book5">Libro 5 — Orden del Fénix</option>
-        <option value="hp-book6">Libro 6 — Príncipe Mestizo</option>
-        <option value="hp-book7">Libro 7 — Reliquias de la Muerte</option>
-      </select>
+    <!-- Solo el grafo canónico: las entidades por libro no tienen métricas (pagerank) y el grafo por libro
+         salía vacío. El select queda oculto porque load() lee su valor. -->
+    <div hidden>
+      <select id="sel"><option value="hp">Canónico — los 7 libros</option></select>
     </div>
     <div>
       <label>Grados de separación: <span id="hl">1</span></label>
@@ -281,7 +273,7 @@
     <h2>Preguntá sobre el corpus</h2>
     <div id="fl">Hacé clic en un nodo para enfocarlo</div>
     <div id="hist"></div>
-    <textarea id="ci" placeholder="Preguntá sobre este personaje..." rows="3"></textarea>
+    <textarea id="ci" maxlength="500" placeholder="Preguntá sobre este personaje..." rows="3"></textarea>
     <button id="cs">Preguntar</button>
   </div>
 

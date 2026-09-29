@@ -3,7 +3,8 @@
 // y reintenta hasta que el servidor y Neo4j estén listos. Cargar en el <head>, después de config.js.
 (function () {
 
-const SHOW_AFTER_MS = 700;     // si /health responde antes, el usuario no ve nada
+const SHOW_AFTER_MS = 1500;    // si /health responde antes, el usuario no ve nada. Un arranque en frío tarda
+                               // varios segundos; con 700 ms el aviso parpadeaba cuando /health solo estaba lento
 const RETRY_EVERY_MS = 1500;
 const GIVE_UP_AFTER_MS = 90000;
 
