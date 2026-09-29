@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAGraph — Harry Potter</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ── TODO: HP theme pass — colores, tipografía, estética oscura mágica ── */
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-input: #0a0a0f;
+      --border: #2a2a3a;
+      --text: #e8e8f0;
+      --text-muted: #7a7a9a;
+      --accent: #c8a84b;
+      --accent-hover: #a88930;
+      --error: #f87171;
+      --code-bg: #050508;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 16px;
+      line-height: 1.5;
+    }
+    .container { max-width: 880px; margin: 0 auto; }
+    header { margin-bottom: 24px; }
+    header h1 { font-size: 1.4rem; font-weight: 600; }
+    header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+    header nav { margin-top: 10px; display: flex; gap: 8px; }
+    header nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 6px;
+      transition: border-color .15s, color .15s;
+    }
+    header nav a:hover { border-color: var(--accent); color: var(--text); }
+    header nav a.active { color: var(--accent); border-color: var(--accent); }
+    .ask-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      background: var(--bg-input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+    textarea:focus { outline: none; border-color: var(--accent); }
+    .controls { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 12px; }
+    .hint { color: var(--text-muted); font-size: 0.8rem; }
+    button {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.15s;
+    }
+    button:hover:not(:disabled) { background: var(--accent-hover); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .example {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+    .example:hover { color: var(--text); border-color: var(--accent); background: transparent; }
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 24px 0 12px 0;
+    }
+    .history-header h2 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .clear-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .clear-btn:hover { color: var(--text); border-color: var(--accent); }
+    .debug-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    body.user-mode .debug-only { display: none !important; }
+    .qa-block { margin-bottom: 16px; }
+    .qa-question {
+      background: rgba(200, 168, 75, 0.06);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .qa-timestamp { color: var(--text-muted); font-size: 0.7rem; margin-left: 8px; opacity: 0.7; }
+    .response-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .answer { font-size: 1.05rem; line-height: 1.7; padding: 4px 0 12px 0; }
+    .answer.error { color: var(--error); }
+    .meta {
+      display: flex;
+      gap: 16px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .loader {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--text-muted);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none; }
+    .canvas-btn {
+      background: transparent;
+      border: 1px solid rgba(200,168,75,.35);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: .75rem;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      margin-left: auto;
+    }
+    .canvas-btn:hover { border-color: var(--accent); background: rgba(200,168,75,.06); }
+    .canvas-btn:disabled { opacity: .5; cursor: default; }
+  </style>
+  <script src="config.js"></script>
+  <script src="wakeup.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Harry Potter — Grafo de Conocimiento</h1>
+      <p>Preguntá sobre los 7 libros. Conversación multi-turno.</p>
+      <nav>
+        <a href="./" class="active">Chat</a>
+        <a href="graph.html">Grafo</a>
+        <a href="canvas.html">Canvas</a>
+      </nav>
+    </header>
+
+    <div class="ask-card">
+      <textarea id="prompt" placeholder="¿Por qué Grindelwald es tan central a pesar de aparecer poco?"></textarea>
+      <div class="controls">
+        <span class="hint">Enter para enviar · Shift+Enter para nueva línea</span>
+        <button id="ask-btn" onclick="ask()">Preguntar</button>
+      </div>
+      <div class="examples" id="examples-container">
+        <button class="example" onclick="setPrompt(this.textContent)">¿Por qué Grindelwald es tan central a pesar de aparecer poco?</button>
+        <button class="example" onclick="setPrompt(this.textContent)">¿Qué conecta a Slughorn con los personajes más importantes?</button>
+        <button class="example" onclick="setPrompt(this.textContent)">¿Cómo se conecta Snape con Voldemort y Dumbledore a la vez?</button>
+        <button class="example" onclick="setPrompt(this.textContent)">¿Qué tienen en común Neville y Harry en sus arcos narrativos?</button>
+      </div>
+    </div>
+
+    <div class="history-header hidden" id="history-header">
+      <h2>Historial</h2>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <label class="debug-toggle" title="Debug: muestra el contexto de recuperación">
+          <input type="checkbox" id="debug-toggle" onchange="toggleDebug()"> Debug
+        </label>
+        <button class="clear-btn" onclick="clearHistory()">Nueva conversación</button>
+      </div>
+    </div>
+    <div id="history"></div>
+  </div>
+
+  <script src="analytics.js"></script>
+  <script>
+    const promptEl = document.getElementById('prompt');
+    const askBtn = document.getElementById('ask-btn');
+    const historyEl = document.getElementById('history');
+    const historyHeader = document.getElementById('history-header');
+
+    var conversationId = null;
+
+    var _ls = {
+      get: function(k) { try { return localStorage.getItem(k); } catch(_) { return null; } },
+      set: function(k, v) { try { localStorage.setItem(k, v); } catch(_) {} },
+    };
+
+    var debugMode = _ls.get('hp_debug_mode') === 'true';
+    function applyDebugMode() {
+      var t = document.getElementById('debug-toggle');
+      if (t) t.checked = debugMode;
+      document.body.classList.toggle('user-mode', !debugMode);
+    }
+    function toggleDebug() {
+      debugMode = document.getElementById('debug-toggle').checked;
+      _ls.set('hp_debug_mode', String(debugMode));
+      document.body.classList.toggle('user-mode', !debugMode);
+    }
+    applyDebugMode();
+
+    function setPrompt(text) { promptEl.value = text; promptEl.focus(); }
+
+    promptEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(); }
+    });
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = String(s ?? '');
+      return d.innerHTML;
+    }
+
+    function formatAnswer(text) {
+      return escapeHtml(text).replace(/\n/g, '<br>');
+    }
+
+    function timestamp() {
+      return new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function clearHistory() {
+      historyEl.innerHTML = '';
+      historyHeader.classList.add('hidden');
+      conversationId = null;
+      promptEl.focus();
+    }
+
+    const PHASE_LABELS = {
+      retrieval: 'Consultando el grafo...',
+      generate: 'Generando respuesta...',
+    };
+
+    function renderLoader(step, elapsedS) {
+      const label = PHASE_LABELS[step] || 'Procesando...';
+      return `<div class="response-card"><div class="answer"><span class="loader"></span> ${label} <span style="opacity:.6;font-size:.85em">(${elapsedS.toFixed(1)}s)</span></div></div>`;
+    }
+
+    function prependBlock(promptText, contentHtml) {
+      const block = document.createElement('div');
+      block.className = 'qa-block';
+      block.innerHTML = `
+        <div class="qa-question">${escapeHtml(promptText)}<span class="qa-timestamp">${timestamp()}</span></div>
+        ${contentHtml}
+      `;
+      historyEl.insertBefore(block, historyEl.firstChild);
+      historyHeader.classList.remove('hidden');
+      block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return block;
+    }
+
+    function _pushToCanvas(spec) {
+      const items = JSON.parse(localStorage.getItem('ragraph_canvas') || '[]');
+      if (!items.find(w => w.id === spec.id)) items.push(spec);
+      localStorage.setItem('ragraph_canvas', JSON.stringify(items));
+    }
+    function _attachCanvasBtn(block, spec) {
+      const meta = block.querySelector('.meta');
+      if (!meta) return;
+      const btn = document.createElement('button');
+      btn.className = 'canvas-btn';
+      btn.textContent = '→ Canvas';
+      btn.onclick = () => { _pushToCanvas(spec); btn.textContent = '✓'; btn.disabled = true; };
+      meta.appendChild(btn);
+    }
+
+    function _analyticsCard(block, content, elapsed) {
+      block.querySelector('.response-card').outerHTML = `
+        <div class="response-card">
+          <div class="answer">${content}</div>
+          <div class="meta"><span>⚡ Grafo directo · sin LLM</span><span>⏱ ${elapsed}s</span></div>
+        </div>`;
+    }
+
+    // Analytics: detección, consulta y gráfico viven en /analytics.js (compartido con chat-panel.js)
+    async function askAnalytics(aq, originalPrompt) {
+      askBtn.disabled = true;
+      askBtn.innerHTML = '<span class="loader"></span>';
+      const t0 = performance.now();
+      const elapsed = () => ((performance.now() - t0) / 1000).toFixed(2);
+      const block = prependBlock(originalPrompt, renderLoader('graph query', 0));
+      try {
+        const r = await RAGraphAnalytics.run(aq);
+        _analyticsCard(block, '<div class="an-body"></div>', elapsed());
+        RAGraphAnalytics.render(block.querySelector('.an-body'), r);
+        if (r.spec) _attachCanvasBtn(block, r.spec);
+        promptEl.value = ''; promptEl.focus();
+      } catch (e) {
+        _analyticsCard(block, `<span class="error">⚠ ${escapeHtml(RAGraphAnalytics.errorMessage(e))}</span>`, elapsed());
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Preguntar';
+      }
+    }
+
+    async function ask() {
+      const prompt = promptEl.value.trim();
+      if (!prompt) return;
+
+      const aq = RAGraphAnalytics.detect(prompt);
+      if (aq) { await askAnalytics(aq, prompt); return; }
+
+      askBtn.disabled = true;
+      askBtn.innerHTML = '<span class="loader"></span>';
+
+      const t0 = performance.now();
+      const block = prependBlock(prompt, renderLoader('retrieval', 0));
+
+      const updateLoader = (step) => {
+        const elapsed = (performance.now() - t0) / 1000;
+        const card = block.querySelector('.response-card');
+        if (card) card.outerHTML = renderLoader(step, elapsed);
+      };
+
+      try {
+        const payload = { prompt };
+        if (conversationId) payload.conversation_id = conversationId;
+
+        const res = await fetch(apiUrl('/api/ask_stream'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: res.statusText }));
+          const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+          block.querySelector('.response-card').outerHTML =
+            `<div class="response-card"><div class="answer error">⚠ ${escapeHtml(err.detail || 'Unknown error')}</div><div class="meta"><span>⏱ ${elapsed}s</span></div></div>`;
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let buf = '';
+        let fullAnswer = '';
+        let streamErr = null;
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          let idx;
+          while ((idx = buf.indexOf('\n\n')) !== -1) {
+            const raw = buf.slice(0, idx);
+            buf = buf.slice(idx + 2);
+            const line = raw.split('\n').find(l => l.startsWith('data: '));
+            if (!line) continue;
+            let evt;
+            try { evt = JSON.parse(line.slice(6)); } catch { continue; }
+
+            if (evt.event === 'progress') {
+              updateLoader(evt.step);
+            } else if (evt.event === 'token') {
+              fullAnswer += evt.token || '';
+              const card = block.querySelector('.response-card');
+              if (card) card.outerHTML = `<div class="response-card"><div class="answer">${formatAnswer(fullAnswer)}<span class="loader" style="margin-left:8px"></span></div></div>`;
+            } else if (evt.event === 'result') {
+              fullAnswer = evt.answer || fullAnswer;
+            } else if (evt.event === 'conversation_id') {
+              conversationId = evt.conversation_id;
+            } else if (evt.event === 'error') {
+              streamErr = evt.message || 'Server error';
+            }
+          }
+        }
+
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+        if (streamErr) {
+          block.querySelector('.response-card').outerHTML =
+            `<div class="response-card"><div class="answer error">⚠ ${escapeHtml(streamErr)}</div><div class="meta"><span>⏱ ${elapsed}s</span></div></div>`;
+          return;
+        }
+
+        block.querySelector('.response-card').outerHTML = `
+          <div class="response-card">
+            <div class="answer">${formatAnswer(fullAnswer)}</div>
+            <div class="meta"><span>⏱ ${elapsed}s</span></div>
+          </div>
+        `;
+        promptEl.value = '';
+        promptEl.focus();
+
+      } catch (e) {
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+        block.querySelector('.response-card').outerHTML =
+          `<div class="response-card"><div class="answer error">⚠ ${escapeHtml(e.message)}</div><div class="meta"><span>⏱ ${elapsed}s</span></div></div>`;
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Preguntar';
+      }
+    }
+  </script>
+</body>
+</html>

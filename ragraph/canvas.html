@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAGraph — Canvas</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --border: #2a2a3a;
+      --text: #e8e8f0;
+      --text-muted: #7a7a9a;
+      --accent: #c8a84b;
+      --accent-hover: #a88930;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 430px 32px 16px;
+      line-height: 1.5;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    header h1 { font-size: 1.4rem; font-weight: 600; }
+    header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+    header nav { margin-top: 10px; display: flex; gap: 8px; }
+    header nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 6px;
+      transition: border-color .15s, color .15s;
+    }
+    header nav a:hover { border-color: var(--accent); color: var(--text); }
+    header nav a.active { color: var(--accent); border-color: var(--accent); }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar span { color: var(--text-muted); font-size: .85rem; flex: 1; }
+    .toolbar button {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: .85rem;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+    .toolbar button#export-btn { border-color: rgba(200,168,75,.4); color: var(--accent); }
+    .toolbar button#export-btn:hover { border-color: var(--accent); background: rgba(200,168,75,.06); }
+
+    #empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+    #empty-state p { font-size: 1rem; margin-bottom: 8px; }
+    #empty-state small { font-size: .8rem; opacity: .6; }
+
+    .widget-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+      gap: 20px;
+    }
+    .widget-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .widget-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .widget-title {
+      flex: 1;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .widget-delete {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      transition: color .15s;
+    }
+    .widget-delete:hover { color: #f87171; }
+    .widget-chart { max-height: 260px; }
+    .widget-text {
+      margin-top: 12px;
+      font-size: .82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .widget-meta {
+      margin-top: 10px;
+      font-size: .7rem;
+      opacity: .4;
+    }
+    .widget-filters {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px;
+    }
+    .filter-pill {
+      background: rgba(200,168,75,.08); border: 1px solid rgba(200,168,75,.28);
+      color: #c8a84b; border-radius: 20px; padding: 2px 9px;
+      font-size: .7rem; cursor: pointer; transition: all .15s; font-family: inherit;
+    }
+    .filter-pill:hover { background: rgba(200,168,75,.18); }
+    .filter-pill.off { background: transparent; border-color: #2a2a3a; color: #4a4a6a; text-decoration: line-through; }
+    .widget-info-wrap {
+      position: relative; display: inline-flex; flex-shrink: 0; align-items: center;
+    }
+    .widget-info-btn {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1px solid rgba(200,168,75,.4); background: transparent;
+      color: #9a9ab8; font-size: .63rem; cursor: help;
+      display: flex; align-items: center; justify-content: center; user-select: none;
+    }
+    .widget-info-wrap:hover .widget-info-btn { border-color: #c8a84b; color: #c8a84b; }
+    .widget-tooltip-pop {
+      position: absolute; bottom: calc(100% + 8px); right: 0;
+      background: #1c1c2e; border: 1px solid #3a3a5a; border-radius: 8px;
+      padding: 10px 12px; font-size: .76rem; color: #b0b0c8; line-height: 1.5;
+      width: 220px; z-index: 100; white-space: normal;
+      opacity: 0; pointer-events: none; transition: opacity .15s;
+    }
+    .widget-info-wrap:hover .widget-tooltip-pop { opacity: 1; }
+  </style>
+  <script src="config.js"></script>
+  <script src="wakeup.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Harry Potter — Canvas</h1>
+      <p>Reportes generados desde el chat.</p>
+      <nav>
+        <a href="./">Chat</a>
+        <a href="graph.html">Grafo</a>
+        <a href="canvas.html" class="active">Canvas</a>
+      </nav>
+    </header>
+
+    <div class="toolbar">
+      <span id="widget-count">Canvas vacío</span>
+      <button id="clear-btn" style="display:none" onclick="clearCanvas()">Limpiar todo</button>
+      <button id="export-btn" style="display:none" onclick="exportHTML()">Exportar HTML</button>
+    </div>
+
+    <div id="canvas-area">
+      <div id="empty-state">
+        <p>El canvas está vacío.</p>
+        <small>Mandá gráficos desde el chat con el botón "→ Canvas".</small>
+      </div>
+      <div class="widget-grid" id="widget-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'ragraph_canvas';
+    const chartInstances = {};
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function getWidgets() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+
+    function saveWidgets(widgets) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(widgets));
+    }
+
+    function removeWidget(id) {
+      if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+      const card = document.querySelector(`.widget-card[data-id="${id}"]`);
+      if (card) card.remove();
+      const widgets = getWidgets().filter(w => w.id !== id);
+      saveWidgets(widgets);
+      updateToolbar(widgets.length);
+      if (widgets.length === 0) showEmpty();
+    }
+
+    function showEmpty() {
+      document.getElementById('empty-state').style.display = '';
+      document.getElementById('widget-grid').style.display = 'none';
+    }
+
+    function hideEmpty() {
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('widget-grid').style.display = '';
+    }
+
+    function updateToolbar(count) {
+      document.getElementById('widget-count').textContent =
+        count === 0 ? 'Canvas vacío' : `${count} widget${count !== 1 ? 's' : ''}`;
+      document.getElementById('clear-btn').style.display = count > 0 ? '' : 'none';
+      document.getElementById('export-btn').style.display = count > 0 ? '' : 'none';
+    }
+
+    function _deriveFilters(spec) {
+      const { chartData, chartType } = spec;
+      if (!chartData) return [];
+      // Multi-dataset (compare): filter by entity
+      if (chartData.datasets && chartData.datasets.length > 1 && chartData.datasets[0].label) {
+        return chartData.datasets.map((ds, i) => ({ type: 'dataset', idx: i, label: ds.label }));
+      }
+      // Label filter: bar or line with 2–8 labels (books or small ranking)
+      if ((chartType === 'bar' || chartType === 'line') && chartData.labels && chartData.labels.length >= 2 && chartData.labels.length <= 8) {
+        return chartData.labels.map((lbl, i) => ({ type: 'label', idx: i, label: lbl }));
+      }
+      return [];
+    }
+
+    function _applyFilters(spec, filters, card) {
+      const chart = chartInstances[spec.id];
+      if (!chart) return;
+      const activePills = new Set(
+        Array.from(card.querySelectorAll('.filter-pill:not(.off)')).map(p => parseInt(p.dataset.fi))
+      );
+      if (filters[0] && filters[0].type === 'dataset') {
+        filters.forEach((f, i) => { chart.getDatasetMeta(f.idx).hidden = !activePills.has(i); });
+      } else {
+        const activeIdxs = filters.filter((_, i) => activePills.has(i)).map(f => f.idx);
+        if (!activeIdxs.length) { chart.update(); return; }
+        chart.data.labels = activeIdxs.map(i => spec.chartData.labels[i]);
+        chart.data.datasets.forEach((ds, di) => {
+          const orig = spec.chartData.datasets[di];
+          ds.data = activeIdxs.map(i => orig.data[i]);
+          if (Array.isArray(orig.backgroundColor)) ds.backgroundColor = activeIdxs.map(i => orig.backgroundColor[i]);
+        });
+      }
+      chart.update();
+    }
+
+    function renderWidget(spec) {
+      hideEmpty();
+      const grid = document.getElementById('widget-grid');
+
+      if (document.querySelector(`.widget-card[data-id="${spec.id}"]`)) return;
+
+      const filters = _deriveFilters(spec);
+      const filtersHtml = filters.length ? `<div class="widget-filters">${
+        filters.map((f, i) => `<button class="filter-pill" data-fi="${i}">${escapeHtml(f.label)}</button>`).join('')
+      }</div>` : '';
+
+      const desc = spec.description || '';
+      const infoHtml = desc ? `<span class="widget-info-wrap"><span class="widget-info-btn">?</span><span class="widget-tooltip-pop">${escapeHtml(desc)}</span></span>` : '';
+
+      const card = document.createElement('div');
+      card.className = 'widget-card';
+      card.dataset.id = spec.id;
+      card.innerHTML = `
+        <div class="widget-header">
+          <span class="widget-title">${escapeHtml(spec.title)}</span>
+          ${infoHtml}
+          <button class="widget-delete" title="Eliminar">✕</button>
+        </div>
+        ${filtersHtml}
+        <canvas class="widget-chart" id="wc-${spec.id}"></canvas>
+        ${spec.text ? `<p class="widget-text">${escapeHtml(spec.text)}</p>` : ''}
+        <div class="widget-meta">⚡ Grafo directo · sin LLM</div>
+      `;
+      card.querySelector('.widget-delete').onclick = () => removeWidget(spec.id);
+      grid.appendChild(card);
+
+      chartInstances[spec.id] = new Chart(
+        document.getElementById(`wc-${spec.id}`).getContext('2d'),
+        { type: spec.chartType, data: JSON.parse(JSON.stringify(spec.chartData)), options: spec.chartOptions || {} }
+      );
+
+      if (filters.length) {
+        card.querySelectorAll('.filter-pill').forEach(pill => {
+          pill.addEventListener('click', () => { pill.classList.toggle('off'); _applyFilters(spec, filters, card); });
+        });
+      }
+    }
+
+    function clearCanvas() {
+      Object.values(chartInstances).forEach(c => c.destroy());
+      Object.keys(chartInstances).forEach(k => delete chartInstances[k]);
+      document.getElementById('widget-grid').innerHTML = '';
+      saveWidgets([]);
+      updateToolbar(0);
+      showEmpty();
+    }
+
+    function exportHTML() {
+      const widgets = getWidgets();
+      if (!widgets.length) return;
+
+      const cards = widgets.map(spec => `
+    <div class="widget-card">
+      <h3>${escapeHtml(spec.title)}</h3>
+      <canvas id="wc-${spec.id}" style="max-height:260px"></canvas>
+      ${spec.text ? `<p class="widget-text">${escapeHtml(spec.text)}</p>` : ''}
+    </div>`).join('\n');
+
+      const scripts = widgets.map(spec =>
+        `  new Chart(document.getElementById('wc-${spec.id}').getContext('2d'), ${JSON.stringify({type: spec.chartType, data: spec.chartData, options: spec.chartOptions || {}})});`
+      ).join('\n');
+
+      const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>RAGraph HP — Reporte</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #0a0a0f; color: #e8e8f0; padding: 40px 24px; line-height: 1.5; }
+    h1 { font-size: 1.5rem; color: #c8a84b; margin-bottom: 4px; }
+    .meta { color: #7a7a9a; font-size: .85rem; margin-bottom: 32px; }
+    .widget-card { background: #12121a; border: 1px solid #2a2a3a; border-radius: 12px; padding: 20px; margin-bottom: 24px; max-width: 700px; }
+    h3 { font-size: .95rem; margin-bottom: 14px; }
+    .widget-text { margin-top: 12px; font-size: .82rem; color: #7a7a9a; }
+  </style>
+</head>
+<body>
+  <h1>RAGraph HP — Reporte</h1>
+  <p class="meta">Generado el ${new Date().toLocaleString('es-AR')}</p>
+${cards}
+  <script>
+    window.onload = () => {
+${scripts}
+    };
+  <\/script>
+</body>
+</html>`;
+
+      const blob = new Blob([html], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ragraph-reporte-${new Date().toISOString().slice(0,10)}.html`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    }
+
+    function init() {
+      const widgets = getWidgets();
+      widgets.forEach(renderWidget);
+      updateToolbar(widgets.length);
+      if (widgets.length === 0) showEmpty();
+    }
+
+    // Cross-tab sync
+    window.addEventListener('storage', (e) => {
+      if (e.key !== STORAGE_KEY) return;
+      const widgets = getWidgets();
+      widgets.forEach(renderWidget);
+      updateToolbar(widgets.length);
+    });
+
+    init();
+  </script>
+
+  <div id="cp">
+    <h2>Preguntá sobre el corpus</h2>
+    <div id="hist"></div>
+    <textarea id="ci" placeholder="Ej: top 10 personajes, evolución de Harry..." rows="3"></textarea>
+    <button id="cs">Preguntar</button>
+  </div>
+  <script src="analytics.js"></script>
+  <script src="chat-panel.js"></script>
+</body>
+</html>

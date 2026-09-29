@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harry Potter — Grafo 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/force-graph@1.44.0/dist/force-graph.min.js"></script>
+  <style>
+    :root {
+      --bg: #06080f;
+      --panel: rgba(10,14,26,0.86);
+      --border: rgba(255,255,255,0.06);
+      --border-gold: rgba(200,168,75,0.32);
+      --text: #e6dfcf;
+      --muted: #8a8578;
+      --gold: #c8a84b;
+      --gold-d: #a88930;
+      --gold-l: #dcc06b;
+      --err: #d4324e;
+      --font-title: 'Cinzel Decorative', 'Palatino Linotype', serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: radial-gradient(ellipse at 50% 30%, #171f38 0%, #0a0d18 55%, #05070d 100%); color: var(--text); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+
+    /* 3d-force-graph tooltip — transparent wrapper, inner div does the styling */
+    .scene-tooltip, .graph-tooltip {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      color: inherit !important;
+    }
+    #graph3d, #graph2d { position: fixed; inset: 0; }
+    #graph2d { display: none; background: transparent; }
+    #sugg { background: #0d0d16; }
+    #fxCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+    /* View toggle separator inside presetBar */
+    #presetBar .sep {
+      width: 1px; background: var(--border-gold); opacity: .5; margin: 0 4px;
+    }
+
+    /* loading */
+    #loading {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--bg); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      transition: opacity 0.5s ease;
+    }
+    #loading span { color: var(--muted); font-size: .9rem; }
+    .hp-bolt { width: 30px; height: 46px; fill: var(--gold); filter: drop-shadow(0 0 8px rgba(200,168,75,.7)); animation: bolt-pulse 1.4s ease-in-out infinite; }
+    @keyframes bolt-pulse { 0%,100% { opacity:1; filter: drop-shadow(0 0 8px rgba(200,168,75,.7)); } 50% { opacity:.5; filter: drop-shadow(0 0 22px rgba(200,168,75,1)); } }
+
+    /* left panel */
+    #lp {
+      position: fixed; top: 16px; left: 16px; width: 240px;
+      background: var(--panel); backdrop-filter: blur(18px);
+      border: 1px solid var(--border-gold); border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.55);
+      padding: 16px; z-index: 10; display: flex; flex-direction: column; gap: 12px;
+    }
+    #lp h2 { font-size: .72rem; font-weight: 400; color: var(--gold); letter-spacing: 1px; font-family: var(--font-title); text-shadow: 0 0 14px rgba(200,168,75,.5); }
+    label  { font-size: .78rem; color: var(--muted); display: block; margin-bottom: 4px; }
+    select, input[type=range] {
+      width: 100%; background: rgba(0,0,0,.45); color: var(--text);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 8px; font-size: .82rem;
+    }
+    .row { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); }
+    .val { color: var(--text); font-weight: 500; }
+    .btn {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 5px 10px; font-size: .78rem; cursor: pointer; width: 100%;
+    }
+    .btn:hover { color: var(--text); border-color: var(--gold); }
+    .btn.on { color: var(--gold); border-color: var(--gold); background: rgba(200,168,75,.08); }
+    #presetBar {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 12;
+      background: var(--panel); backdrop-filter: blur(18px);
+      border: 1px solid var(--border-gold); border-radius: 12px;
+      padding: 8px; display: flex; gap: 6px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.55);
+    }
+    #presetBar .btn {
+      width: auto; padding: 6px 14px; font-size: .78rem;
+      font-family: var(--font-title); letter-spacing: .5px;
+    }
+    .legend { display: flex; flex-direction: column; gap: 5px; }
+    .li { display: flex; align-items: center; gap: 7px; font-size: .75rem; color: var(--muted); cursor: pointer; transition: opacity .2s; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .li .expand-btn {
+      margin-left: 4px; padding: 0 5px;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 4px; color: var(--muted); cursor: pointer;
+      font-size: .7rem; font-weight: 600; line-height: 1.2;
+      transition: all .15s;
+    }
+    .li .expand-btn:hover { color: var(--gold); border-color: var(--gold); }
+    .li .expand-btn.on {
+      color: var(--bg); background: var(--gold); border-color: var(--gold);
+    }
+
+    /* chat panel */
+    #cp {
+      position: fixed; top: 16px; right: 16px; width: 400px;
+      max-height: calc(100vh - 32px);
+      background: rgba(4,4,12,0.52); backdrop-filter: blur(22px);
+      border: 1px solid var(--border-gold); border-radius: 14px;
+      padding: 18px; z-index: 10; display: flex; flex-direction: column; gap: 10px;
+    }
+    #cp h2 { font-size: .72rem; font-weight: 400; color: var(--gold); font-family: var(--font-title); letter-spacing: 1px; text-shadow: 0 0 14px rgba(200,168,75,.5); }
+    #hist {
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+      gap: 10px; max-height: 440px;
+      scrollbar-width: thin; scrollbar-color: rgba(200,168,75,.3) transparent;
+    }
+    .q { font-size: .78rem; color: var(--muted); background: rgba(200,168,75,.07); border-left: 2px solid var(--gold); padding: 7px 10px; border-radius: 4px; }
+    .a { font-size: .83rem; line-height: 1.55; }
+    .a.streaming::after { content:'▋'; animation: blink .8s step-end infinite; }
+    @keyframes blink { 50%{opacity:0} }
+    #ci {
+      width: 100%; min-height: 64px; padding: 9px 11px;
+      background: rgba(0,0,0,.38); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: inherit; font-size: .85rem; resize: none;
+    }
+    #ci:focus { outline: none; border-color: var(--gold); }
+    #cs {
+      background: var(--gold); color: var(--bg); border: none;
+      border-radius: 8px; padding: 9px; font-weight: 600; cursor: pointer;
+      font-size: .85rem; width: 100%;
+    }
+    #cs:hover { background: var(--gold-d); }
+    #cs:disabled { opacity: .5; cursor: not-allowed; }
+    #fl { font-size: .75rem; color: var(--muted); min-height: 1em; }
+
+    #viewnav {
+      position: fixed; bottom: 16px; left: 16px;
+      display: flex; gap: 8px; z-index: 10;
+    }
+    #viewnav a {
+      background: var(--panel); backdrop-filter: blur(16px);
+      border: 1px solid var(--border-gold); border-radius: 8px;
+      padding: 8px 14px; color: var(--muted); font-size: .8rem;
+      text-decoration: none; transition: color .15s, border-color .15s;
+    }
+    #viewnav a:hover { color: var(--text); border-color: var(--gold); }
+    #viewnav a.active { color: var(--gold); border-color: var(--gold); }
+    .elink {
+      color: var(--gold); cursor: pointer;
+      border-bottom: 1px solid rgba(200,168,75,.35);
+      transition: border-color .15s;
+    }
+    .elink:hover { border-bottom-color: var(--gold); }
+
+    /* ─────────  Data-science theme (2D mode)  ───────── */
+    body.mode-2d {
+      --bg: #f5f5f7;
+      --panel: #ffffff;
+      --border: #e5e7eb;
+      --border-gold: #d4d4d8;
+      --text: #18181b;
+      --muted: #64748b;
+      --gold: #2563eb;
+      --gold-d: #1d4ed8;
+      --gold-l: #60a5fa;
+      --font-title: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f5f5f7;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    body.mode-2d #lp,
+    body.mode-2d #cp,
+    body.mode-2d #presetBar,
+    body.mode-2d #viewnav a {
+      backdrop-filter: none;
+      background: #ffffff;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    }
+    body.mode-2d #cp { background: #ffffff; }
+    body.mode-2d #lp h2,
+    body.mode-2d #cp h2 {
+      text-shadow: none;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #0f172a;
+    }
+    body.mode-2d #presetBar .btn {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    body.mode-2d .btn { border-color: #e5e7eb; color: #64748b; }
+    body.mode-2d .btn:hover { color: #0f172a; border-color: #2563eb; }
+    body.mode-2d .btn.on { color: #2563eb; border-color: #2563eb; background: #eff6ff; }
+    body.mode-2d select, body.mode-2d input[type=range], body.mode-2d input[type=text], body.mode-2d #ci {
+      background: #f8fafc; color: #0f172a; border-color: #e5e7eb;
+    }
+    body.mode-2d #ci:focus, body.mode-2d input[type=text]:focus, body.mode-2d select:focus {
+      outline: none; border-color: #2563eb;
+    }
+    body.mode-2d #cs { background: #2563eb; color: #ffffff; }
+    body.mode-2d #cs:hover { background: #1d4ed8; }
+    body.mode-2d .q {
+      background: #eff6ff; color: #1e293b;
+      border-left-color: #2563eb;
+    }
+    body.mode-2d .a { color: #0f172a; }
+    body.mode-2d #sugg { background: #ffffff; border-color: #e5e7eb; }
+    body.mode-2d .elink {
+      color: #2563eb;
+      border-bottom-color: rgba(37,99,235,0.4);
+    }
+    body.mode-2d .elink:hover { border-bottom-color: #2563eb; }
+    body.mode-2d #fxCanvas { display: none; }
+    body.mode-2d #presetBar .sep { background: #e5e7eb; opacity: 1; }
+  </style>
+  <script src="config.js"></script>
+  <script src="wakeup.js"></script>
+</head>
+<body>
+  <div id="loading"><svg class="hp-bolt" viewBox="0 0 30 46" xmlns="http://www.w3.org/2000/svg"><path d="M22,2 L7,24 L17,24 L10,44 L24,22 L14,22 Z"/></svg><span id="ls">Cargando el Mapa del Merodeador…</span></div>
+  <div id="graph3d"></div>
+  <div id="graph2d"></div>
+  <canvas id="fxCanvas"></canvas>
+
+  <div id="presetBar">
+    <button class="btn preset-btn on" data-preset="all">Todo</button>
+    <button class="btn preset-btn" data-preset="casas">Casas</button>
+    <button class="btn preset-btn" data-preset="familias">Familias</button>
+    <button class="btn preset-btn" data-preset="bandos">Bandos</button>
+    <button class="btn preset-btn" data-preset="comunidades">Comunidades</button>
+    <div class="sep"></div>
+    <button class="btn view-btn on" data-view="3d">3D</button>
+    <button class="btn view-btn" data-view="2d">2D</button>
+  </div>
+
+  <div id="lp">
+    <h2>Grafo de Harry Potter</h2>
+    <div>
+      <label>Libros</label>
+      <select id="sel">
+        <option value="hp">★ Canónico — los 7 libros</option>
+        <option value="hp-book1">Libro 1 — Piedra Filosofal</option>
+        <option value="hp-book2">Libro 2 — Cámara Secreta</option>
+        <option value="hp-book3">Libro 3 — Prisionero de Azkabán</option>
+        <option value="hp-book4">Libro 4 — Cáliz de Fuego</option>
+        <option value="hp-book5">Libro 5 — Orden del Fénix</option>
+        <option value="hp-book6">Libro 6 — Príncipe Mestizo</option>
+        <option value="hp-book7">Libro 7 — Reliquias de la Muerte</option>
+      </select>
+    </div>
+    <div>
+      <label>Grados de separación: <span id="hl">1</span></label>
+      <input type="range" id="hr" min="1" max="3" value="1">
+    </div>
+    <div style="position:relative">
+      <label>Buscar nodo</label>
+      <input type="text" id="search" placeholder="Nombre del personaje…" autocomplete="off"
+        style="width:100%;background:rgba(0,0,0,.45);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:.82rem;">
+      <div id="sugg" style="display:none;position:absolute;top:100%;left:0;right:0;border:1px solid var(--border);border-radius:0 0 6px 6px;max-height:140px;overflow-y:auto;z-index:20;"></div>
+    </div>
+    <button class="btn" id="gb">Mostrar grafo completo</button>
+    <div>
+      <div class="row"><span>Nodos</span><span class="val" id="sn">—</span></div>
+      <div class="row"><span>Vínculos</span><span class="val" id="sl">—</span></div>
+      <div class="row" id="sfr" style="display:none"><span>Foco</span><span class="val" id="sf">—</span></div>
+    </div>
+    <div><label>Tipos de entidades</label><div class="legend" id="leg"></div></div>
+  </div>
+
+  <div id="cp">
+    <h2>Preguntá sobre el corpus</h2>
+    <div id="fl">Hacé clic en un nodo para enfocarlo</div>
+    <div id="hist"></div>
+    <textarea id="ci" placeholder="Preguntá sobre este personaje..." rows="3"></textarea>
+    <button id="cs">Preguntar</button>
+  </div>
+
+  <div id="viewnav">
+    <a href="./">Chat</a>
+    <a href="graph.html" class="active">Grafo</a>
+    <a href="canvas.html">Canvas</a>
+  </div>
+
+  <script>
+    const HC = { Gryffindor:'#cc2200', Slytherin:'#2d7a45', Ravenclaw:'#2255aa', Hufflepuff:'#e8b830', Unknown:'#9988bb' };
+    // Preset palettes — vibrant/saturated to contrast against the type palette
+    // wiki_house comes lowercased from Neo4j; keys must match
+    const HOUSE_PRESET = {
+      gryffindor: { color:'#ff2b1c', label:'Gryffindor' },
+      slytherin:  { color:'#00c060', label:'Slytherin' },
+      ravenclaw:  { color:'#2a7dff', label:'Ravenclaw' },
+      hufflepuff: { color:'#ffd400', label:'Hufflepuff' },
+    };
+    function houseKey(n) {
+      const v = n.wiki_house;
+      if (typeof v !== 'string') return null;
+      const k = v.toLowerCase();
+      return HOUSE_PRESET[k] ? k : null;
+    }
+    const TOP_FAMILIES = {
+      'weasley family':    { key:'weasley',    color:'#ff7a1a', label:'Weasley' },
+      'potter family':     { key:'potter',     color:'#ff2b1c', label:'Potter' },
+      'black family':      { key:'black',      color:'#c8c8c8', label:'Black' },
+      'prewett family':    { key:'prewett',    color:'#ff2fbe', label:'Prewett' },
+      'dursley family':    { key:'dursley',    color:'#c68a4b', label:'Dursley' },
+      'longbottom family': { key:'longbottom', color:'#4ade80', label:'Longbottom' },
+      'malfoy family':     { key:'malfoy',     color:'#7ec8e3', label:'Malfoy' },
+    };
+    const FACTION_COLORS = {
+      'death eaters':          { color:'#8b1de8', label:'Death Eaters' },
+      'order of the phoenix':  { color:'#ffd400', label:'Order of the Phoenix' },
+    };
+    // Top-6 Louvain communities on the pruned graph.
+    // Labels chosen based on representative members surfaced in each cluster.
+    const TOP_COMMS_ARR = [13, 24, 16, 38, 17, 26];
+    const TOP_COMMS = new Set(TOP_COMMS_ARR);
+    const COMM_COLORS = ['#2a7dff', '#4ade80', '#ff7a1a', '#ffd400', '#c8c8c8', '#8b1de8'];
+    const COMM_LABELS = [
+      'Trio y compañeros',    // c=13: Ron, Hermione, Lavender, Parvati, Trelawney, Lockhart
+      'Staff de Hogwarts',    // c=24: McGonagall, Flitwick, Sprout, Filch, Peeves
+      'Ministerio + Triwizard', // c=16: Dumbledore, Fudge, Fleur, Cedric, Krum, Percy
+      'Orden y Weasley',      // c=38: Molly, Arthur, Fred, George, Sirius, Lupin
+      'Potter / Dursley',     // c=17: Harry, James, Lily, Vernon, Petunia, Dudley
+      'Slytherin / Mortífagos', // c=26: Snape, Draco, Lucius, Bellatrix, Slughorn
+    ];
+    const PRESETS = {
+      all:         { label:'Todo' },
+      casas:       { label:'Casas' },
+      familias:    { label:'Familias' },
+      bandos:      { label:'Bandos' },
+      comunidades: { label:'Comunidades' },
+    };
+    let preset = 'all';
+    let hiddenPresetCats = new Set();    // category keys hidden within current non-'all' preset
+    let expandedPresetCats = new Set();  // familias preset only: keys whose maiden/loyalty matches are included
+    const TYPES = {
+      person:       { color: '#d4324e', label: 'Persona' },
+      place:        { color: '#3ba171', label: 'Lugar' },
+      spell:        { color: '#f2c740', label: 'Hechizo' },
+      organization: { color: '#4880c8', label: 'Organización' },
+      object:       { color: '#a06fd8', label: 'Objeto' },
+      event:        { color: '#e88240', label: 'Evento' },
+      concept:      { color: '#7bbf7b', label: 'Concepto' },
+      unknown:      { color: '#c8b598', label: 'Otro' },
+    };
+    const ROLES = {
+      'Harry Potter':        'El niño que sobrevivió — Protagonista',
+      'Ron Weasley':         'Mejor amigo de Harry — Trío',
+      'Hermione Granger':    'Bruja brillante — Trío',
+      'Albus Dumbledore':    'Director de Hogwarts — Mentor',
+      'Lord Voldemort':      'Lord Tenebroso — Antagonista',
+      'Severus Snape':       'Maestro de Pociones — Doble agente',
+      'Rubeus Hagrid':       'Guardabosques — Amigo leal',
+      'Minerva McGonagall':  'Profesora de Transformaciones — Subdirectora',
+      'Sirius Black':        'Padrino de Harry — Merodeador',
+      'Remus Lupin':         'Profesor de DADA — Merodeador',
+      'Draco Malfoy':        'Rival Slytherin',
+      'Neville Longbottom':  'Compañero de Harry — Herbólogo',
+      'Ginny Weasley':       'Weasley — amor de Harry',
+      'Luna Lovegood':       'Excéntrica amiga Ravenclaw',
+      'Fred Weasley':        'Gemelo Weasley — Bromista',
+      'George Weasley':      'Gemelo Weasley — Bromista',
+      'Bellatrix Lestrange': 'Mortífaga — leal a Voldemort',
+      'Dolores Umbridge':    'Funcionaria del Ministerio — Villana',
+      'Cedric Diggory':      'Campeón del Torneo de los Tres Magos',
+      'Cho Chang':           'Primer amor de Harry',
+      'Nymphadora Tonks':    'Auror — Metamorfomaga',
+      'Peter Pettigrew':     'Merodeador — Traidor',
+      'James Potter':        'Padre de Harry — Merodeador',
+      'Lily Potter':         'Madre de Harry',
+      'Molly Weasley':       'Matriarca Weasley',
+      'Arthur Weasley':      'Empleado del Ministerio — Patriarca Weasley',
+      'Bill Weasley':        'Rompe-maldiciones — Mayor de los Weasley',
+      'Charlie Weasley':     'Cuidador de dragones en Rumania',
+      'Percy Weasley':       'Funcionario del Ministerio',
+      'Fleur Delacour':      'Campeona de Beauxbatons',
+      'Viktor Krum':         'Estrella de Quidditch de Durmstrang',
+      'Lucius Malfoy':       'Mortífago — padre de Draco',
+      'Narcissa Malfoy':     'Madre de Draco',
+      'Alastor Moody':       'Auror legendario',
+      'Filius Flitwick':     'Profesor de Encantamientos',
+      'Pomona Sprout':       'Profesora de Herbología',
+      'Horace Slughorn':     'Profesor de Pociones',
+      'Gilderoy Lockhart':   'Profesor de DADA fraudulento',
+      'Quirinus Quirrell':   'Profesor de DADA — huésped de Voldemort',
+      'Argus Filch':         'Conserje de Hogwarts',
+      'Sybill Trelawney':    'Profesora de Adivinación',
+      'Fenrir Greyback':     'Hombre lobo — Mortífago',
+      'Dobby':               'Elfo doméstico libre',
+      'Kreacher':            'Elfo doméstico de la familia Black',
+      'Hedwig':              'Lechuza nívea de Harry',
+    };
+    const HM = {
+      'Harry Potter':'Gryffindor','Hermione Granger':'Gryffindor','Ron Weasley':'Gryffindor',
+      'Albus Dumbledore':'Gryffindor','Neville Longbottom':'Gryffindor','Ginny Weasley':'Gryffindor',
+      'Rubeus Hagrid':'Gryffindor','Minerva McGonagall':'Gryffindor','Sirius Black':'Gryffindor',
+      'James Potter':'Gryffindor','Lily Potter':'Gryffindor','Remus Lupin':'Gryffindor',
+      'Fred Weasley':'Gryffindor','George Weasley':'Gryffindor',
+      'Draco Malfoy':'Slytherin','Lord Voldemort':'Slytherin','Tom Riddle':'Slytherin',
+      'Severus Snape':'Slytherin','Bellatrix Lestrange':'Slytherin','Lucius Malfoy':'Slytherin',
+      'Luna Lovegood':'Ravenclaw','Cho Chang':'Ravenclaw','Filius Flitwick':'Ravenclaw',
+      'Cedric Diggory':'Hufflepuff','Nymphadora Tonks':'Hufflepuff','Pomona Sprout':'Hufflepuff',
+    };
+
+    function house(n) { return n.house || HM[n.name] || 'Unknown'; }
+    function hasLoyalty(n, target) {
+      return Array.isArray(n.wiki_loyalty) && n.wiki_loyalty.some(x => String(x).toLowerCase() === target);
+    }
+    // Surname → family key. Uses displayed surname (not wiki_loyalty) so people
+    // classify by legal/displayed name: Molly Weasley = weasley (not prewett birth),
+    // Hermione Granger = null (Granger isn't a top family, not in Weasley cluster
+    // by association).
+    const FAMILY_BY_SURNAME = {
+      weasley: 'weasley', potter: 'potter', black: 'black',
+      prewett: 'prewett', dursley: 'dursley',
+      longbottom: 'longbottom', malfoy: 'malfoy',
+    };
+    function getFamilyKey(n) {
+      if (!n.name || n.type !== 'person') return null;
+      const parts = String(n.name).trim().split(/\s+/);
+      const surname = parts[parts.length - 1].toLowerCase();
+      return FAMILY_BY_SURNAME[surname] || null;
+    }
+    // All top-family memberships of a node (surname + wiki_loyalty).
+    // Used for tooltip enrichment (A) and for expanded family view (C).
+    function getFamilyMemberships(n) {
+      const set = new Set();
+      const primary = getFamilyKey(n);
+      if (primary) set.add(primary);
+      if (Array.isArray(n.wiki_loyalty)) {
+        for (const l of n.wiki_loyalty) {
+          const low = String(l).toLowerCase();
+          if (TOP_FAMILIES[low]) set.add(TOP_FAMILIES[low].key);
+        }
+      }
+      return [...set];
+    }
+    // Single-family cluster assignment for the Familias preset. Priority:
+    //   1) surname (getFamilyKey) if that family is not hidden
+    //   2) any expanded family key matched via wiki_loyalty
+    // Returns null if node belongs to no active family. Ensures each node
+    // lives in ONE cluster (color, physics, legend all consistent).
+    function familyClusterOf(n) {
+      const primary = getFamilyKey(n);
+      if (primary && !hiddenPresetCats.has(primary)) return primary;
+      if (expandedPresetCats.size === 0) return null;
+      const memberships = getFamilyMemberships(n);
+      for (const ek of expandedPresetCats) {
+        if (hiddenPresetCats.has(ek)) continue;
+        if (memberships.includes(ek)) return ek;
+      }
+      return null;
+    }
+    function presetVisible(n) {
+      switch (preset) {
+        case 'all':         return true;
+        case 'casas': {
+          const k = houseKey(n);
+          return k !== null && !hiddenPresetCats.has(k);
+        }
+        case 'familias': {
+          return familyClusterOf(n) !== null;
+        }
+        case 'bandos': {
+          if (hasLoyalty(n, 'death eaters'))         return !hiddenPresetCats.has('de');
+          if (hasLoyalty(n, 'order of the phoenix')) return !hiddenPresetCats.has('orden');
+          return false;
+        }
+        case 'comunidades': {
+          if (!TOP_COMMS.has(n.community)) return false;
+          return !hiddenPresetCats.has('c' + n.community);
+        }
+        default: return true;
+      }
+    }
+    function baseColor(n) {
+      if (preset === 'casas') {
+        const hk = houseKey(n);
+        if (hk) return HOUSE_PRESET[hk].color;
+      }
+      if (preset === 'familias') {
+        const cluster = familyClusterOf(n);
+        if (cluster) {
+          const fam = Object.values(TOP_FAMILIES).find(f => f.key === cluster);
+          if (fam) return fam.color;
+        }
+      }
+      if (preset === 'bandos') {
+        if (hasLoyalty(n, 'death eaters')) return FACTION_COLORS['death eaters'].color;
+        if (hasLoyalty(n, 'order of the phoenix')) return FACTION_COLORS['order of the phoenix'].color;
+      }
+      if (preset === 'comunidades' && TOP_COMMS.has(n.community)) {
+        return COMM_COLORS[TOP_COMMS_ARR.indexOf(n.community) % COMM_COLORS.length];
+      }
+      return (TYPES[n.type] || TYPES.unknown).color;
+    }
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    const REVERSE_REL = {
+      'father of':'son/daughter of','mother of':'son/daughter of','parent of':'child of',
+      'son of':'father/mother of','daughter of':'father/mother of','child of':'parent of',
+      'brother of':'sibling of','sister of':'sibling of','sibling of':'sibling of',
+      'friend of':'friend of','best friend of':'best friend of',
+      'enemy of':'enemy of','rival of':'rival of','ally of':'ally of',
+      'mentor of':'apprentice of','apprentice of':'mentor of',
+      'teacher of':'student of','student of':'teacher of',
+      'godfather of':'godchild of','godmother of':'godchild of','godchild of':'godparent of',
+      'guardian of':'ward of','ward of':'guardian of',
+      'master of':'servant of','servant of':'master of',
+      'employer of':'employee of','employee of':'employer of',
+      'leader of':'follower of','follower of':'leader of',
+      'member of':'has member','owns':'owned by','owned by':'owner of',
+      'married to':'married to','spouse of':'spouse of','partner of':'partner of',
+      'located in':'contains','contains':'located in',
+      'creator of':'created by','created by':'creator of',
+      'killed':'killed by','killed by':'killed',
+      'defeated':'defeated by','defeated by':'defeated',
+      'attacked':'attacked by','attacked by':'attacked',
+      'saved':'saved by','saved by':'saved',
+      'taught':'taught by','taught by':'taught',
+    };
+    function reverseRel(t) {
+      const norm = String(t || 'related to').toLowerCase().trim().replace(/_/g, ' ');
+      return REVERSE_REL[norm] || norm;
+    }
+    // Preset-aware 3-tier link opacity. Tier 1=intra-cluster & strong,
+    // 2=intra XOR strong, 3=cross-cluster & weak (l.tier annotated in applyView).
+    // Density (width × opacity) roughly 27:6:1 between tiers.
+    function linkColorFn(l) {
+      const light = mode === '2d';
+      const dim     = light ? 'rgba(15,23,42,0.10)'    : 'rgba(255,255,255,0.07)';
+      const dimmer  = light ? 'rgba(15,23,42,0.08)'    : 'rgba(255,255,255,0.06)';
+      const focused = light ? 'rgba(37,99,235,0.55)'   : 'rgba(220,192,107,0.32)';
+      const hovered = light ? 'rgba(37,99,235,0.95)'   : 'rgba(220,192,107,0.98)';
+      if (focus) {
+        const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+        if (s !== focus.id && t !== focus.id) return dimmer;
+        return (hoverLink && l === hoverLink) ? hovered : focused;
+      }
+      if (l.tier === 1) return light ? 'rgba(15,23,42,0.55)' : 'rgba(255,255,255,0.55)';
+      if (l.tier === 2) return light ? 'rgba(15,23,42,0.20)' : 'rgba(255,255,255,0.20)';
+      if (l.tier === 3) return light ? 'rgba(15,23,42,0.06)' : 'rgba(255,255,255,0.06)';
+      return dim;
+    }
+    function linkWidthFn(l) {
+      const base = mode === '2d' ? 0.8 : 0.5;
+      if (focus) {
+        const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+        if (s !== focus.id && t !== focus.id) return base;
+        return (hoverLink && l === hoverLink) ? (mode === '2d' ? 2.2 : 1.4) : (mode === '2d' ? 1.4 : 0.7);
+      }
+      if (l.tier === 1) return mode === '2d' ? 1.2 : 0.9;
+      if (l.tier === 2) return mode === '2d' ? 0.7 : 0.5;
+      if (l.tier === 3) return mode === '2d' ? 0.4 : 0.3;
+      return base;
+    }
+    function linkLabelFn(l) {
+      if (!focus) return '';
+      const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+      return (s === focus.id || t === focus.id) ? linkTooltip(l) : '';
+    }
+    function refreshLinks() {
+      // Reassign accessors to force-graph — triggers link color/width recompute
+      // WITHOUT rebuilding node geometries (unlike G.refresh() which flickers nodes)
+      activeG().linkColor(l => linkColorFn(l)).linkWidth(l => linkWidthFn(l));
+    }
+    function linkTooltip(l) {
+      const s = l.source?.id ?? l.source;
+      const t = l.target?.id ?? l.target;
+      const type = String(l.type || 'related to').toLowerCase().replace(/_/g, ' ');
+      const desc = l.description ? String(l.description).slice(0, 200) : '';
+      return `<div style="background:rgba(6,8,15,0.95);border:1px solid rgba(200,168,75,0.5);border-radius:8px;padding:10px 14px;color:#e6dfcf;font-family:system-ui,sans-serif;font-size:11px;box-shadow:0 6px 24px rgba(0,0,0,0.7),0 0 20px rgba(200,168,75,0.25);backdrop-filter:blur(8px);max-width:320px">
+        <div style="color:#dcc06b;font-size:12px;font-weight:600;text-align:center">${esc(s)} <span style="color:#c8a84b;margin:0 6px">→</span> ${esc(t)}</div>
+        <div style="color:#8a8578;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;text-align:center;margin-top:3px">${esc(type)}</div>
+        ${desc ? `<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(200,168,75,0.25);font-size:11px;line-height:1.4;color:#c8a84b;font-style:italic">${esc(desc)}</div>` : ''}
+      </div>`;
+    }
+    function nodeTooltip(n) {
+      const type = TYPES[n.type] || TYPES.unknown;
+      const h = n.type === 'person' ? house(n) : null;
+      const isHoused = h && h !== 'Unknown';
+      const accent = isHoused ? HC[h] : type.color;
+      const parts = [
+        `<div style="font-family:'Cinzel Decorative',serif;color:${accent};font-size:15px;font-weight:700;margin-bottom:4px;text-shadow:0 0 12px ${accent}66">${esc(n.name)}</div>`,
+        `<div style="color:${type.color};font-size:10px;opacity:0.85;text-transform:uppercase;letter-spacing:1.5px">${type.label}</div>`,
+      ];
+      if (isHoused) {
+        parts.push(`<div style="margin-top:8px;font-size:11px;color:#b8b0a0">House: <span style="color:${HC[h]};font-weight:600">${h}</span></div>`);
+      }
+      if (ROLES[n.name]) {
+        parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Role:</span> ${esc(ROLES[n.name])}</div>`);
+      }
+      // Family: other loaded persons sharing surname
+      if (n.type === 'person') {
+        const np = n.name.split(/\s+/);
+        if (np.length >= 2) {
+          const surname = np[np.length - 1];
+          if (surname.length >= 3) {
+            const fam = allN
+              .filter(o => o.id !== n.id && o.type === 'person' && o.name.endsWith(' ' + surname))
+              .map(o => o.name);
+            if (fam.length > 0) {
+              parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Family:</span> ${esc(fam.slice(0,5).join(', '))}</div>`);
+            }
+          }
+        }
+        // Additional family bonds from wiki_loyalty (birth/marriage) beyond the displayed surname
+        const memberships = getFamilyMemberships(n);
+        const primary = getFamilyKey(n);
+        const others = memberships.filter(k => k !== primary);
+        if (others.length > 0) {
+          const labels = others.map(k => (Object.values(TOP_FAMILIES).find(f => f.key === k) || {}).label || k);
+          parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Vínculos:</span> ${esc(labels.join(', '))}</div>`);
+        }
+      }
+      // Direct link description with Harry (if not Harry himself)
+      if (n.id !== 'Harry Potter' && adj['Harry Potter']?.has(n.id)) {
+        const link = allL.find(l => {
+          const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+          return (s === n.id && t === 'Harry Potter') || (s === 'Harry Potter' && t === n.id);
+        });
+        const desc = link?.description ? String(link.description).slice(0, 140) : null;
+        if (desc) {
+          parts.push(`<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(200,168,75,0.3);font-size:10px;color:#c8a84b;font-style:italic;line-height:1.4">${esc(desc)}</div>`);
+        }
+      }
+      // Wrap with accent border + glow
+      return `<div style="background:rgba(6,8,15,0.94);border:1px solid ${accent};border-radius:8px;padding:10px 12px;color:#e6dfcf;font-family:system-ui,sans-serif;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,0.7),0 0 20px ${accent}44;backdrop-filter:blur(8px);max-width:280px">${parts.join('')}</div>`;
+    }
+    function nodeVal(n) {
+      if (n.pagerank && n.pagerank > 0) return Math.max(1, n.pagerank * 5000);
+      return Math.max(1, Math.pow(n.val || 1, 0.8));
+    }
+
+    let distMap = {};   // nodeId → hop distance from focus
+    let maxDist = 0;    // max distance in current distMap
+    const matMap = {};     // nodeId → THREE.MeshLambertMaterial (core)
+    const glowMatMap = {}; // nodeId → THREE.SpriteMaterial (soft glow)
+    const objMap = {};     // nodeId → THREE.Group (for scale on focus)
+    const animCurrent = {}; // nodeId → {op, glow, scale} — animated values
+    const animTarget  = {}; // nodeId → {op, glow, scale} — targets to lerp toward
+
+    function tickAnim() {
+      const lerp = 0.12;
+      Object.keys(animTarget).forEach(id => {
+        if (!animCurrent[id]) animCurrent[id] = { op: 0, glow: 0, scale: 0.6 };
+        const c = animCurrent[id], t = animTarget[id];
+        c.op    += (t.op    - c.op)    * lerp;
+        c.glow  += (t.glow  - c.glow)  * lerp;
+        c.scale += (t.scale - c.scale) * lerp;
+        const m = matMap[id], gm = glowMatMap[id], grp = objMap[id];
+        if (m)   { m.opacity  = c.op;   m.needsUpdate = true; }
+        if (gm)  { gm.opacity = c.glow; gm.needsUpdate = true; }
+        if (grp) grp.scale.setScalar(c.scale);
+      });
+      requestAnimationFrame(tickAnim);
+    }
+    requestAnimationFrame(tickAnim);
+
+    function makeGlowTexture() {
+      const c = document.createElement('canvas'); c.width = c.height = 64;
+      const ctx = c.getContext('2d');
+      const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      g.addColorStop(0,   'rgba(255,255,255,0.9)');
+      g.addColorStop(0.25,'rgba(255,255,255,0.4)');
+      g.addColorStop(0.6, 'rgba(255,255,255,0.1)');
+      g.addColorStop(1,   'rgba(255,255,255,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 64);
+      return new THREE.CanvasTexture(c);
+    }
+    const GLOW_TEX = makeGlowTexture();
+
+    function hexToInt(hex) { return parseInt(hex.replace('#',''), 16); }
+
+    function getAlpha(n) {
+      if (!focus || maxDist === 0) return 1.0;
+      const d = distMap[n.id];
+      if (d === undefined) return 1.0;
+      return 1.0 - (d / maxDist) * 0.7;  // [1.0, 0.3] — no ghost nodes
+    }
+
+    function refreshMaterials() {
+      // Endpoints of hovered link get secondary emphasis
+      const linkEnds = new Set();
+      if (hoverLink) {
+        const s = hoverLink.source?.id ?? hoverLink.source;
+        const t = hoverLink.target?.id ?? hoverLink.target;
+        linkEnds.add(s); linkEnds.add(t);
+      }
+      Object.entries(matMap).forEach(([id, mat]) => {
+        const n = nmap[id]; if (!n) return;
+        const a = getAlpha(n);
+        const isFocus = focus && id === focus.id;
+        const isHover = hoverTarget && id === hoverTarget.id;
+        const isLinkEnd = linkEnds.has(id) && !isFocus && !isHover;
+        let op = a, glow = a * 0.55, scale = 1.0;
+        if (isFocus)        { op = 1.0; glow = 0.95; scale = 1.6; }
+        else if (isHover)   { op = 1.0; glow = 0.88; scale = 1.0; }
+        else if (isLinkEnd) { op = 1.0; glow = 0.70; scale = 1.2; }
+        animTarget[id] = { op, glow, scale };
+      });
+    }
+
+    let allN = [], allL = [], adj = {}, nmap = {}, focus = null, hidden = new Set();
+    let egoVis = null;         // Set of node IDs in current ego, or null for full graph
+    let currentLoadType = null; // null = stratified, 'spell' etc = single-type API mode
+    let hoverTarget = null;
+    let hoverLink = null;
+
+    let mode = '3d';                  // '3d' | '2d'
+    let G2 = null;                    // 2D instance, lazy init
+    function activeG() { return mode === '3d' ? G3 : G2; }
+
+    const G3 = ForceGraph3D()(document.getElementById('graph3d'))
+      .backgroundColor('#050508')
+      .nodeLabel(nodeTooltip)
+      .nodeThreeObject(n => {
+        const color = hexToInt(baseColor(n));
+        const a = getAlpha(n);
+        const r = Math.cbrt(nodeVal(n)) * 4;
+        // Start invisible — animation loop fades in
+        const mat = new THREE.MeshLambertMaterial({ color, transparent: true, opacity: 0 });
+        matMap[n.id] = mat;
+        const core = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), mat);
+        const spriteMat = new THREE.SpriteMaterial({ map: GLOW_TEX, color, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+        glowMatMap[n.id] = spriteMat;
+        const sprite = new THREE.Sprite(spriteMat);
+        sprite.scale.setScalar(r * 7);
+        sprite.raycast = () => null;
+        const grp = new THREE.Group(); grp.add(core, sprite);
+        grp.scale.setScalar(0.6);
+        objMap[n.id] = grp;
+        animCurrent[n.id] = { op: 0, glow: 0, scale: 0.6 };
+        animTarget[n.id]  = { op: a, glow: a * 0.55, scale: 1.0 };
+        return grp;
+      })
+      .nodeThreeObjectExtend(false)
+      .linkColor(linkColorFn)
+      .linkWidth(linkWidthFn)
+      .linkLabel(linkLabelFn)
+      .onLinkHover(l => {
+        if (l && focus) {
+          const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+          hoverLink = (s === focus.id || t === focus.id) ? l : null;
+        } else {
+          hoverLink = null;
+        }
+        document.getElementById('graph3d').style.cursor = hoverLink ? 'pointer' : 'default';
+        refreshMaterials();
+        refreshLinks();
+      })
+      .d3AlphaDecay(0.04)
+      .d3VelocityDecay(0.2)
+      .warmupTicks(0)
+      .cooldownTime(4000)
+      .onNodeHover(n => {
+        hoverTarget = n || null;
+        document.getElementById('graph3d').style.cursor = n ? 'pointer' : 'default';
+        refreshMaterials();
+      })
+      .onNodeClick(n => focusNode(n))
+      .onBackgroundClick(() => {});  // no reset on background click
+
+    setInterval(() => { if (!focus) activeG().d3ReheatSimulation(); }, 20000);
+
+    // La ayuda de navegación la genera 3d-force-graph en inglés
+    document.querySelector('#graph3d .scene-nav-info').textContent =
+      'Clic izquierdo: rotar · Rueda o clic central: zoom · Clic derecho: desplazar';
+
+    // Spread nodes further apart (3D physics)
+    G3.d3Force('charge').strength(-600);
+    G3.d3Force('link').distance(linkDistance);
+    G3.d3Force('cluster', makeClusterForce());
+
+    // Star field — three spherical shells, no visible cube edges at zoom-out.
+    // Each star gets uniform-in-volume placement inside its shell via
+    // Math.cbrt(r) correction (equal density regardless of radius).
+    (function addStarField(scene) {
+      const layers = [
+        { count: 2000, size: 1.8, opacity: 0.275, minR:  800, maxR: 2500 },  // near
+        { count:  800, size: 3.5, opacity: 0.425, minR:  500, maxR: 1800 },  // bigger sparse
+        { count: 1500, size: 1.2, opacity: 0.15,  minR: 3000, maxR: 8000 },  // far backdrop
+      ];
+      for (const { count, size, opacity, minR, maxR } of layers) {
+        const pos = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+          const theta = 2 * Math.PI * Math.random();
+          const phi   = Math.acos(2 * Math.random() - 1);
+          const r     = minR + Math.cbrt(Math.random()) * (maxR - minR);
+          pos[3 * i    ] = r * Math.sin(phi) * Math.cos(theta);
+          pos[3 * i + 1] = r * Math.sin(phi) * Math.sin(theta);
+          pos[3 * i + 2] = r * Math.cos(phi);
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+          color: 0xe8e4ff, size, transparent: true, opacity,
+          sizeAttenuation: false, depthWrite: false,
+        })));
+      }
+    })(G3.scene());
+
+    function flyTo(node, ms = 1500, dist = 240) {
+      if (mode === '2d') {
+        if (!G2 || node.x == null || node.y == null) return;
+        G2.centerAt(node.x, node.y, ms);
+        G2.zoom(3, ms);
+        return;
+      }
+      const mag = Math.hypot(node.x || 0, node.y || 0, node.z || 0);
+      if (mag < 10) {
+        G3.cameraPosition({x: 0, y: 0, z: dist}, node, ms);
+        return;
+      }
+      const ratio = 1 + dist / mag;
+      G3.cameraPosition(
+        {x: node.x * ratio, y: node.y * ratio, z: node.z * ratio},
+        node,
+        ms
+      );
+    }
+
+    function focusNode(n) {
+      focus = n;
+      // Adapt slider max to the highest hop that actually adds nodes
+      const counts = [1, 2, 3].map(h => Object.keys(bfs(n.id, h)).length);
+      let maxUseful = 1;
+      for (let i = 1; i < counts.length; i++) {
+        if (counts[i] > counts[i-1]) maxUseful = i + 1;
+      }
+      const slider = document.getElementById('hr');
+      slider.max = maxUseful;
+      // Preserve current hop selection across node switches, clamp to new max
+      const hop = Math.min(Math.max(1, +slider.value || 1), maxUseful);
+      slider.value = hop;
+      document.getElementById('hl').textContent = hop;
+      egoGraph(n.id, hop);
+      refreshLinks();  // re-run link accessors for new focus-connected styling (no node flicker)
+      // Single smooth camera move — no chain
+      flyTo(n, 1500);
+      document.getElementById('fl').textContent = 'Foco: ' + n.name;
+      document.getElementById('sf').textContent = n.name;
+      document.getElementById('sfr').style.display = '';
+      document.getElementById('ci').placeholder = 'Preguntá sobre "' + n.name + '"…';
+      document.getElementById('search').value = '';
+      document.getElementById('sugg').style.display = 'none';
+    }
+
+    function buildAdj(ns, ls) {
+      adj = {}; nmap = {};
+      ns.forEach(n => { adj[n.id] = new Set(); nmap[n.id] = n; });
+      ls.forEach(l => {
+        const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+        adj[s]?.add(t); adj[t]?.add(s);
+      });
+      // No global pruning — BFS applies source-relative pruning dynamically
+    }
+    function bfs(id, hops) {
+      // Source-relative pruning: at each expansion, keep neighbors whose pagerank
+      // is closest to the SOURCE node's pagerank. Dobby (low PR) → other minor
+      // characters; Harry (high PR) → main characters. Focus-specific ego graphs.
+      const sourcePR = nmap[id]?.pagerank || 0;
+      const CAP = 18;
+      const d = {[id]:0}, q = [id];
+      while (q.length) {
+        const c = q.shift(); if (d[c] >= hops) continue;
+        let nbs = Array.from(adj[c] || []);
+        if (nbs.length > CAP) {
+          nbs.sort((a, b) => {
+            const dA = Math.abs((nmap[a]?.pagerank || 0) - sourcePR);
+            const dB = Math.abs((nmap[b]?.pagerank || 0) - sourcePR);
+            return dA - dB;
+          });
+          nbs = nbs.slice(0, CAP);
+        }
+        for (const nb of nbs) {
+          if (d[nb] === undefined) { d[nb] = d[c] + 1; q.push(nb); }
+        }
+      }
+      return d;
+    }
+    // Preset-aware cap. Full API returns 1150 nodes; keep visible set bounded so
+    // physics/rendering stay smooth. Bucket by relevant grouping (entity type for 'all',
+    // preset category otherwise), sort each bucket by pagerank, take top-K.
+    const CAP_TYPE = {
+      person: 80, place: 25, spell: 25, organization: 15,
+      object: 15, concept: 10, event: 10, unknown: 5,
+    };
+    function capPresetNodes(ns, maxTotal = 200) {
+      if (ns.length <= maxTotal) return ns;
+      const buckets = new Map();
+      if (preset === 'all') {
+        for (const n of ns) {
+          const key = n.type || 'unknown';
+          if (!buckets.has(key)) buckets.set(key, []);
+          buckets.get(key).push(n);
+        }
+        const out = [];
+        for (const [key, nodes] of buckets) {
+          const cap = CAP_TYPE[key] ?? 10;
+          nodes.sort((a, b) => (b.pagerank || 0) - (a.pagerank || 0));
+          for (let i = 0; i < Math.min(cap, nodes.length); i++) out.push(nodes[i]);
+        }
+        return out;
+      }
+      // Non-'all': bucket by preset category, evenly distribute cap
+      const cats = presetCategories();
+      for (const n of ns) {
+        for (const c of cats) {
+          if (c.matches(n)) {
+            if (!buckets.has(c.key)) buckets.set(c.key, []);
+            buckets.get(c.key).push(n);
+            break;
+          }
+        }
+      }
+      if (buckets.size === 0) return ns.slice(0, maxTotal);
+      const perCat = Math.max(15, Math.floor(maxTotal / buckets.size));
+      const out = [];
+      for (const nodes of buckets.values()) {
+        nodes.sort((a, b) => (b.pagerank || 0) - (a.pagerank || 0));
+        for (let i = 0; i < Math.min(perCat, nodes.length); i++) out.push(nodes[i]);
+      }
+      return out;
+    }
+
+    function applyView() {
+      const base = egoVis
+        ? allN.filter(n => egoVis.has(n.id))
+        : allN;
+      // `hidden` (entity-type filter) is only meaningful for preset='all', where the legend
+      // exposes entity-type toggles. Non-'all' presets have different legend categories
+      // (families, houses, factions, communities) and would leave the user with no UI to
+      // un-hide types. Ignore `hidden` in those presets — it persists silently and re-applies
+      // when the user returns to 'all'.
+      const typeFilter = preset === 'all'
+        ? (n => !hidden.has(n.type || 'unknown'))
+        : (() => true);
+      let ns = base.filter(n => typeFilter(n) && presetVisible(n));
+      // Preset-aware cap: full API mode returns all 1150 entities, we bound the visible
+      // set here so physics + rendering stay smooth. Skip when ego is active (already narrow).
+      if (!egoVis) ns = capPresetNodes(ns);
+      const ids = new Set(ns.map(n => n.id));
+      // Rebuild fresh link objects with STRING source/target every call.
+      // Force-graph mutates source/target to Node references after graphData(),
+      // so reusing mutated links across calls breaks when node subsets change.
+      // Weight noise floor: edges with weight <=1 are almost surely LLM artifacts
+      // (one entity mentioned once near another without real relationship).
+      const WEAK_FLOOR = 1;
+      const ls = [];
+      for (const l of allL) {
+        const s = l.source && typeof l.source === 'object' ? l.source.id : l.source;
+        const t = l.target && typeof l.target === 'object' ? l.target.id : l.target;
+        const w = l.weight || 0;
+        if (ids.has(s) && ids.has(t) && w > WEAK_FLOOR) {
+          ls.push({ source: s, target: t, type: l.type, description: l.description, weight: w });
+        }
+      }
+      // Preset-tier annotation using edge weight percentiles.
+      // Tier 1 = intra-cluster AND strong (top ~33%)
+      // Tier 2 = intra-cluster XOR strong
+      // Tier 3 = cross-cluster AND weak (bottom ~33%)
+      if (preset !== 'all' && ls.length) {
+        const sortedW = ls.map(l => l.weight).sort((a, b) => a - b);
+        const p66 = sortedW[Math.floor(sortedW.length * 0.66)] || 0;
+        const cats = presetCategories();
+        const catCache = new Map();
+        const catOf = (nodeId) => {
+          if (catCache.has(nodeId)) return catCache.get(nodeId);
+          const n = nmap[nodeId]; let key = null;
+          if (n) for (const c of cats) if (c.matches(n)) { key = c.key; break; }
+          catCache.set(nodeId, key);
+          return key;
+        };
+        for (const l of ls) {
+          const cs = catOf(l.source), ct = catOf(l.target);
+          const sameCluster = cs && ct && cs === ct;
+          const isStrong = l.weight >= p66;
+          l.tier = (sameCluster && isStrong) ? 1 : (sameCluster || isStrong) ? 2 : 3;
+        }
+      }
+      activeG().graphData({nodes: ns, links: ls});
+      if (mode === '3d') setTimeout(refreshMaterials, 50);
+      stats(ns.length, ls.length);
+      updateLegendCounts(ns);
+    }
+
+    function egoGraph(id, hops) {
+      distMap = bfs(id, hops);
+      maxDist = Object.values(distMap).reduce((m, v) => v > m ? v : m, 0);
+      egoVis = new Set(Object.keys(distMap));
+      applyView();
+      document.getElementById('gb').classList.add('on');
+    }
+    function fullGraph() {
+      focus = null;
+      distMap = {};
+      maxDist = 0;
+      egoVis = null;
+      document.getElementById('fl').textContent = 'Hacé clic en un nodo para enfocarlo';
+      document.getElementById('sfr').style.display = 'none';
+      document.getElementById('gb').classList.remove('on');
+      document.getElementById('ci').placeholder = 'Preguntá sobre este personaje...';
+      applyView();
+    }
+    function refreshNodeColors() {
+      if (mode === '3d') {
+        // Update THREE materials in place — preset changed but node refs are the same
+        allN.forEach(n => {
+          const mat = matMap[n.id];
+          const glow = glowMatMap[n.id];
+          if (!mat) return;
+          const hex = hexToInt(baseColor(n));
+          mat.color.setHex(hex);
+          if (glow) glow.color.setHex(hex);
+        });
+      } else if (G2) {
+        // Canvas 2D: reassign accessor to trigger re-render
+        G2.nodeColor(n => baseColor(n));
+      }
+    }
+    function switchPreset(name) {
+      if (!PRESETS[name]) return;
+      preset = name;
+      hiddenPresetCats.clear();     // fresh visibility state per preset
+      expandedPresetCats.clear();   // fresh expansion state per preset
+      // Exit ego mode — presets are a distinct experience
+      focus = null;
+      distMap = {};
+      maxDist = 0;
+      egoVis = null;
+      hoverLink = null;
+      document.getElementById('gb').classList.remove('on');
+      document.getElementById('sfr').style.display = 'none';
+      document.getElementById('fl').textContent =
+        name === 'all' ? 'Hacé clic en un nodo para enfocarlo' : 'Preset: ' + PRESETS[name].label;
+      document.getElementById('ci').placeholder = 'Preguntá sobre este personaje...';
+      // Toggle button visual state
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        b.classList.toggle('on', b.dataset.preset === name);
+      });
+      buildLegend();
+      applyView();
+      refreshNodeColors();
+      // Reset camera after physics has a chance to reorganize
+      activeG().d3ReheatSimulation();
+      setTimeout(() => activeG().zoomToFit(800, 60), 400);
+    }
+    function stats(n, l) {
+      document.getElementById('sn').textContent = n.toLocaleString();
+      document.getElementById('sl').textContent = l.toLocaleString();
+    }
+    // ─────  Preset-aware physics: link distance + cluster attraction  ─────
+    // Same-category links pull tighter; different-category use base distance.
+    function linkDistance(l) {
+      const base    = mode === '3d' ? 200 : 60;
+      const sameCat = mode === '3d' ? 90  : 28;
+      if (preset === 'all') return base;
+      const s = typeof l.source === 'object' ? l.source : nmap[l.source];
+      const t = typeof l.target === 'object' ? l.target : nmap[l.target];
+      if (!s || !t) return base;
+      const cats = presetCategories();
+      let ks = null, kt = null;
+      for (const c of cats) {
+        if (!ks && c.matches(s)) ks = c.key;
+        if (!kt && c.matches(t)) kt = c.key;
+        if (ks && kt) break;
+      }
+      return (ks && kt && ks === kt) ? sameCat : base;
+    }
+
+    // Custom d3-force: pulls each node toward the centroid of its preset category.
+    // Factory pattern so G3 and G2 each get their own instance with their own nodes ref.
+    function makeClusterForce() {
+      let nodes = null;
+      function force(alpha) {
+        if (preset === 'all' || !nodes || nodes.length === 0) return;
+        const cats = presetCategories();
+        // Bucket each node by category (skip nodes with no category = shouldn't happen post-filter)
+        const catOf = new Map();
+        for (const n of nodes) {
+          for (const c of cats) {
+            if (c.matches(n)) { catOf.set(n, c.key); break; }
+          }
+        }
+        // Compute centroids per category
+        const centroids = {};
+        for (const n of nodes) {
+          const k = catOf.get(n); if (!k) continue;
+          if (!centroids[k]) centroids[k] = { x:0, y:0, z:0, n:0 };
+          centroids[k].x += n.x || 0;
+          centroids[k].y += n.y || 0;
+          centroids[k].z += n.z || 0;
+          centroids[k].n++;
+        }
+        for (const c of Object.values(centroids)) {
+          if (c.n) { c.x /= c.n; c.y /= c.n; c.z /= c.n; }
+        }
+        // Apply attraction toward category centroid
+        const strength = 0.35 * alpha;
+        for (const n of nodes) {
+          const k = catOf.get(n); if (!k) continue;
+          const c = centroids[k]; if (!c) continue;
+          n.vx = (n.vx || 0) + (c.x - (n.x || 0)) * strength;
+          n.vy = (n.vy || 0) + (c.y - (n.y || 0)) * strength;
+          if (n.z !== undefined) n.vz = (n.vz || 0) + (c.z - (n.z || 0)) * strength;
+        }
+      }
+      force.initialize = function(_nodes) { nodes = _nodes; };
+      return force;
+    }
+
+    // Category descriptor per preset: {key, color, label, matches(node)}
+    function presetCategories() {
+      if (preset === 'casas') {
+        return ['gryffindor','slytherin','ravenclaw','hufflepuff'].map(h => ({
+          key: h, color: HOUSE_PRESET[h].color, label: HOUSE_PRESET[h].label,
+          matches: n => houseKey(n) === h,
+        }));
+      }
+      if (preset === 'familias') {
+        return Object.values(TOP_FAMILIES).map(f => ({
+          key: f.key, color: f.color, label: f.label,
+          // Single-cluster assignment (surname primary, expansion fallback)
+          matches: n => familyClusterOf(n) === f.key,
+        }));
+      }
+      if (preset === 'bandos') {
+        return [
+          { key:'de',    color: FACTION_COLORS['death eaters'].color,        label:'Death Eaters',
+            matches: n => hasLoyalty(n, 'death eaters') },
+          { key:'orden', color: FACTION_COLORS['order of the phoenix'].color, label:'Order of the Phoenix',
+            matches: n => hasLoyalty(n, 'order of the phoenix') },
+        ];
+      }
+      if (preset === 'comunidades') {
+        return TOP_COMMS_ARR.map((c, i) => ({
+          key: 'c'+c, color: COMM_COLORS[i], label: COMM_LABELS[i],
+          matches: n => n.community === c,
+        }));
+      }
+      // 'all' → the 8 entity types (with hide toggle)
+      return Object.entries(TYPES).map(([t, { color, label }]) => ({
+        key: t, color, label,
+        matches: n => (n.type || 'unknown') === t,
+        toggleable: true,
+      }));
+    }
+
+    function updateLegendCounts(nodes) {
+      const cats = presetCategories();
+      const items = document.querySelectorAll('#leg .li');
+      cats.forEach((cat, i) => {
+        const el = items[i]; if (!el) return;
+        const cnt = (nodes || []).reduce((a, n) => a + (cat.matches(n) ? 1 : 0), 0);
+        const spans = el.querySelectorAll('span');
+        const countSpan = spans[spans.length - 1];
+        if (countSpan) countSpan.textContent = cnt;
+      });
+    }
+
+    function buildLegend() {
+      const leg = document.getElementById('leg');
+      leg.innerHTML = '';
+      const cats = presetCategories();
+      cats.forEach(cat => {
+        const el = document.createElement('div');
+        el.className = 'li';
+        el.dataset.key = cat.key;
+        const cnt = (allN || []).reduce((a, n) => a + (cat.matches(n) ? 1 : 0), 0);
+        el.innerHTML =
+          '<div class="dot" style="background:'+cat.color+';box-shadow:0 0 5px '+cat.color+'99"></div>' +
+          '<span>'+cat.label+'</span>' +
+          '<span style="margin-left:auto;color:var(--muted);font-size:.7rem;font-variant-numeric:tabular-nums">'+cnt+'</span>';
+        if (cat.toggleable) {
+          // 'all' preset — uses `hidden` (Set of type strings) and load(singleType) API mode
+          if (hidden.has(cat.key)) el.style.opacity = '.3';
+          el.onclick = () => {
+            const wasHidden = hidden.has(cat.key);
+            if (wasHidden) {
+              hidden.delete(cat.key); el.style.opacity = '1';
+              if (currentLoadType) { currentLoadType = null; load(); return; }
+              applyView();
+            } else {
+              hidden.add(cat.key); el.style.opacity = '.3';
+              const visible = Object.keys(TYPES).filter(x => !hidden.has(x));
+              if (visible.length === 1) {
+                load(visible[0]);
+              } else {
+                applyView();
+              }
+            }
+          };
+        } else {
+          // Other presets — row click toggles hidden. Familias preset also gets a "+" button
+          // that expands the category to include maiden-name / loyalty matches.
+          if (hiddenPresetCats.has(cat.key)) el.style.opacity = '.3';
+          if (preset === 'familias') {
+            const btn = document.createElement('button');
+            const isExpanded = expandedPresetCats.has(cat.key);
+            btn.className = 'expand-btn' + (isExpanded ? ' on' : '');
+            if (isExpanded) {
+              const primary = (allN || []).filter(n => getFamilyKey(n) === cat.key).length;
+              const total   = (allN || []).filter(n => familyClusterOf(n) === cat.key).length;
+              const delta   = total - primary;
+              btn.textContent = delta > 0 ? `+${delta}` : '+';
+            } else {
+              btn.textContent = '+';
+            }
+            btn.title = 'Incluir nodos con este apellido en wiki loyalty (nacimiento/matrimonio)';
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              if (expandedPresetCats.has(cat.key)) expandedPresetCats.delete(cat.key);
+              else expandedPresetCats.add(cat.key);
+              buildLegend();
+              applyView();
+              refreshNodeColors();
+            };
+            el.appendChild(btn);
+          }
+          el.onclick = () => {
+            if (hiddenPresetCats.has(cat.key)) {
+              hiddenPresetCats.delete(cat.key);
+              el.style.opacity = '1';
+            } else {
+              hiddenPresetCats.add(cat.key);
+              el.style.opacity = '.3';
+            }
+            applyView();
+          };
+        }
+        leg.appendChild(el);
+      });
+    }
+
+    function linkifyEntities(text) {
+      const names = allN.map(n => n.name).sort((a,b) => b.length - a.length);
+      const placeholders = [];
+      let result = text;
+      for (const name of names) {
+        const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp('\\b' + esc + '\\b', 'g');
+        if (re.test(result)) {
+          const idx = placeholders.length;
+          result = result.replace(re, '\x00' + idx + '\x00');
+          placeholders.push(name);
+        }
+      }
+      // Escape LLM text before injecting HTML (placeholders \x00N\x00 survive escaping)
+      const h = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      result = h(result).replace(/\n/g, '<br>');
+      placeholders.forEach((name, i) => {
+        const safe = h(name.replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+        result = result.split('\x00' + i + '\x00').join(
+          '<span class="elink" onclick="focusNode(nmap[\'' + safe + '\'])">' + h(name) + '</span>'
+        );
+      });
+      return result;
+    }
+
+    async function load(singleType) {
+      const src = document.getElementById('sel').value;
+      const ls = document.getElementById('ls');
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('loading').style.opacity = '1';
+      ls.textContent = singleType ? `Invocando ${singleType}s…` : 'Consultando el mapa…';
+      document.getElementById('sn').textContent = '…';
+      document.getElementById('sl').textContent = '…';
+      try {
+        const url = singleType
+          ? `/api/graph/${src}?type=${encodeURIComponent(singleType)}&limit=200`
+          : `/api/graph/${src}?full=true`;
+        const d = await fetch(apiUrl(url)).then(r => r.json());
+        allN = d.nodes || []; allL = d.links || [];
+        buildAdj(allN, allL);
+        buildLegend();
+        currentLoadType = singleType || null;
+
+        const top = allN.reduce((a, b) => ((b.pagerank||0) > (a.pagerank||0) ? b : a), allN[0]);
+
+        if (top && !singleType) {
+          // Prepare everything BEFORE reveal: focus, ego, UI, camera
+          focus = top;
+          const counts = [1, 2, 3].map(h => Object.keys(bfs(top.id, h)).length);
+          let maxUseful = 1;
+          for (let i = 1; i < counts.length; i++) if (counts[i] > counts[i-1]) maxUseful = i + 1;
+          const slider = document.getElementById('hr');
+          slider.max = maxUseful;
+          slider.value = 1;
+          document.getElementById('hl').textContent = 1;
+          egoGraph(top.id, 1);  // triggers G.graphData with ego subset
+          document.getElementById('fl').textContent = 'Foco: ' + top.name;
+          document.getElementById('sf').textContent = top.name;
+          document.getElementById('sfr').style.display = '';
+          document.getElementById('ci').placeholder = 'Preguntá sobre "' + top.name + '"…';
+          ls.textContent = 'El mapa revela sus secretos…';
+
+          // Physics runs "underneath" — reveal only when settled and camera positioned
+          setTimeout(() => {
+            flyTo(top, 0, 600);  // instant camera, wide initial context
+            const load = document.getElementById('loading');
+            load.style.opacity = '0';
+            setTimeout(() => { load.style.display = 'none'; }, 500);
+          }, 1800);
+        } else {
+          egoVis = null; distMap = {};
+          applyView();
+          document.getElementById('sfr').style.display = 'none';
+          document.getElementById('gb').classList.remove('on');
+          const load = document.getElementById('loading');
+          load.style.opacity = '0';
+          setTimeout(() => { load.style.display = 'none'; }, 500);
+        }
+      } catch(e) {
+        ls.textContent = 'Error: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    // Search autocomplete
+    const searchEl = document.getElementById('search');
+    const suggEl   = document.getElementById('sugg');
+    searchEl.addEventListener('input', () => {
+      const q = searchEl.value.trim().toLowerCase();
+      suggEl.innerHTML = '';
+      if (q.length < 2) { suggEl.style.display = 'none'; return; }
+      const hits = allN.filter(n => n.name.toLowerCase().includes(q)).slice(0, 8);
+      if (!hits.length) { suggEl.style.display = 'none'; return; }
+      hits.forEach(n => {
+        const d = document.createElement('div');
+        d.textContent = n.name;
+        d.style.cssText = 'padding:6px 10px;font-size:.8rem;cursor:pointer;color:var(--text);';
+        d.onmouseenter = () => d.style.background = 'rgba(200,168,75,.12)';
+        d.onmouseleave = () => d.style.background = '';
+        d.onclick = () => focusNode(n);
+        suggEl.appendChild(d);
+      });
+      suggEl.style.display = 'block';
+    });
+    document.addEventListener('click', e => { if (!searchEl.contains(e.target)) suggEl.style.display = 'none'; });
+
+    document.getElementById('sel').addEventListener('change', load);
+    document.getElementById('gb').addEventListener('click', fullGraph);
+    document.querySelectorAll('.preset-btn').forEach(b => {
+      b.addEventListener('click', () => switchPreset(b.dataset.preset));
+    });
+    document.getElementById('hr').addEventListener('input', () => {
+      document.getElementById('hl').textContent = document.getElementById('hr').value;
+      if (focus) {
+        egoGraph(focus.id, +document.getElementById('hr').value);
+        activeG().d3ReheatSimulation();
+        setTimeout(() => flyTo(focus, 1200), 300);
+      }
+    });
+
+    // Magic wand particle trail
+    (function initFx() {
+      const cv = document.getElementById('fxCanvas');
+      const ctx = cv.getContext('2d');
+      const resize = () => { cv.width = window.innerWidth; cv.height = window.innerHeight; };
+      resize();
+      window.addEventListener('resize', resize);
+      const parts = [];
+      let lx = -1, ly = -1;
+      document.getElementById('graph3d').addEventListener('mousemove', e => {
+        const dx = lx < 0 ? 0 : e.clientX - lx;
+        const dy = ly < 0 ? 0 : e.clientY - ly;
+        const sp = Math.hypot(dx, dy);
+        lx = e.clientX; ly = e.clientY;
+        if (sp < 2) return;
+        const n = Math.min(2, Math.ceil(sp / 15));
+        for (let i = 0; i < n; i++) {
+          parts.push({
+            x: e.clientX + (Math.random() - 0.5) * 3,
+            y: e.clientY + (Math.random() - 0.5) * 3,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: -Math.random() * 0.5 - 0.1,
+            life: 1,
+            size: 0.9 + Math.random() * 1.6,
+          });
+        }
+      });
+      function tick() {
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        ctx.shadowColor = 'rgba(220,192,107,0.9)';
+        ctx.shadowBlur = 5;
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const p = parts[i];
+          p.x += p.vx; p.y += p.vy;
+          p.life -= 0.018;
+          if (p.life <= 0) { parts.splice(i, 1); continue; }
+          ctx.fillStyle = `rgba(220,192,107,${p.life * 0.7})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * (0.4 + p.life * 0.6), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+
+    // ─────────  2D renderer (lazy)  ─────────
+    function nodeRadius2D(n) {
+      // pagerank-weighted, coarser than 3D so top nodes stand out
+      const base = Math.max(2.5, Math.cbrt(nodeVal(n)) * 1.2);
+      if (focus && n.id === focus.id) return base * 1.9;
+      if (hoverTarget && n.id === hoverTarget.id) return base * 1.35;
+      return base;
+    }
+    function initG2() {
+      if (G2) return;
+      const el = document.getElementById('graph2d');
+      G2 = ForceGraph()(el)
+        .backgroundColor('#f5f5f7')
+        .nodeLabel(nodeTooltip)
+        .nodeRelSize(1)
+        .nodeVal(n => nodeRadius2D(n))
+        .nodeColor(n => baseColor(n))
+        .nodeCanvasObject((n, ctx) => {
+          const r = nodeRadius2D(n);
+          ctx.fillStyle = baseColor(n);
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+          ctx.fill();
+          if (focus && n.id === focus.id) {
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        })
+        .nodePointerAreaPaint((n, color, ctx) => {
+          const r = Math.max(4, nodeRadius2D(n));
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+          ctx.fill();
+        })
+        .linkColor(linkColorFn)
+        .linkWidth(linkWidthFn)
+        .linkLabel(linkLabelFn)
+        .onNodeClick(n => focusNode(n))
+        .onNodeHover(n => {
+          hoverTarget = n || null;
+          document.getElementById('graph2d').style.cursor = n ? 'pointer' : 'default';
+        })
+        .onLinkHover(l => {
+          if (l && focus) {
+            const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+            hoverLink = (s === focus.id || t === focus.id) ? l : null;
+          } else {
+            hoverLink = null;
+          }
+          document.getElementById('graph2d').style.cursor = hoverLink ? 'pointer' : 'default';
+          refreshLinks();
+        })
+        .d3AlphaDecay(0.04)
+        .d3VelocityDecay(0.25)
+        .cooldownTime(4000);
+      G2.d3Force('charge').strength(-260);
+      G2.d3Force('link').distance(linkDistance);
+      G2.d3Force('cluster', makeClusterForce());
+    }
+
+    function switchViewMode(m) {
+      if (m === mode) return;
+      mode = m;
+      document.body.classList.toggle('mode-2d', m === '2d');
+      document.getElementById('graph3d').style.display = m === '3d' ? '' : 'none';
+      document.getElementById('graph2d').style.display = m === '2d' ? 'block' : 'none';
+      if (m === '2d') initG2();
+      document.querySelectorAll('.view-btn').forEach(b => {
+        b.classList.toggle('on', b.dataset.view === m);
+      });
+      // Push current state to newly-active instance (preserves preset, focus, ego)
+      applyView();
+      refreshNodeColors();
+      activeG().d3ReheatSimulation();
+      setTimeout(() => {
+        if (focus) flyTo(focus, 800);
+        else activeG().zoomToFit(800, 60);
+      }, 500);
+    }
+
+    document.querySelectorAll('.view-btn').forEach(b => {
+      b.addEventListener('click', () => switchViewMode(b.dataset.view));
+    });
+
+    buildLegend();
+    load();
+  </script>
+  <script src="analytics.js"></script>
+  <script src="chat-panel.js"></script>
+</body>
+</html>
