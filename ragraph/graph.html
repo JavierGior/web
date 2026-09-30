@@ -241,21 +241,20 @@
       'malfoy family':     { key:'malfoy',     color:'#7ec8e3', label:'Malfoy' },
     };
     const FACTION_COLORS = {
-      'death eaters':          { color:'#8b1de8', label:'Death Eaters' },
-      'order of the phoenix':  { color:'#ffd400', label:'Order of the Phoenix' },
+      'death eaters':          { color:'#8b1de8', label:'Mortífagos' },
+      'order of the phoenix':  { color:'#ffd400', label:'Orden del Fénix' },
     };
-    // Top-6 Louvain communities on the pruned graph.
-    // Labels chosen based on representative members surfaced in each cluster.
-    const TOP_COMMS_ARR = [13, 24, 16, 38, 17, 26];
+    // Top-6 comunidades Louvain sobre la co-ocurrencia (etl/build_coocurrencia.py, ordenadas por menciones).
+    const TOP_COMMS_ARR = [0, 1, 2, 3, 4, 5];
     const TOP_COMMS = new Set(TOP_COMMS_ARR);
-    const COMM_COLORS = ['#2a7dff', '#4ade80', '#ff7a1a', '#ffd400', '#c8c8c8', '#8b1de8'];
+    const COMM_COLORS = ['#2a7dff', '#8b1de8', '#ff7a1a', '#ffd400', '#4ade80', '#c8c8c8'];
     const COMM_LABELS = [
-      'Trio y compañeros',    // c=13: Ron, Hermione, Lavender, Parvati, Trelawney, Lockhart
-      'Staff de Hogwarts',    // c=24: McGonagall, Flitwick, Sprout, Filch, Peeves
-      'Ministerio + Triwizard', // c=16: Dumbledore, Fudge, Fleur, Cedric, Krum, Percy
-      'Orden y Weasley',      // c=38: Molly, Arthur, Fred, George, Sirius, Lupin
-      'Potter / Dursley',     // c=17: Harry, James, Lily, Vernon, Petunia, Dudley
-      'Slytherin / Mortífagos', // c=26: Snape, Draco, Lucius, Bellatrix, Slughorn
+      'Vida en Hogwarts',             // c=0: Ron, Hermione, Snape, Draco, McGonagall, Neville, las casas
+      'La guerra contra Voldemort',   // c=1: Harry, Dumbledore, Voldemort, Ministerio, Mortífagos, Azkaban
+      'Los Weasley y la Orden',       // c=2: Sirius, Fred, George, Ginny, Arthur, Molly, Lupin, Moody
+      'Torneo de los Tres Magos',     // c=3: Cedric, Fleur, Krum, Bagman, Maxime, Mundial de Quidditch
+      'Hagrid y el Bosque Prohibido', // c=4: Hagrid, Buckbeak, Fang, Grawp, terrenos del castillo
+      'Los Dursley y el mundo muggle', // c=5: Vernon, Dudley, Petunia, Privet Drive, Londres
     ];
     const PRESETS = {
       all:         { label:'Todo' },
@@ -495,11 +494,11 @@
     function linkTooltip(l) {
       const s = l.source?.id ?? l.source;
       const t = l.target?.id ?? l.target;
-      const type = String(l.type || 'related to').toLowerCase().replace(/_/g, ' ');
-      const desc = l.description ? String(l.description).slice(0, 200) : '';
+      const type = String(l.type || 'relacionado con');
+      const desc = l.description ? String(l.description).slice(0, 220) : '';
+      const lab = id => (nmap[id] && nmap[id].label) || id;
       return `<div style="background:rgba(6,8,15,0.95);border:1px solid rgba(200,168,75,0.5);border-radius:8px;padding:10px 14px;color:#e6dfcf;font-family:system-ui,sans-serif;font-size:11px;box-shadow:0 6px 24px rgba(0,0,0,0.7),0 0 20px rgba(200,168,75,0.25);backdrop-filter:blur(8px);max-width:320px">
-        <div style="color:#dcc06b;font-size:12px;font-weight:600;text-align:center">${esc(s)} <span style="color:#c8a84b;margin:0 6px">→</span> ${esc(t)}</div>
-        <div style="color:#8a8578;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;text-align:center;margin-top:3px">${esc(type)}</div>
+        <div style="color:#dcc06b;font-size:12px;font-weight:600;text-align:center">${esc(lab(s))} <span style="color:#8a8578;font-weight:400;margin:0 4px">— ${esc(type)} →</span> ${esc(lab(t))}</div>
         ${desc ? `<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(200,168,75,0.25);font-size:11px;line-height:1.4;color:#c8a84b;font-style:italic">${esc(desc)}</div>` : ''}
       </div>`;
     }
@@ -509,48 +508,34 @@
       const isHoused = h && h !== 'Unknown';
       const accent = isHoused ? HC[h] : type.color;
       const parts = [
-        `<div style="font-family:'Cinzel Decorative',serif;color:${accent};font-size:15px;font-weight:700;margin-bottom:4px;text-shadow:0 0 12px ${accent}66">${esc(n.name)}</div>`,
+        `<div style="font-family:'Cinzel Decorative',serif;color:${accent};font-size:15px;font-weight:700;margin-bottom:4px;text-shadow:0 0 12px ${accent}66">${esc(n.label || n.name)}</div>`,
         `<div style="color:${type.color};font-size:10px;opacity:0.85;text-transform:uppercase;letter-spacing:1.5px">${type.label}</div>`,
       ];
       if (isHoused) {
-        parts.push(`<div style="margin-top:8px;font-size:11px;color:#b8b0a0">House: <span style="color:${HC[h]};font-weight:600">${h}</span></div>`);
+        parts.push(`<div style="margin-top:8px;font-size:11px;color:#b8b0a0">Casa: <span style="color:${HC[h]};font-weight:600">${h}</span></div>`);
       }
       if (ROLES[n.name]) {
-        parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Role:</span> ${esc(ROLES[n.name])}</div>`);
+        parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Rol:</span> ${esc(ROLES[n.name])}</div>`);
       }
-      // Family: other loaded persons sharing surname
-      if (n.type === 'person') {
-        const np = n.name.split(/\s+/);
-        if (np.length >= 2) {
-          const surname = np[np.length - 1];
-          if (surname.length >= 3) {
-            const fam = allN
-              .filter(o => o.id !== n.id && o.type === 'person' && o.name.endsWith(' ' + surname))
-              .map(o => o.name);
-            if (fam.length > 0) {
-              parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Family:</span> ${esc(fam.slice(0,5).join(', '))}</div>`);
-            }
-          }
-        }
-        // Additional family bonds from wiki_loyalty (birth/marriage) beyond the displayed surname
-        const memberships = getFamilyMemberships(n);
-        const primary = getFamilyKey(n);
-        const others = memberships.filter(k => k !== primary);
-        if (others.length > 0) {
-          const labels = others.map(k => (Object.values(TOP_FAMILIES).find(f => f.key === k) || {}).label || k);
-          parts.push(`<div style="margin-top:4px;font-size:11px;color:#b8b0a0"><span style="color:#c8a84b">Vínculos:</span> ${esc(labels.join(', '))}</div>`);
-        }
+      // Vínculos verificados, leídos desde este nodo ("madre de Harry Potter"), familia primero
+      const ORD = { familia: 0, social: 1, institucional: 2, lugares: 3 };
+      const mine = allL.map(l => {
+        const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
+        if (s === n.id) return { ord: ORD[l.categoria] ?? 9, txt: `${l.type} ${(nmap[t] && nmap[t].label) || t}` };
+        if (t === n.id) return { ord: ORD[l.categoria] ?? 9, txt: `${l.type_inv} ${(nmap[s] && nmap[s].label) || s}` };
+        return null;
+      }).filter(Boolean).sort((a, b) => a.ord - b.ord);
+      if (mine.length) {
+        const more = mine.length > 6 ? ` <span style="opacity:.6">(+${mine.length - 6})</span>` : '';
+        parts.push(`<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(200,168,75,0.3);font-size:11px;color:#b8b0a0;line-height:1.5"><span style="color:#c8a84b">Vínculos:</span> ${mine.slice(0, 6).map(m => esc(m.txt)).join(' · ')}${more}</div>`);
       }
-      // Direct link description with Harry (if not Harry himself)
-      if (n.id !== 'Harry Potter' && adj['Harry Potter']?.has(n.id)) {
-        const link = allL.find(l => {
-          const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
-          return (s === n.id && t === 'Harry Potter') || (s === 'Harry Potter' && t === n.id);
-        });
-        const desc = link?.description ? String(link.description).slice(0, 140) : null;
-        if (desc) {
-          parts.push(`<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(200,168,75,0.3);font-size:10px;color:#c8a84b;font-style:italic;line-height:1.4">${esc(desc)}</div>`);
-        }
+      // Co-ocurrencia: dato objetivo, no un vínculo
+      const co = (coocOf[n.id] || []).slice(0, 3).map(c => {
+        const o = c.source === n.id ? c.target : c.source;
+        return `${(nmap[o] && nmap[o].label) || o} (${c.pasajes})`;
+      });
+      if (co.length) {
+        parts.push(`<div style="margin-top:4px;font-size:10.5px;color:#8a8578"><span style="color:#c8a84b">Aparece más con:</span> ${esc(co.join(', '))} <span style="opacity:.7">pasajes</span></div>`);
       }
       // Wrap with accent border + glow
       return `<div style="background:rgba(6,8,15,0.94);border:1px solid ${accent};border-radius:8px;padding:10px 12px;color:#e6dfcf;font-family:system-ui,sans-serif;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,0.7),0 0 20px ${accent}44;backdrop-filter:blur(8px);max-width:280px">${parts.join('')}</div>`;
@@ -630,6 +615,7 @@
     }
 
     let allN = [], allL = [], adj = {}, nmap = {}, focus = null, hidden = new Set();
+    let allC = [], coocOf = {};  // co-ocurrencia (pasajes compartidos): layout invisible + "aparece más con"
     let egoVis = null;         // Set of node IDs in current ego, or null for full graph
     let currentLoadType = null; // null = stratified, 'spell' etc = single-type API mode
     let hoverTarget = null;
@@ -699,6 +685,7 @@
     G3.d3Force('charge').strength(-600);
     G3.d3Force('link').distance(linkDistance);
     G3.d3Force('cluster', makeClusterForce());
+    G3.d3Force('cooc', makeCoocForce());
 
     // Star field — three spherical shells, no visible cube edges at zoom-out.
     // Each star gets uniform-in-volume placement inside its shell via
@@ -766,10 +753,10 @@
       refreshLinks();  // re-run link accessors for new focus-connected styling (no node flicker)
       // Single smooth camera move — no chain
       flyTo(n, 1500);
-      document.getElementById('fl').textContent = 'Foco: ' + n.name;
-      document.getElementById('sf').textContent = n.name;
+      document.getElementById('fl').textContent = 'Foco: ' + (n.label || n.name);
+      document.getElementById('sf').textContent = n.label || n.name;
       document.getElementById('sfr').style.display = '';
-      document.getElementById('ci').placeholder = 'Preguntá sobre "' + n.name + '"…';
+      document.getElementById('ci').placeholder = 'Preguntá sobre "' + (n.label || n.name) + '"…';
       document.getElementById('search').value = '';
       document.getElementById('sugg').style.display = 'none';
     }
@@ -999,6 +986,23 @@
 
     // Custom d3-force: pulls each node toward the centroid of its preset category.
     // Factory pattern so G3 and G2 each get their own instance with their own nodes ref.
+    // Atrae suavemente a quienes comparten muchos pasajes (score coseno). No dibuja nada: solo ubica.
+    function makeCoocForce() {
+      let byId = new Map();
+      function force(alpha) {
+        const k = 0.04 * alpha;
+        for (const c of allC) {
+          const a = byId.get(c.source), b = byId.get(c.target);
+          if (!a || !b) continue;
+          const w = k * c.score;
+          const dx = (b.x - a.x) * w, dy = (b.y - a.y) * w, dz = ((b.z || 0) - (a.z || 0)) * w;
+          a.vx += dx; a.vy += dy; b.vx -= dx; b.vy -= dy;
+          if (a.z !== undefined) { a.vz += dz; b.vz -= dz; }
+        }
+      }
+      force.initialize = ns => { byId = new Map(ns.map(n => [n.id, n])); };
+      return force;
+    }
     function makeClusterForce() {
       let nodes = null;
       function force(alpha) {
@@ -1055,9 +1059,9 @@
       }
       if (preset === 'bandos') {
         return [
-          { key:'de',    color: FACTION_COLORS['death eaters'].color,        label:'Death Eaters',
+          { key:'de',    color: FACTION_COLORS['death eaters'].color,        label:'Mortífagos',
             matches: n => hasLoyalty(n, 'death eaters') },
-          { key:'orden', color: FACTION_COLORS['order of the phoenix'].color, label:'Order of the Phoenix',
+          { key:'orden', color: FACTION_COLORS['order of the phoenix'].color, label:'Orden del Fénix',
             matches: n => hasLoyalty(n, 'order of the phoenix') },
         ];
       }
@@ -1162,23 +1166,25 @@
     }
 
     function linkifyEntities(text) {
-      const names = allN.map(n => n.name).sort((a,b) => b.length - a.length);
+      // Nombre en inglés y en español (el chat responde "Mortífagos"): texto -> id del nodo
+      const names = allN.flatMap(n => [[n.name, n.id]].concat(n.label && n.label !== n.name ? [[n.label, n.id]] : []))
+        .sort((a, b) => b[0].length - a[0].length);
       const placeholders = [];
       let result = text;
-      for (const name of names) {
+      for (const [name, id] of names) {
         const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const re = new RegExp('\\b' + esc + '\\b', 'g');
+        const re = new RegExp('(?<![\\wÀ-ÿ])' + esc + '(?![\\wÀ-ÿ])', 'g');
         if (re.test(result)) {
           const idx = placeholders.length;
           result = result.replace(re, '\x00' + idx + '\x00');
-          placeholders.push(name);
+          placeholders.push([name, id]);
         }
       }
       // Escape LLM text before injecting HTML (placeholders \x00N\x00 survive escaping)
       const h = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
       result = h(result).replace(/\n/g, '<br>');
-      placeholders.forEach((name, i) => {
-        const safe = h(name.replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+      placeholders.forEach(([name, id], i) => {
+        const safe = h(id.replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
         result = result.split('\x00' + i + '\x00').join(
           '<span class="elink" onclick="focusNode(nmap[\'' + safe + '\'])">' + h(name) + '</span>'
         );
@@ -1199,7 +1205,10 @@
           ? `/api/graph/${src}?type=${encodeURIComponent(singleType)}&limit=200`
           : `/api/graph/${src}?full=true`;
         const d = await fetch(apiUrl(url)).then(r => r.json());
-        allN = d.nodes || []; allL = d.links || [];
+        allN = d.nodes || []; allL = d.links || []; allC = d.cooc || [];
+        coocOf = {};
+        allC.forEach(c => { (coocOf[c.source] ||= []).push(c); (coocOf[c.target] ||= []).push(c); });
+        Object.values(coocOf).forEach(l => l.sort((a, b) => b.pasajes - a.pasajes));
         buildAdj(allN, allL);
         buildLegend();
         currentLoadType = singleType || null;
@@ -1252,11 +1261,11 @@
       const q = searchEl.value.trim().toLowerCase();
       suggEl.innerHTML = '';
       if (q.length < 2) { suggEl.style.display = 'none'; return; }
-      const hits = allN.filter(n => n.name.toLowerCase().includes(q)).slice(0, 8);
+      const hits = allN.filter(n => n.name.toLowerCase().includes(q) || (n.label || '').toLowerCase().includes(q)).slice(0, 8);
       if (!hits.length) { suggEl.style.display = 'none'; return; }
       hits.forEach(n => {
         const d = document.createElement('div');
-        d.textContent = n.name;
+        d.textContent = n.label || n.name;
         d.style.cssText = 'padding:6px 10px;font-size:.8rem;cursor:pointer;color:var(--text);';
         d.onmouseenter = () => d.style.background = 'rgba(200,168,75,.12)';
         d.onmouseleave = () => d.style.background = '';
@@ -1391,6 +1400,7 @@
       G2.d3Force('charge').strength(-260);
       G2.d3Force('link').distance(linkDistance);
       G2.d3Force('cluster', makeClusterForce());
+      G2.d3Force('cooc', makeCoocForce());
     }
 
     function switchViewMode(m) {
@@ -1420,7 +1430,7 @@
     buildLegend();
     load();
   </script>
-  <script src="analytics.js?v=953194ec"></script>
+  <script src="analytics.js?v=23b08325"></script>
   <script src="chat-panel.js?v=c87fa70f"></script>
   <script src="help.js?v=d1d7cb38"></script>
   <script>

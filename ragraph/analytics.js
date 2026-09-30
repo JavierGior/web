@@ -30,7 +30,7 @@ const DESC = {
   proportion: 'Proporción de menciones — participación porcentual de las N entidades más mencionadas. El área de cada porción refleja su peso relativo en la saga.',
   timeline:   'Serie temporal — trayectoria de menciones a lo largo de los 7 libros. Muestra el arco narrativo de un personaje: cuándo surge, alcanza su pico y decae.',
   entityTypes:'Tipos de entidades — distribución del grafo por categoría (Persona, Lugar, Objeto, etc.). Muestra la composición estructural del grafo de conocimiento.',
-  relTypes:   'Tipos de relaciones — frecuencia de cada tipo de vínculo semántico en el grafo. Refleja la densidad relacional del corpus por categoría.',
+  relTypes:   'Tipos de vínculos — cuántos vínculos verificados hay de cada tipo (familia, social, institucional, lugares). Cada uno sale de Wikidata, de la wiki de Harry Potter o de una cita literal del libro.',
 };
 
 // ── detect ────────────────────────────────────────────────────────────────
@@ -251,25 +251,28 @@ async function run(aq) {
     }
     if (aq.sub === 'rel-types') {
       const d = await _get('/api/introspection/relationship-types');
-      return _result(`<p>Tipos de relaciones semánticas en el corpus HP — <strong>${d.total}</strong> en total.</p>`,
-        { type: 'bar', maxHeight: Math.min(d.types.length * 26, 320), tooltip: { label: item => ` ${item.raw} relaciones` },
+      return _result(`<p>Tipos de vínculos verificados — <strong>${d.total}</strong> en total (familia, social, institucional y lugares).</p>`,
+        { type: 'bar', maxHeight: Math.min(d.types.length * 26, 320), tooltip: { label: item => ` ${item.raw} vínculos` },
           data: { labels: d.types.map(t => t.type), datasets: [{ data: d.types.map(t => t.n), backgroundColor: d.types.map((_, i) => i === 0 ? GOLD : DIM), borderRadius: 4 }] },
           options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: _hScales() } },
-        { title: 'Tipos de relaciones — corpus HP', description: DESC.relTypes });
+        { title: 'Tipos de vínculos — corpus HP', description: DESC.relTypes });
     }
     if (aq.sub === 'summary') {
       const d = await _get('/api/introspection/summary');
-      return _result(`<p>Resumen del grafo HP:</p><ul style="margin:8px 0 4px 18px;line-height:1.9"><li><strong>${d.entities}</strong> entidades únicas</li><li><strong>${d.semantic_rels}</strong> relaciones semánticas</li><li><strong>${d.appearances}</strong> apariciones en fragmentos</li></ul>`, null, null);
+      return _result(`<p>Resumen del grafo HP:</p><ul style="margin:8px 0 4px 18px;line-height:1.9"><li><strong>${d.entities}</strong> entidades únicas</li><li><strong>${d.vinculos}</strong> vínculos verificados (familia, social, instituciones, lugares)</li><li><strong>${d.semantic_rels}</strong> interacciones extraídas del texto (contexto del chat)</li><li><strong>${d.appearances}</strong> apariciones en fragmentos</li></ul>`, null, null);
     }
     const d = await _get(`/api/introspection/entity-relations?entity=${encodeURIComponent(aq.entity || '')}`);
     if (!d.entity) return _result(`<p>No encontré <strong>${_esc(aq.entity)}</strong> en el grafo.</p>`, null, null);
-    const out = d.relations.filter(r => r.outgoing), inc = d.relations.filter(r => !r.outgoing);
-    const fmt = rs => rs.map(r => `<em>${_esc(r.type)}</em> → ${_esc(r.other)}`).join(' · ');
+    if (!d.relations.length) return _result(`<p><strong>${_esc(d.entity)}</strong> no tiene vínculos verificados en el grafo.</p>`, null, null);
+    // Todo leído desde la entidad ("madre de Harry Potter"), agrupado por categoría; la fuente va en el tooltip
+    const groups = {};
+    d.relations.forEach(r => (groups[r.categoria] ||= []).push(r));
+    const rows = Object.entries(groups).map(([cat, rs]) =>
+      `<p style="margin-top:8px;font-size:.88rem"><span style="color:#c8a84b">${_esc(cat)}:</span> ` +
+      rs.map(r => `<span title="${_esc(r.evidencia || '')}">${_esc(r.type)} <strong>${_esc(r.other)}</strong></span>`).join(' · ') + `</p>`).join('');
     return _result(
-      `<p>Relaciones de <strong>${_esc(d.entity)}</strong> <span style="opacity:.6">(${_esc(d.type || '')})</span>:</p>
-       ${out.length ? `<p style="margin-top:8px;font-size:.88rem">Sale: ${fmt(out)}</p>` : ''}
-       ${inc.length ? `<p style="margin-top:6px;font-size:.88rem">Entra: ${fmt(inc)}</p>` : ''}
-       <p style="font-size:.72rem;margin-top:8px;opacity:.5">${d.relations.length} relaciones totales</p>`, null, null);
+      `<p>Vínculos de <strong>${_esc(d.entity)}</strong> <span style="opacity:.6">(${_esc(d.type || '')})</span>:</p>${rows}
+       <p style="font-size:.72rem;margin-top:8px;opacity:.5">${d.relations.length} vínculos verificados · pasá el mouse para ver la fuente</p>`, null, null);
   }
 
   if (aq.type === 'catalog') {
