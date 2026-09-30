@@ -21,25 +21,13 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 32px 430px 32px 16px;
+      padding: 32px 430px 88px 16px;  /* abajo: lugar para la navegación fija (viewnav.js) */
       line-height: 1.5;
     }
     .container { max-width: 1100px; margin: 0 auto; }
 
     header h1 { font-size: 1.4rem; font-weight: 600; }
     header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
-    header nav { margin-top: 10px; display: flex; gap: 8px; }
-    header nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      border: 1px solid var(--border);
-      padding: 4px 12px;
-      border-radius: 6px;
-      transition: border-color .15s, color .15s;
-    }
-    header nav a:hover { border-color: var(--accent); color: var(--text); }
-    header nav a.active { color: var(--accent); border-color: var(--accent); }
 
     .toolbar {
       display: flex;
@@ -157,11 +145,6 @@
     <header>
       <h1>Harry Potter — Canvas</h1>
       <p>Reportes generados desde el chat.</p>
-      <nav>
-        <a href="./">Chat</a>
-        <a href="graph.html">Grafo</a>
-        <a href="canvas.html" class="active">Canvas</a>
-      </nav>
     </header>
 
     <div class="toolbar">
@@ -385,5 +368,21 @@ ${scripts}
   </div>
   <script src="analytics.js?v=953194ec"></script>
   <script src="chat-panel.js?v=c87fa70f"></script>
+  <script src="help.js?v=d1d7cb38"></script>
+  <script>
+    RAGraphHelp.register('canvas', [
+      { sel: '#canvas-area', title: 'Tu reporte',
+        text: 'Acá quedan los gráficos que mandás con «→ Canvas» desde cualquier chat. Se guardan en este navegador.' },
+      { sel: '.widget-card:first-child .widget-filters', badge: false, title: 'Filtros',
+        text: 'Tocá una pastilla para ocultar o mostrar un libro o una entidad del gráfico.' },
+      { sel: '.widget-card:first-child .widget-info-wrap', badge: false, title: '¿Qué muestra cada gráfico?',
+        text: 'Pasá el mouse por el «?» dorado de cada gráfico para ver qué representa y cómo leerlo.' },
+      { sel: '#export-btn', title: 'Exportar', text: 'Descargá todo el reporte como una página HTML para compartirlo.' },
+      { sel: '#cp', title: 'Chat del Canvas', text: 'Pedí gráficos acá mismo y mandalos al reporte sin salir de esta vista.' },
+      { sel: '#viewnav a', badge: false, title: 'Vistas',
+        text: 'Cambiá entre el Chat, el Grafo y el Canvas, donde armás tu reporte con los gráficos que guardes. El «?» de al lado repite esta guía.' },
+    ]);
+  </script>
+  <script src="viewnav.js?v=fcf3ac1c"></script>
 </body>
 </html>

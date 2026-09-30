@@ -65,6 +65,7 @@
     }
     #lp h2 { font-size: .72rem; font-weight: 400; color: var(--gold); letter-spacing: 1px; font-family: var(--font-title); text-shadow: 0 0 14px rgba(200,168,75,.5); }
     label  { font-size: .78rem; color: var(--muted); display: block; margin-bottom: 4px; }
+    input[type=range] { accent-color: var(--gold); }
     select, input[type=range] {
       width: 100%; background: rgba(0,0,0,.45); color: var(--text);
       border: 1px solid var(--border); border-radius: 6px;
@@ -140,18 +141,6 @@
     #cs:disabled { opacity: .5; cursor: not-allowed; }
     #fl { font-size: .75rem; color: var(--muted); min-height: 1em; }
 
-    #viewnav {
-      position: fixed; bottom: 16px; left: 16px;
-      display: flex; gap: 8px; z-index: 10;
-    }
-    #viewnav a {
-      background: var(--panel); backdrop-filter: blur(16px);
-      border: 1px solid var(--border-gold); border-radius: 8px;
-      padding: 8px 14px; color: var(--muted); font-size: .8rem;
-      text-decoration: none; transition: color .15s, border-color .15s;
-    }
-    #viewnav a:hover { color: var(--text); border-color: var(--gold); }
-    #viewnav a.active { color: var(--gold); border-color: var(--gold); }
     .elink {
       color: var(--gold); cursor: pointer;
       border-bottom: 1px solid rgba(200,168,75,.35);
@@ -159,69 +148,17 @@
     }
     .elink:hover { border-bottom-color: var(--gold); }
 
-    /* ─────────  Data-science theme (2D mode)  ───────── */
-    body.mode-2d {
-      --bg: #f5f5f7;
-      --panel: #ffffff;
-      --border: #e5e7eb;
-      --border-gold: #d4d4d8;
-      --text: #18181b;
-      --muted: #64748b;
-      --gold: #2563eb;
-      --gold-d: #1d4ed8;
-      --gold-l: #60a5fa;
-      --font-title: 'Inter', system-ui, -apple-system, sans-serif;
-      background: #f5f5f7;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    /* 2D: misma estética que 3D (degradé del body + estrellas estáticas). Antes era un tema claro aparte. */
+    #graph2d {
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.7), transparent),
+        radial-gradient(1px 1px at 120px 80px, rgba(255,255,255,.45), transparent),
+        radial-gradient(1.5px 1.5px at 200px 150px, rgba(245,227,163,.6), transparent),
+        radial-gradient(1px 1px at 300px 220px, rgba(255,255,255,.4), transparent),
+        radial-gradient(1px 1px at 60px 260px, rgba(255,255,255,.6), transparent),
+        radial-gradient(1px 1px at 340px 40px, rgba(255,255,255,.5), transparent);
+      background-size: 360px 300px;
     }
-    body.mode-2d #lp,
-    body.mode-2d #cp,
-    body.mode-2d #presetBar,
-    body.mode-2d #viewnav a {
-      backdrop-filter: none;
-      background: #ffffff;
-      border-radius: 6px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    }
-    body.mode-2d #cp { background: #ffffff; }
-    body.mode-2d #lp h2,
-    body.mode-2d #cp h2 {
-      text-shadow: none;
-      font-family: 'Inter', system-ui, sans-serif;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: #0f172a;
-    }
-    body.mode-2d #presetBar .btn {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-weight: 500;
-      letter-spacing: 0;
-    }
-    body.mode-2d .btn { border-color: #e5e7eb; color: #64748b; }
-    body.mode-2d .btn:hover { color: #0f172a; border-color: #2563eb; }
-    body.mode-2d .btn.on { color: #2563eb; border-color: #2563eb; background: #eff6ff; }
-    body.mode-2d select, body.mode-2d input[type=range], body.mode-2d input[type=text], body.mode-2d #ci {
-      background: #f8fafc; color: #0f172a; border-color: #e5e7eb;
-    }
-    body.mode-2d #ci:focus, body.mode-2d input[type=text]:focus, body.mode-2d select:focus {
-      outline: none; border-color: #2563eb;
-    }
-    body.mode-2d #cs { background: #2563eb; color: #ffffff; }
-    body.mode-2d #cs:hover { background: #1d4ed8; }
-    body.mode-2d .q {
-      background: #eff6ff; color: #1e293b;
-      border-left-color: #2563eb;
-    }
-    body.mode-2d .a { color: #0f172a; }
-    body.mode-2d #sugg { background: #ffffff; border-color: #e5e7eb; }
-    body.mode-2d .elink {
-      color: #2563eb;
-      border-bottom-color: rgba(37,99,235,0.4);
-    }
-    body.mode-2d .elink:hover { border-bottom-color: #2563eb; }
-    body.mode-2d #fxCanvas { display: none; }
-    body.mode-2d #presetBar .sep { background: #e5e7eb; opacity: 1; }
   </style>
   <script src="config.js?v=6ee3deb9"></script>
   <script src="wakeup.js?v=dd83b694"></script>
@@ -277,11 +214,6 @@
     <button id="cs">Preguntar</button>
   </div>
 
-  <div id="viewnav">
-    <a href="./">Chat</a>
-    <a href="graph.html" class="active">Grafo</a>
-    <a href="canvas.html">Canvas</a>
-  </div>
 
   <script>
     const HC = { Gryffindor:'#cc2200', Slytherin:'#2d7a45', Ravenclaw:'#2255aa', Hufflepuff:'#e8b830', Unknown:'#9988bb' };
@@ -528,20 +460,15 @@
     // 2=intra XOR strong, 3=cross-cluster & weak (l.tier annotated in applyView).
     // Density (width × opacity) roughly 27:6:1 between tiers.
     function linkColorFn(l) {
-      const light = mode === '2d';
-      const dim     = light ? 'rgba(15,23,42,0.10)'    : 'rgba(255,255,255,0.07)';
-      const dimmer  = light ? 'rgba(15,23,42,0.08)'    : 'rgba(255,255,255,0.06)';
-      const focused = light ? 'rgba(37,99,235,0.55)'   : 'rgba(220,192,107,0.32)';
-      const hovered = light ? 'rgba(37,99,235,0.95)'   : 'rgba(220,192,107,0.98)';
       if (focus) {
         const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
-        if (s !== focus.id && t !== focus.id) return dimmer;
-        return (hoverLink && l === hoverLink) ? hovered : focused;
+        if (s !== focus.id && t !== focus.id) return 'rgba(255,255,255,0.06)';
+        return (hoverLink && l === hoverLink) ? 'rgba(220,192,107,0.98)' : 'rgba(220,192,107,0.32)';
       }
-      if (l.tier === 1) return light ? 'rgba(15,23,42,0.55)' : 'rgba(255,255,255,0.55)';
-      if (l.tier === 2) return light ? 'rgba(15,23,42,0.20)' : 'rgba(255,255,255,0.20)';
-      if (l.tier === 3) return light ? 'rgba(15,23,42,0.06)' : 'rgba(255,255,255,0.06)';
-      return dim;
+      if (l.tier === 1) return 'rgba(255,255,255,0.55)';
+      if (l.tier === 2) return 'rgba(255,255,255,0.20)';
+      if (l.tier === 3) return 'rgba(255,255,255,0.06)';
+      return 'rgba(255,255,255,0.07)';
     }
     function linkWidthFn(l) {
       const base = mode === '2d' ? 0.8 : 0.5;
@@ -1412,19 +1339,23 @@
       if (G2) return;
       const el = document.getElementById('graph2d');
       G2 = ForceGraph()(el)
-        .backgroundColor('#f5f5f7')
+        .backgroundColor('rgba(0,0,0,0)')  // se ve el degradé + estrellas de #graph2d
         .nodeLabel(nodeTooltip)
         .nodeRelSize(1)
         .nodeVal(n => nodeRadius2D(n))
         .nodeColor(n => baseColor(n))
         .nodeCanvasObject((n, ctx) => {
-          const r = nodeRadius2D(n);
-          ctx.fillStyle = baseColor(n);
+          const r = nodeRadius2D(n), c = baseColor(n);
+          ctx.save();
+          ctx.shadowColor = c;                      // halo, equivalente al glow del 3D
+          ctx.shadowBlur = Math.min(r * 1.6, 14);
+          ctx.fillStyle = c;
           ctx.beginPath();
           ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
           ctx.fill();
+          ctx.restore();
           if (focus && n.id === focus.id) {
-            ctx.strokeStyle = '#0f172a';
+            ctx.strokeStyle = '#c8a84b';
             ctx.lineWidth = 1.5;
             ctx.stroke();
           }
@@ -1491,5 +1422,27 @@
   </script>
   <script src="analytics.js?v=953194ec"></script>
   <script src="chat-panel.js?v=c87fa70f"></script>
+  <script src="help.js?v=d1d7cb38"></script>
+  <script>
+    RAGraphHelp.register('grafo', [
+      { sel: '#presetBar .preset-btn', title: 'Agrupaciones',
+        text: 'Reorganizá el grafo por casa de Hogwarts, familia, bando o comunidad detectada. «Todo» vuelve a la vista general.' },
+      { sel: '#presetBar .view-btn', title: '3D o 2D',
+        text: 'Elegí cómo ver el grafo: en 3D lo explorás girándolo; en 2D queda plano y más fácil de leer.' },
+      { sel: '#search', title: 'Buscar un personaje', text: 'Escribí un nombre y saltá directo a ese nodo.' },
+      { sel: '#hr', title: 'Grados de separación',
+        text: 'Cuántos saltos de relaciones se muestran alrededor del personaje enfocado: 1 = solo sus vínculos directos.' },
+      { sel: '#gb', title: 'Grafo completo', text: 'Sale del foco y muestra todas las entidades principales a la vez.' },
+      { sel: '#lp > div:has(#leg)', title: 'Leyenda',
+        text: 'Colores por tipo de entidad y cuántas hay en pantalla. Tocá un tipo para ocultarlo o volver a mostrarlo.' },
+      { sel: '#graph3d', center: true, badge: false, title: 'El grafo',
+        text: 'Cada punto es una entidad de los libros y cada línea, una relación. Hacé clic en un nodo para enfocarlo; arrastrá para girar o mover y usá la rueda para el zoom.' },
+      { sel: '#cp', title: 'Chat del grafo',
+        text: 'Preguntá sobre el personaje enfocado o pedí gráficos («top 10 personajes»). Los nombres de la respuesta son links al grafo.' },
+      { sel: '#viewnav a', badge: false, title: 'Vistas',
+        text: 'Cambiá entre el Chat, el Grafo y el Canvas, donde armás tu reporte con los gráficos que guardes. El «?» de al lado repite esta guía.' },
+    ]);
+  </script>
+  <script src="viewnav.js?v=fcf3ac1c"></script>
 </body>
 </html>

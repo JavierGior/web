@@ -25,25 +25,13 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 32px 16px;
+      padding: 32px 16px 88px;  /* abajo: lugar para la navegación fija (viewnav.js) */
       line-height: 1.5;
     }
     .container { max-width: 880px; margin: 0 auto; }
     header { margin-bottom: 24px; }
     header h1 { font-size: 1.4rem; font-weight: 600; }
     header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
-    header nav { margin-top: 10px; display: flex; gap: 8px; }
-    header nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      border: 1px solid var(--border);
-      padding: 4px 12px;
-      border-radius: 6px;
-      transition: border-color .15s, color .15s;
-    }
-    header nav a:hover { border-color: var(--accent); color: var(--text); }
-    header nav a.active { color: var(--accent); border-color: var(--accent); }
     .ask-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -185,11 +173,6 @@
     <header>
       <h1>Harry Potter — Grafo de Conocimiento</h1>
       <p>Preguntá sobre los 7 libros. Conversación multi-turno.</p>
-      <nav>
-        <a href="./" class="active">Chat</a>
-        <a href="graph.html">Grafo</a>
-        <a href="canvas.html">Canvas</a>
-      </nav>
     </header>
 
     <div class="ask-card">
@@ -437,5 +420,18 @@
       }
     }
   </script>
+  <script src="help.js?v=d1d7cb38"></script>
+  <script>
+    RAGraphHelp.register('chat', [
+      { sel: '#prompt', title: 'Tu pregunta',
+        text: 'Preguntá lo que quieras de los 7 libros. Si pedís datos —«top 10 personajes», «serie temporal de Hermione»— la respuesta es un gráfico al instante, sin IA.' },
+      { sel: '#examples-container', title: 'Ejemplos', text: 'Tocá uno para cargarlo en el cuadro de pregunta.' },
+      { sel: '#ask-btn', badge: false, title: 'Gráficos y Canvas',
+        text: 'Escribí «qué gráficos puedo pedir» para ver todos los tipos. Cada gráfico trae un botón «→ Canvas» para guardarlo en tu reporte.' },
+      { sel: '#viewnav a', badge: false, title: 'Vistas',
+        text: 'Cambiá entre el Chat, el Grafo y el Canvas, donde armás tu reporte con los gráficos que guardes. El «?» de al lado repite esta guía.' },
+    ]);
+  </script>
+  <script src="viewnav.js?v=fcf3ac1c"></script>
 </body>
 </html>
