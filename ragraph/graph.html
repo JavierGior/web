@@ -165,6 +165,19 @@
         radial-gradient(1px 1px at 340px 40px, rgba(255,255,255,.5), transparent);
       background-size: 360px 300px;
     }
+    /* Celular: navegación y agrupaciones arriba, leyenda plegable, chat abajo (ver chat-panel.js) */
+    @media (max-width: 768px) {
+      body #viewnav { left: 8px; top: 8px; }
+      #presetBar { top: 56px; left: 8px; right: 8px; transform: none; max-width: none;
+        flex-wrap: nowrap; overflow-x: auto; padding: 6px; }
+      #presetBar .btn { flex: 0 0 auto; }
+      #lp { top: 112px; left: 8px; width: min(240px, calc(100vw - 16px)); max-height: calc(100vh - 400px); overflow-y: auto; }
+      #lp h2 { cursor: pointer; }
+      #lp h2::after { content: ' ▾'; }
+      #lp.collapsed h2::after { content: ' ▸'; }
+      #lp.collapsed > *:not(h2) { display: none; }
+      body #cp { width: auto; }
+    }
   </style>
   <script src="config.js?v=6ee3deb9"></script>
   <script src="wakeup.js?v=dd83b694"></script>
@@ -1486,7 +1499,7 @@
     load();
   </script>
   <script src="analytics.js?v=23b08325"></script>
-  <script src="chat-panel.js?v=b3f6e2d7"></script>
+  <script src="chat-panel.js?v=c68c2fe2"></script>
   <script src="help.js?v=d1d7cb38"></script>
   <script>
     RAGraphHelp.register('grafo', [
@@ -1509,5 +1522,15 @@
     ]);
   </script>
   <script src="viewnav.js?v=1cdcea68"></script>
+  <script>
+    // Celular: la leyenda arranca plegada; tocar el título la abre o cierra
+    (function () {
+      const lp = document.getElementById('lp');
+      if (matchMedia('(max-width: 768px)').matches) lp.classList.add('collapsed');
+      lp.querySelector('h2').addEventListener('click', () => {
+        if (matchMedia('(max-width: 768px)').matches) lp.classList.toggle('collapsed');
+      });
+    })();
+  </script>
 </body>
 </html>

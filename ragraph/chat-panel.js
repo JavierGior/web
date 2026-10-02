@@ -17,6 +17,11 @@ _s.textContent = `
   font-size: .72rem; font-weight: 400; color: #c8a84b;
   letter-spacing: 1px; text-shadow: 0 0 14px rgba(200,168,75,.5);
 }
+@media (max-width: 768px) {
+  #cp { top: auto; bottom: 8px; left: 8px; right: 8px; width: auto; max-height: 50vh; padding: 12px; }
+  #cp #hist { max-height: 26vh; }
+  #cp #ci { min-height: 56px; }
+}
 #hist {
   flex: 1; overflow-y: auto; display: flex; flex-direction: column;
   gap: 10px; max-height: 528px;

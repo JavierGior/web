@@ -24,6 +24,7 @@
       padding: 72px 492px 24px 16px;  /* arriba: navegación fija (viewnav.js); derecha: panel de chat (460px) */
       line-height: 1.5;
     }
+    @media (max-width: 768px) { body { padding: 64px 12px 300px; } }   /* celular: chat abajo (chat-panel.js) */
     .container { max-width: 1100px; margin: 0 auto; }
 
     header h1 { font-size: 1.4rem; font-weight: 600; }
@@ -367,7 +368,7 @@ ${scripts}
     <button id="cs">Preguntar</button>
   </div>
   <script src="analytics.js?v=23b08325"></script>
-  <script src="chat-panel.js?v=b3f6e2d7"></script>
+  <script src="chat-panel.js?v=c68c2fe2"></script>
   <script src="help.js?v=d1d7cb38"></script>
   <script>
     RAGraphHelp.register('canvas', [
