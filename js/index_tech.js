@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tech aesthetic — skills force-directed
  * Naranja quemado como acento (matches CV tech)
  */
@@ -17,7 +17,7 @@ chart.data = [
   {
     name: "Habilidades",
     value: 400,
-    color: "#E85822",
+    color: "#0080CC",
     collapsed: true,
 
     children: [

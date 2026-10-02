@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tech aesthetic — skills force-directed (English)
  */
 
@@ -16,7 +16,7 @@ chart.data = [
   {
     name: "Skills",
     value: 400,
-    color: "#E85822",
+    color: "#0080CC",
     collapsed: true,
 
     children: [

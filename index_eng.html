@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,17 +11,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream: #F7F4EA;
-      --cream-deep: #EDE8D6;
-      --cream-sunk: #E4DEC8;
-      --ink: #0E0E0D;
-      --ink-soft: #2A2A28;
-      --ink-muted: #77746A;
-      --rule: #D6CFBB;
-      --rule-fade: #E8E2CE;
-      --accent: #E85822;
-      --accent-soft: #FBE9DF;
-      --grid-line: rgba(0,0,0,0.035);
+      --cream: #F0F7FF;
+      --cream-deep: #E0EEFF;
+      --cream-sunk: #CCE3FA;
+      --ink: #0A1929;
+      --ink-soft: #1B3A5C;
+      --ink-muted: #5B82A8;
+      --rule: #AACDE8;
+      --rule-fade: #D0E8F7;
+      --accent: #0080CC;
+      --accent-soft: #DFF0FF;
+      --grid-line: rgba(0,128,204,0.055);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +54,7 @@
     nav.top {
       position: sticky;
       top: 0;
-      background: rgba(247, 244, 234, 0.85);
+      background: rgba(240, 247, 255, 0.88);
       backdrop-filter: saturate(180%) blur(8px);
       -webkit-backdrop-filter: saturate(180%) blur(8px);
       border-bottom: 1px solid var(--rule);
@@ -317,7 +317,7 @@
     /* ============ PORTFOLIO ============ */
     .portfolio-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 2px;
       background: var(--rule);
       border: 1px solid var(--rule);
@@ -652,21 +652,14 @@
         <div class="sec-meta">selected work</div>
       </div>
       <div class="portfolio-grid">
-        <a class="portfolio-card" href="ragraph/" target="_blank" rel="noopener">
-          <div class="portfolio-thumb"><img src="images/ragraph.jpg" alt=""></div>
-          <div class="portfolio-body">
-            <div class="portfolio-title">RAGraph — Harry Potter</div>
-            <div class="portfolio-cat">Knowledge Graph · RAG · Neo4j · LLM</div>
-          </div>
-        </a>
-        <a class="portfolio-card" href="lvc_eng.html" target="_blank" rel="noopener">
+        <a class="portfolio-card" href="lvc_eng.html">
           <div class="portfolio-thumb"><img src="images/portfolio1.jpg" alt=""></div>
           <div class="portfolio-body">
             <div class="portfolio-title">La Vía Campesina</div>
             <div class="portfolio-cat">data viz · javascript</div>
           </div>
         </a>
-        <a class="portfolio-card" href="ds_eng.html" target="_blank" rel="noopener">
+        <a class="portfolio-card" href="ds_eng.html">
           <div class="portfolio-thumb"><img src="images/ds.jpg" alt=""></div>
           <div class="portfolio-body">
             <div class="portfolio-title">HSBC — Transformation Team</div>
