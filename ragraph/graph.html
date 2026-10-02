@@ -80,16 +80,21 @@
     }
     .btn:hover { color: var(--text); border-color: var(--gold); }
     .btn.on { color: var(--gold); border-color: var(--gold); background: rgba(200,168,75,.08); }
+    /* Grafo: navegación de vistas (viewnav.js) entre el panel de leyenda y la barra de agrupaciones */
+    body #viewnav { top: 16px; bottom: auto; left: 272px; }
+    /* Chat del Grafo: ~37% más angosto que el espacio libre a la derecha de la barra */
+    body #cp { width: clamp(290px, calc(0.63 * (100vw - 940px)), 454px); }
     #presetBar {
-      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-      z-index: 12;
+      position: fixed; top: 16px; left: max(50%, 787px); transform: translateX(-50%);   /* centrada; corrida si no entra al lado de la navegación (termina en x=515) */
+      max-width: calc(2 * (100vw - 819px - clamp(290px, calc(0.63 * (100vw - 940px)), 454px)));   /* pantallas angostas: 2 filas antes que pisar el chat */
+      z-index: 12; flex-wrap: wrap;
       background: var(--panel); backdrop-filter: blur(18px);
       border: 1px solid var(--border-gold); border-radius: 12px;
-      padding: 8px; display: flex; gap: 6px;
+      padding: 8px; display: flex; gap: 4px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.55);
     }
     #presetBar .btn {
-      width: auto; padding: 6px 14px; font-size: .78rem;
+      width: auto; padding: 6px 8px; font-size: .76rem;
       font-family: var(--font-title); letter-spacing: .5px;
     }
     .legend { display: flex; flex-direction: column; gap: 5px; }
@@ -148,8 +153,9 @@
     }
     .elink:hover { border-bottom-color: var(--gold); }
 
-    /* 2D: misma estética que 3D (degradé del body + estrellas estáticas). Antes era un tema claro aparte. */
+    /* 2D: mismo fondo que el 3D (#050508) + estrellas estáticas. Antes era un tema claro aparte. */
     #graph2d {
+      background-color: #050508;
       background-image:
         radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.7), transparent),
         radial-gradient(1px 1px at 120px 80px, rgba(255,255,255,.45), transparent),
@@ -216,14 +222,16 @@
 
 
   <script>
-    const HC = { Gryffindor:'#cc2200', Slytherin:'#2d7a45', Ravenclaw:'#2255aa', Hufflepuff:'#e8b830', Unknown:'#9988bb' };
+    const HC = { Gryffindor:'#c4583d', Slytherin:'#2e8b57', Ravenclaw:'#2f63b0', Hufflepuff:'#d9b13b', Unknown:'#9988bb' };
+    // Segundo color de cada casa (teja+oro apagado, verde+plata, azul+bronce, amarillo+negro cálido): anillo interno del tooltip
+    const HC2 = { Gryffindor:'#c9a44a', Slytherin:'#a9b1b8', Ravenclaw:'#a7794a', Hufflepuff:'#5a4f3c' };
     // Preset palettes — vibrant/saturated to contrast against the type palette
     // wiki_house comes lowercased from Neo4j; keys must match
     const HOUSE_PRESET = {
-      gryffindor: { color:'#ff2b1c', label:'Gryffindor' },
-      slytherin:  { color:'#00c060', label:'Slytherin' },
-      ravenclaw:  { color:'#2a7dff', label:'Ravenclaw' },
-      hufflepuff: { color:'#ffd400', label:'Hufflepuff' },
+      gryffindor: { color:'#c4583d', label:'Gryffindor' },
+      slytherin:  { color:'#2e8b57', label:'Slytherin' },
+      ravenclaw:  { color:'#2f63b0', label:'Ravenclaw' },
+      hufflepuff: { color:'#d9b13b', label:'Hufflepuff' },
     };
     function houseKey(n) {
       const v = n.wiki_house;
@@ -462,24 +470,46 @@
       if (focus) {
         const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
         if (s !== focus.id && t !== focus.id) return 'rgba(255,255,255,0.06)';
-        return (hoverLink && l === hoverLink) ? 'rgba(220,192,107,0.98)' : 'rgba(220,192,107,0.32)';
+        return (hoverLink && l === hoverLink) ? 'rgba(220,192,107,0.98)' : (mode === '3d' ? 'rgba(220,192,107,0.6)' : 'rgba(220,192,107,0.32)');
       }
       if (l.tier === 1) return 'rgba(255,255,255,0.55)';
       if (l.tier === 2) return 'rgba(255,255,255,0.20)';
       if (l.tier === 3) return 'rgba(255,255,255,0.06)';
-      return 'rgba(255,255,255,0.07)';
+      return 'rgba(255,255,255,0.22)';
     }
     function linkWidthFn(l) {
       const base = mode === '2d' ? 0.8 : 0.5;
       if (focus) {
         const s = l.source?.id ?? l.source, t = l.target?.id ?? l.target;
         if (s !== focus.id && t !== focus.id) return base;
-        return (hoverLink && l === hoverLink) ? (mode === '2d' ? 2.2 : 1.4) : (mode === '2d' ? 1.4 : 0.7);
+        return (hoverLink && l === hoverLink) ? (mode === '2d' ? 2.2 : 1.4) : (mode === '2d' ? 1.4 : 1.0);
       }
       if (l.tier === 1) return mode === '2d' ? 1.2 : 0.9;
       if (l.tier === 2) return mode === '2d' ? 0.7 : 0.5;
       if (l.tier === 3) return mode === '2d' ? 0.4 : 0.3;
       return base;
+    }
+    // 2D: vínculo angostado. Ancho de las puntas por pasajes compartidos (4 tramos), 15% hacia el
+    // diámetro de cada nodo; el centro es 10% del ancho de las puntas. Color/opacidad: linkColorFn.
+    const TRAMO_W = [0.6, 1.4, 2.6, 4.2];   // px en pantalla: sin dato · 2–19 · 20–99 · 100+
+    function drawLink2D(l, ctx, scale) {
+      const a = l.source, b = l.target;
+      if (a.x == null || b.x == null) return;
+      const w = l.weight || 0, t = w <= 1 ? 0 : w < 20 ? 1 : w < 100 ? 2 : 3;
+      const k = (l === hoverLink ? 1.5 : 1) * TRAMO_W[t] / TRAMO_W[3];
+      const end = n => k * (0.85 * TRAMO_W[3] / scale + 0.15 * 2 * nodeRadius2D(n)) / 2;   // medio ancho
+      const ha = end(a), hb = end(b), hm = 0.10 * (ha + hb) / 2;
+      const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+      const nx = -dy / len, ny = dx / len, c = 2 * hm - (ha + hb) / 2;   // control: la curva pasa por hm
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      ctx.fillStyle = linkColorFn(l);
+      ctx.beginPath();
+      ctx.moveTo(a.x + nx * ha, a.y + ny * ha);
+      ctx.quadraticCurveTo(mx + nx * c, my + ny * c, b.x + nx * hb, b.y + ny * hb);
+      ctx.lineTo(b.x - nx * hb, b.y - ny * hb);
+      ctx.quadraticCurveTo(mx - nx * c, my - ny * c, a.x - nx * ha, a.y - ny * ha);
+      ctx.closePath();
+      ctx.fill();
     }
     function linkLabelFn(l) {
       if (!focus) return '';
@@ -538,7 +568,10 @@
         parts.push(`<div style="margin-top:4px;font-size:10.5px;color:#8a8578"><span style="color:#c8a84b">Aparece más con:</span> ${esc(co.join(', '))} <span style="opacity:.7">pasajes</span></div>`);
       }
       // Wrap with accent border + glow
-      return `<div style="background:rgba(6,8,15,0.94);border:1px solid ${accent};border-radius:8px;padding:10px 12px;color:#e6dfcf;font-family:system-ui,sans-serif;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,0.7),0 0 20px ${accent}44;backdrop-filter:blur(8px);max-width:280px">${parts.join('')}</div>`;
+      // Borde = color del nodo (sigue el preset); anillo interno = colores de la casa
+      const nodeC = baseColor(n);
+      const ring = isHoused ? `inset 0 0 0 1px ${HC[h]},inset 0 0 0 2px ${HC2[h]},` : '';
+      return `<div style="background:rgba(6,8,15,0.94);border:3px solid ${nodeC};border-radius:8px;padding:12px 14px;color:#e6dfcf;font-family:system-ui,sans-serif;font-size:12px;box-shadow:${ring}0 6px 24px rgba(0,0,0,0.7),0 0 20px ${nodeC}44;backdrop-filter:blur(8px);max-width:280px">${parts.join('')}</div>`;
     }
     function nodeVal(n) {
       if (n.pagerank && n.pagerank > 0) return Math.max(1, n.pagerank * 5000);
@@ -859,9 +892,8 @@
       // Rebuild fresh link objects with STRING source/target every call.
       // Force-graph mutates source/target to Node references after graphData(),
       // so reusing mutated links across calls breaks when node subsets change.
-      // Weight noise floor: edges with weight <=1 are almost surely LLM artifacts
-      // (one entity mentioned once near another without real relationship).
-      const WEAK_FLOOR = 1;
+      // Todos los VINCULO están verificados: weight 1 = sin dato de co-aparición, no ruido. No se filtran.
+      const WEAK_FLOOR = 0;
       const ls = [];
       for (const l of allL) {
         const s = l.source && typeof l.source === 'object' ? l.source.id : l.source;
@@ -1348,16 +1380,24 @@
       if (G2) return;
       const el = document.getElementById('graph2d');
       G2 = ForceGraph()(el)
-        .backgroundColor('rgba(0,0,0,0)')  // se ve el degradé + estrellas de #graph2d
+        .backgroundColor('rgba(0,0,0,0)')  // se ve el fondo + estrellas de #graph2d
         .nodeLabel(nodeTooltip)
         .nodeRelSize(1)
         .nodeVal(n => nodeRadius2D(n))
         .nodeColor(n => baseColor(n))
         .nodeCanvasObject((n, ctx) => {
+          if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) return;
           const r = nodeRadius2D(n), c = baseColor(n);
           ctx.save();
-          ctx.shadowColor = c;                      // halo, equivalente al glow del 3D
-          ctx.shadowBlur = Math.min(r * 1.6, 14);
+          const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 3.5);   // halo aditivo, como el sprite del 3D
+          glow.addColorStop(0, c + '8c');
+          glow.addColorStop(1, c + '00');
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, r * 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalCompositeOperation = 'source-over';
           ctx.fillStyle = c;
           ctx.beginPath();
           ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
@@ -1378,6 +1418,16 @@
         })
         .linkColor(linkColorFn)
         .linkWidth(linkWidthFn)
+        .linkCanvasObjectMode(() => 'replace')
+        .linkCanvasObject(drawLink2D)
+        .linkPointerAreaPaint((l, color, ctx, scale) => {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 6 / scale;
+          ctx.beginPath();
+          ctx.moveTo(l.source.x, l.source.y);
+          ctx.lineTo(l.target.x, l.target.y);
+          ctx.stroke();
+        })
         .linkLabel(linkLabelFn)
         .onNodeClick(n => focusNode(n))
         .onNodeHover(n => {
@@ -1397,7 +1447,12 @@
         .d3AlphaDecay(0.04)
         .d3VelocityDecay(0.25)
         .cooldownTime(4000);
-      G2.d3Force('charge').strength(-260);
+      // Repulsión acotada + gravedad leve: sin esto los nodos sin vínculos se van lejísimos del resto
+      G2.d3Force('charge').strength(-120).distanceMax(250);
+      let gNodes = [];
+      const gravity = a => { for (const n of gNodes) { n.vx -= n.x * 0.04 * a; n.vy -= n.y * 0.04 * a; } };
+      gravity.initialize = ns => { gNodes = ns; };
+      G2.d3Force('gravity', gravity);
       G2.d3Force('link').distance(linkDistance);
       G2.d3Force('cluster', makeClusterForce());
       G2.d3Force('cooc', makeCoocForce());
@@ -1431,7 +1486,7 @@
     load();
   </script>
   <script src="analytics.js?v=23b08325"></script>
-  <script src="chat-panel.js?v=c87fa70f"></script>
+  <script src="chat-panel.js?v=b3f6e2d7"></script>
   <script src="help.js?v=d1d7cb38"></script>
   <script>
     RAGraphHelp.register('grafo', [
@@ -1453,6 +1508,6 @@
         text: 'Cambiá entre el Chat, el Grafo y el Canvas, donde armás tu reporte con los gráficos que guardes. El «?» de al lado repite esta guía.' },
     ]);
   </script>
-  <script src="viewnav.js?v=fcf3ac1c"></script>
+  <script src="viewnav.js?v=1cdcea68"></script>
 </body>
 </html>

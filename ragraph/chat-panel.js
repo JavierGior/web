@@ -6,7 +6,7 @@
 const _s = document.createElement('style');
 _s.textContent = `
 #cp {
-  position: fixed; top: 16px; right: 16px; width: 400px;
+  position: fixed; top: 16px; right: 16px; width: 460px;
   max-height: calc(100vh - 32px);
   background: rgba(4,4,12,0.82); backdrop-filter: blur(22px);
   border: 1px solid rgba(200,168,75,0.32); border-radius: 14px;
@@ -19,7 +19,7 @@ _s.textContent = `
 }
 #hist {
   flex: 1; overflow-y: auto; display: flex; flex-direction: column;
-  gap: 10px; max-height: 440px;
+  gap: 10px; max-height: 528px;
   scrollbar-width: thin; scrollbar-color: rgba(200,168,75,.3) transparent;
 }
 #hist .q {
@@ -31,7 +31,7 @@ _s.textContent = `
 #hist .a.streaming::after { content: '▋'; animation: cp-blink .8s step-end infinite; }
 @keyframes cp-blink { 50% { opacity: 0; } }
 #ci {
-  width: 100%; min-height: 64px; padding: 9px 11px;
+  width: 100%; min-height: 117px; padding: 9px 11px;   /* +20% de alto del panel */
   background: rgba(0,0,0,.38); color: #e6dfcf;
   border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
   font-family: inherit; font-size: .85rem; resize: none;

@@ -1,9 +1,9 @@
-// viewnav.js — navegación entre vistas (Chat · Grafo · Canvas): mismo lugar y mismo estilo en las 3 páginas.
+// viewnav.js — navegación entre vistas (Chat · Grafo · Canvas): arriba a la izquierda (el Grafo la corre al lado de su leyenda).
 // Incluye el botón "?" que relanza el recorrido de ayuda (help.js). Cargar al final del <body>.
 (function () {
 
 const css = `
-#viewnav { position: fixed; bottom: 16px; left: 16px; display: flex; gap: 8px; z-index: 50;
+#viewnav { position: fixed; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 50;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
 #viewnav a, #viewnav button {
   background: rgba(4,4,12,0.82); backdrop-filter: blur(16px);
