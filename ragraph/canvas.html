@@ -98,6 +98,7 @@
     }
     .widget-delete:hover { color: #f87171; }
     .widget-chart { max-height: 260px; }
+    .widget-answer { font-size: .88rem; line-height: 1.55; white-space: pre-wrap; max-height: 360px; overflow-y: auto; }
     .widget-text {
       margin-top: 12px;
       font-size: .82rem;
@@ -157,7 +158,7 @@
     <div id="canvas-area">
       <div id="empty-state">
         <p>El canvas está vacío.</p>
-        <small>Mandá gráficos desde el chat con el botón "→ Canvas".</small>
+        <small>Mandá gráficos o respuestas desde el chat con el botón "→ Canvas".</small>
       </div>
       <div class="widget-grid" id="widget-grid"></div>
     </div>
@@ -247,6 +248,7 @@
 
       if (document.querySelector(`.widget-card[data-id="${spec.id}"]`)) return;
 
+      const isText = spec.kind === 'text';   // respuesta de texto del chat: tarjeta sin gráfico
       const filters = _deriveFilters(spec);
       const filtersHtml = filters.length ? `<div class="widget-filters">${
         filters.map((f, i) => `<button class="filter-pill" data-fi="${i}">${escapeHtml(f.label)}</button>`).join('')
@@ -265,12 +267,14 @@
           <button class="widget-delete" title="Eliminar">✕</button>
         </div>
         ${filtersHtml}
-        <canvas class="widget-chart" id="wc-${spec.id}"></canvas>
-        ${spec.text ? `<p class="widget-text">${escapeHtml(spec.text)}</p>` : ''}
-        <div class="widget-meta">⚡ Grafo directo · sin LLM</div>
+        ${isText ? `<p class="widget-answer">${escapeHtml(spec.text)}</p>`
+                 : `<canvas class="widget-chart" id="wc-${spec.id}"></canvas>`}
+        ${!isText && spec.text ? `<p class="widget-text">${escapeHtml(spec.text)}</p>` : ''}
+        <div class="widget-meta">${isText ? 'Respuesta del chat · LLM' : '⚡ Grafo directo · sin LLM'}</div>
       `;
       card.querySelector('.widget-delete').onclick = () => removeWidget(spec.id);
       grid.appendChild(card);
+      if (isText) return;
 
       chartInstances[spec.id] = new Chart(
         document.getElementById(`wc-${spec.id}`).getContext('2d'),
@@ -300,11 +304,11 @@
       const cards = widgets.map(spec => `
     <div class="widget-card">
       <h3>${escapeHtml(spec.title)}</h3>
-      <canvas id="wc-${spec.id}" style="max-height:260px"></canvas>
-      ${spec.text ? `<p class="widget-text">${escapeHtml(spec.text)}</p>` : ''}
+      ${spec.kind === 'text' ? `<p class="widget-answer">${escapeHtml(spec.text)}</p>`
+        : `<canvas id="wc-${spec.id}" style="max-height:260px"></canvas>${spec.text ? `<p class="widget-text">${escapeHtml(spec.text)}</p>` : ''}`}
     </div>`).join('\n');
 
-      const scripts = widgets.map(spec =>
+      const scripts = widgets.filter(spec => spec.kind !== 'text').map(spec =>
         `  new Chart(document.getElementById('wc-${spec.id}').getContext('2d'), ${JSON.stringify({type: spec.chartType, data: spec.chartData, options: spec.chartOptions || {}})});`
       ).join('\n');
 
@@ -321,6 +325,7 @@
     .widget-card { background: #12121a; border: 1px solid #2a2a3a; border-radius: 12px; padding: 20px; margin-bottom: 24px; max-width: 700px; }
     h3 { font-size: .95rem; margin-bottom: 14px; }
     .widget-text { margin-top: 12px; font-size: .82rem; color: #7a7a9a; }
+    .widget-answer { font-size: .88rem; white-space: pre-wrap; }
   </style>
 </head>
 <body>
@@ -367,13 +372,13 @@ ${scripts}
     <textarea id="ci" maxlength="500" placeholder="Ej: top 10 personajes, evolución de Harry..." rows="3"></textarea>
     <button id="cs">Preguntar</button>
   </div>
-  <script src="analytics.js?v=23b08325"></script>
-  <script src="chat-panel.js?v=c68c2fe2"></script>
+  <script src="analytics.js?v=942e27dd"></script>
+  <script src="chat-panel.js?v=660a7ae9"></script>
   <script src="help.js?v=d1d7cb38"></script>
   <script>
     RAGraphHelp.register('canvas', [
       { sel: '#canvas-area', title: 'Tu reporte',
-        text: 'Acá quedan los gráficos que mandás con «→ Canvas» desde cualquier chat. Se guardan en este navegador.' },
+        text: 'Acá quedan los gráficos y respuestas que mandás con «→ Canvas» desde cualquier chat. Se guardan en este navegador.' },
       { sel: '.widget-card:first-child .widget-filters', badge: false, title: 'Filtros',
         text: 'Tocá una pastilla para ocultar o mostrar un libro o una entidad del gráfico.' },
       { sel: '.widget-card:first-child .widget-info-wrap', badge: false, title: '¿Qué muestra cada gráfico?',

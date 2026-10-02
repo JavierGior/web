@@ -1,6 +1,6 @@
 // analytics.js — lógica única de analytics (detección + consulta + gráfico + spec para Canvas).
 // La usan index.html y chat-panel.js; cada vista solo decide dónde y con qué marco renderizar.
-// Cargar después de Chart.js y config.js. Expone window.RAGraphAnalytics = { detect, run, render, errorMessage }.
+// Cargar después de Chart.js y config.js. Expone window.RAGraphAnalytics = { detect, run, render, errorMessage, textSpec }.
 (function () {
 
 const PAL = ['#c8a84b','#7ec8e3','#e87070','#82c882','#b07ae8','#e8b07a','#7ac8e8','#e87ac8','#c8e87a','#e8c87a'];
@@ -311,6 +311,16 @@ function errorMessage(e) {
   return `Error: ${e && e.message ? e.message : 'desconocido'}`;
 }
 
-window.RAGraphAnalytics = { detect, run, render, errorMessage };
+// Spec de Canvas para una respuesta de texto del LLM: tarjeta sin gráfico (canvas.html la dibuja sin Chart.js).
+function textSpec(question, answer) {
+  return {
+    id: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    kind: 'text',
+    title: String(question).slice(0, 140),
+    text: String(answer).slice(0, 4000),
+  };
+}
+
+window.RAGraphAnalytics = { detect, run, render, errorMessage, textSpec };
 
 })();

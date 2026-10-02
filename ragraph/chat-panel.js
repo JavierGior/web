@@ -22,6 +22,12 @@ _s.textContent = `
   #cp #hist { max-height: 26vh; }
   #cp #ci { min-height: 56px; }
 }
+.cp-sug { display: flex; flex-wrap: wrap; gap: 6px; }
+.cp-sug button, .cp-new {
+  background: transparent; border: 1px solid rgba(200,168,75,.28); border-radius: 999px;
+  color: #8a8578; font-size: .72rem; padding: 4px 10px; cursor: pointer; font-family: inherit; }
+.cp-sug button:hover, .cp-new:hover { color: #e6dfcf; border-color: #c8a84b; }
+.cp-new { align-self: flex-start; border-radius: 6px; }
 #hist {
   flex: 1; overflow-y: auto; display: flex; flex-direction: column;
   gap: 10px; max-height: 528px;
@@ -156,6 +162,7 @@ async function ask() {
     if (err) { ae.textContent = err; ae.classList.remove('streaming'); return; }
     const processed = typeof linkifyEntities === 'function' ? linkifyEntities(ans) : _esc(ans).replace(/\n/g, '<br>');
     ae.innerHTML = processed; ae.classList.remove('streaming');
+    _cvsBtn(ae, RAGraphAnalytics.textSpec(q, ans));
     _saveHist('a', ans); // save raw text; linkifyEntities applied on restore
   } catch (e) {
     ae.innerHTML = `<span style="color:#d4324e">Error: ${e.message}</span>`; ae.classList.remove('streaming');
@@ -164,8 +171,25 @@ async function ask() {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 const _hist = document.getElementById('hist');
+// Preguntas sugeridas: responden con gráfico desde el grafo (sin LLM), así se ve la función de Canvas
+const SUGERENCIAS = ['Top 10 personajes más mencionados', 'Evolución de Voldemort a lo largo de los libros'];
+function _newConversation() {
+  localStorage.removeItem(HIST_KEY); localStorage.removeItem('ragraph_conv_id');
+  convId = null; _hist.innerHTML = '';
+}
 if (_hist) {
   _restoreHist(_hist);
+  const ci = document.getElementById('ci');
+  const sug = document.createElement('div'); sug.className = 'cp-sug';
+  SUGERENCIAS.forEach(s => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = s;
+    b.onclick = () => { ci.value = s; ask(); };
+    sug.appendChild(b);
+  });
+  ci.before(sug);
+  const nc = document.createElement('button'); nc.type = 'button'; nc.className = 'cp-new'; nc.textContent = 'Nueva conversación';
+  nc.onclick = _newConversation;
+  document.querySelector('#cp h2').after(nc);
   document.getElementById('cs').addEventListener('click', ask);
   document.getElementById('ci').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(); }

@@ -103,16 +103,6 @@
       cursor: pointer;
     }
     .clear-btn:hover { color: var(--text); border-color: var(--accent); }
-    .debug-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-    }
-    body.user-mode .debug-only { display: none !important; }
     .qa-block { margin-bottom: 16px; }
     .qa-question {
       background: rgba(200, 168, 75, 0.06);
@@ -192,16 +182,13 @@
     <div class="history-header hidden" id="history-header">
       <h2>Historial</h2>
       <div style="display:flex;gap:12px;align-items:center;">
-        <label class="debug-toggle" title="Debug: muestra el contexto de recuperación">
-          <input type="checkbox" id="debug-toggle" onchange="toggleDebug()"> Debug
-        </label>
         <button class="clear-btn" onclick="clearHistory()">Nueva conversación</button>
       </div>
     </div>
     <div id="history"></div>
   </div>
 
-  <script src="analytics.js?v=23b08325"></script>
+  <script src="analytics.js?v=942e27dd"></script>
   <script>
     const promptEl = document.getElementById('prompt');
     const askBtn = document.getElementById('ask-btn');
@@ -214,19 +201,6 @@
       get: function(k) { try { return localStorage.getItem(k); } catch(_) { return null; } },
       set: function(k, v) { try { localStorage.setItem(k, v); } catch(_) {} },
     };
-
-    var debugMode = _ls.get('hp_debug_mode') === 'true';
-    function applyDebugMode() {
-      var t = document.getElementById('debug-toggle');
-      if (t) t.checked = debugMode;
-      document.body.classList.toggle('user-mode', !debugMode);
-    }
-    function toggleDebug() {
-      debugMode = document.getElementById('debug-toggle').checked;
-      _ls.set('hp_debug_mode', String(debugMode));
-      document.body.classList.toggle('user-mode', !debugMode);
-    }
-    applyDebugMode();
 
     function setPrompt(text) { promptEl.value = text; promptEl.focus(); }
 
@@ -407,6 +381,7 @@
             <div class="meta"><span>⏱ ${elapsed}s</span></div>
           </div>
         `;
+        _attachCanvasBtn(block, RAGraphAnalytics.textSpec(prompt, fullAnswer));
         promptEl.value = '';
         promptEl.focus();
 
@@ -427,7 +402,7 @@
         text: 'Preguntá lo que quieras de los 7 libros. Si pedís datos —«top 10 personajes», «serie temporal de Hermione»— la respuesta es un gráfico al instante, sin IA.' },
       { sel: '#examples-container', title: 'Ejemplos', text: 'Tocá uno para cargarlo en el cuadro de pregunta.' },
       { sel: '#ask-btn', badge: false, title: 'Gráficos y Canvas',
-        text: 'Escribí «qué gráficos puedo pedir» para ver todos los tipos. Cada gráfico trae un botón «→ Canvas» para guardarlo en tu reporte.' },
+        text: 'Escribí «qué gráficos puedo pedir» para ver todos los tipos. Cada respuesta, gráfico o texto, trae un botón «→ Canvas» para guardarla en tu reporte.' },
       { sel: '#viewnav a', badge: false, title: 'Vistas',
         text: 'Cambiá entre el Chat, el Grafo y el Canvas, donde armás tu reporte con los gráficos que guardes. El «?» de al lado repite esta guía.' },
     ]);
